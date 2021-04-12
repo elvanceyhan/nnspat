@@ -1,0 +1,22 @@
+Package: nnspat
+Type: Package
+Title: NN Methods for Spatial Patterns
+Version: 0.1.0
+Author: Elvan Ceyhan
+Maintainer: Elvan Ceyhan <elvanceyhan@gmail.com>
+Description: Contains the functions for testing the spatial patterns (of segregation, spatial symmetry, 
+association, disease clustering, species correspondence and reflexivity) based on NN relations, especially
+using contingency tables such as nearest neighbor contingency tabels, NN symmetry contingency tables,
+species correspondence contingency tables and reflexivity contingency tables
+for two (or higher) dimensional data. Also contains functions for generating patterns of segregation, association,
+uniformness, and various non-random labeling patterns for disease clustering in two dimensional cases, and for 
+visualization of these patterns for the two dimensional data. The tests are usually (asymptotic) normal z-tests
+and chi-square tests.
+License: GPL-2
+Encoding: UTF-8
+LazyData: TRUE
+Imports:
+    MASS,
+    Rdpack (>= 0.7)
+RdMacros: Rdpack
+RoxygenNote: 7.0.2
