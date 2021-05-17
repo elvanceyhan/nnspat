@@ -17,8 +17,9 @@
 #' This function computes and returns the distance matrix computed by using the specified distance measure to
 #' compute the distances between the rows of the set of points \code{x} and \code{y} using the 
 #' \code{\link[stats]{dist}} function in the \code{stats} package of the standard R distribution.
-#' If \code{y} is provided (default=\code{NULL}) it yields a matrix of distances between the rows of \code{x} and rows of \code{y},
-#' otherwise, it provides a square matrix with i,j-th entry being the distance between row \eqn{i} and row \eqn{j} of \code{x}.
+#' If \code{y} is provided (default=\code{NULL}) it yields a matrix of distances between the rows of \code{x} and 
+#' rows of \code{y}. Otherwise, it provides a square matrix with i,j-th entry being the distance between row 
+#' \eqn{i} and row \eqn{j} of \code{x}.
 #' This function is different from the \code{\link[stats]{dist}} function in the \code{stats} package.
 #' \code{dist} returns the distance matrix in a lower triangular form, and \code{ipd.mat} returns in a full matrix.
 #' \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
