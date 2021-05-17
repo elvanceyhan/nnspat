@@ -7,9 +7,9 @@
 #'
 #' @return invisible()
 .onAttach <- function(libname, pkgname) {
-  start_message <- c( "     nnspat: functions for NN methods,  \n\n",
-                      "their application for spatial patterns\n\n",
-                      "     by Dr. Elvan Ceyhan <elvanceyhan@gmail.com>\n\n"
+  start_message <- c( "      nnspat: functions for NN methods and\n\n",
+                      "     their application for spatial patterns\n\n",
+                      "    by Dr. Elvan Ceyhan <elvanceyhan@gmail.com>\n\n"
   )
   packageStartupMessage(start_message)
   invisible()
@@ -29,7 +29,7 @@
 #' getOption("nnspat.name")
 .onLoad <- function(libname, pkgname) {
   op <- options()
-  op.pcds <- list(
+  op.nnspat <- list(
     #nnspat.path = "~/R-dev",
     nnspat.install.args  = "",
     nnspat.name          = "Elvan Ceyhan",
@@ -38,8 +38,8 @@
     nnspat.desc.suggests = NULL,
     nnspat.desc          = list()
   )
-  toset <- !(names(op.pcds) %in% names(op))
-  if (any(toset)) options(op.pcds[toset])
+  toset <- !(names(op.nnspat) %in% names(op))
+  if (any(toset)) options(op.nnspat[toset])
 
   invisible()
 }

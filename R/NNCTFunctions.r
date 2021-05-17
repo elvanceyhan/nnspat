@@ -7,8 +7,9 @@
 #in all these functions
 #data sets are either matrices or data frames
 
-#'
+#' @import stats
 #' @import MASS
+#' @import graphics
 #'
 #' @title Interpoint Distance Matrix
 #'
@@ -31,6 +32,8 @@
 #'
 #' @seealso \code{\link[stats]{dist}}, \code{\link{ipd.mat.euc}}, \code{\link{dist.std.data}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
 #' n<-3
@@ -47,8 +50,8 @@
 #' ipd.mat(X[1,],Y[3,],method=mtd)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(3)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(3) would not work
+#' X<-as.matrix(runif(3)) # need to be entered as a matrix with one column 
+#' #(i.e., a column vector), hence X<-runif(3) would not work
 #' ipd.mat(X)
 #'
 #' Y<-as.matrix(runif(5))
@@ -98,6 +101,8 @@ ipd.mat <- function(x,y=NULL, ...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
 #' n<-3
@@ -105,6 +110,7 @@ ipd.mat <- function(x,y=NULL, ...)
 #' dst<-dist(X)
 #' dist2full(dst)
 #'
+#' @export
 dist2full <- function(dis) {
   n<-attr(dis,"Size")
   full<-matrix(0,n,n)
@@ -125,7 +131,7 @@ dist2full <- function(dis) {
 #' \code{\link{ipd.mat}} returns the full distance matrix for a variety of distance metrics (including the
 #' Euclidean metric), while \code{\link{ipd.mat.euc}} uses the Euclidean distance metric only.
 #' \code{ipd.mat.euc(X)} and \code{ipd.mat(X)} yield the same output for a set of points \code{X},
-#' as the default metric in \code{\link{ipd.mat}}' is also "\code{euclidean}".
+#' as the default metric in \code{\link{ipd.mat}} is also \code{"euclidean"}.
 #' 
 #' @param x A set of points in matrix or data frame form where points correspond to the rows.
 #' @param y A set of points in matrix or data frame form where points correspond to the rows (default=\code{NULL}).
@@ -135,6 +141,8 @@ dist2full <- function(dis) {
 #' the Euclidean distance between rows \eqn{i} and \eqn{j} of \code{x}.
 #'
 #' @seealso \code{\link[stats]{dist}}, \code{\link{ipd.mat.euc}}, \code{\link{dist.std.data}}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' #3D data points
@@ -150,8 +158,8 @@ dist2full <- function(dis) {
 #' ipd.mat.euc(X[1,],Y[3,])
 #'
 #' #1D data points
-#' X<-as.matrix(runif(3)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(3) would not work
+#' X<-as.matrix(runif(3)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(3) would not work
 #' ipd.mat.euc(X)
 #'
 #' Y<-as.matrix(runif(5))
@@ -226,6 +234,8 @@ ipd.mat.euc <- function(x,y=NULL)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' B<-c(1,0); C<-c(1/2,sqrt(3)/2);
 #' euc.dist(B,C);
@@ -261,12 +271,12 @@ euc.dist <- function(x,y)
 #' @title The incidence matrix \code{W} for the NN digraph
 #'
 #' @description 
-#' Returns the \eqn{W=(w_ij)} matrix which is used to compute Q, R and \eqn{T} values in the NN structure.
-#' \eqn{w_{ij}=I(\text{point eqn{j} is a NN of point \eqn{i}))} i.e. \eqn{w_{ij}=1} if point \eqn{j} is a NN of point i and 0 otherwise.
+#' Returns the \eqn{W=(w_ij)} matrix which is used to compute \eqn{Q}, \eqn{R} and \eqn{T} values in the NN structure.
+#' \eqn{w_{ij}=I(} point eqn{j} is a NN of point \eqn{i))} i.e. \eqn{w_{ij}=1} if point \eqn{j} is a NN of point \eqn{i} and 0 otherwise.
 #' 
 #' The argument \code{ties} is a logical argument (default=\code{FALSE}) to take ties into account or not. If \code{TRUE} the function
-#' takes ties into account by making \eqn{w_{ij}=1/m} if point \eqn{j} is a NN of point i
-#' and there are m tied NNs and 0 otherwise. If \code{FALSE}, \eqn{w_{ij}=1} if point \eqn{j} is a NN of point i and 0 otherwise.
+#' takes ties into account by making \eqn{w_{ij}=1/m} if point \eqn{j} is a NN of point \eqn{i}
+#' and there are \eqn{m} tied NNs and 0 otherwise. If \code{FALSE}, \eqn{w_{ij}=1} if point \eqn{j} is a NN of point \eqn{i} and 0 otherwise.
 #' The matrix \eqn{W} is equivalent to \eqn{A=(a_{ij})} matrix with \eqn{k=1}, i.e., \code{Wmat(X)=aij.mat(X,k=1)}.
 #' 
 #' The argument \code{is.ipd} is a logical argument (default=\code{TRUE}) to determine the structure of the argument \code{x}.
@@ -274,48 +284,50 @@ euc.dist <- function(x,y)
 #' with rows representing the data points.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param ties A logical parameter (default=\code{FALSE}) to take ties into account in computing the \eqn{W} matrix,
-#' so if it is \code{TRUE}, \eqn{w_{ij}=1/m} if point \eqn{j} is a NN of point i and there are m tied NNs and 0 otherwise
-#' and if \code{FALSE}, \eqn{w_{ij}=1} if point \eqn{j} is a NN of point i and 0 otherwise.
+#' so if it is \code{TRUE}, \eqn{w_{ij}=1/m} if point \eqn{j} is a NN of point \eqn{i} and there are \eqn{m} tied NNs and 0 otherwise
+#' and if \code{FALSE}, \eqn{w_{ij}=1} if point \eqn{j} is a NN of point \eqn{i} and 0 otherwise.
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'
-#' @return The incidence matrix \eqn{W=(w_ij)} where \eqn{w_{ij}=I(\text{point eqn{j} is a NN of point \eqn{i}))},
-#' i.e. \eqn{w_{ij}=1} if point \eqn{j} is a NN of point i and 0 otherwise.
+#' @return The incidence matrix \eqn{W=(w_ij)} where \eqn{w_{ij}=I(} point eqn{j} is a NN of point \eqn{i))},
+#' i.e. \eqn{w_{ij}=1} if point \eqn{j} is a NN of point \eqn{i} and 0 otherwise.
 #'
-#' @seealso \code{\link{Line}}, \code{\link{paraline}}, and \code{\link{perpline}}
+#' @seealso \code{\link{aij.mat}}, \code{\link{aij.nonzero}}, and \code{\link{aij.theta}}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n<-3
 #' X<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(X)
 #' Wmat(ipd)
-#' Wmat(X,is.ipd = F)
+#' Wmat(X,is.ipd = FALSE)
 #'
 #' n<-5
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' Wmat(ipd)
-#' Wmat(Y,is.ipd = F)
-#' Wmat(Y,is.ipd = F,method="max")
+#' Wmat(Y,is.ipd = FALSE)
+#' Wmat(Y,is.ipd = FALSE,method="max")
 #' 
-#' Wmat(Y,is.ipd = F)
+#' Wmat(Y,is.ipd = FALSE)
 #' aij.mat(Y,k=1)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' Wmat(ipd)
-#' Wmat(X,is.ipd = F)
+#' Wmat(X,is.ipd = FALSE)
 #'
 #' #with ties=TRUE in the data
 #' Y<-matrix(round(runif(15)*10),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' Wmat(ipd,ties=TRUE)
-#' Wmat(Y,ties=T,is.ipd = F)
+#' Wmat(Y,ties=TRUE,is.ipd = FALSE)
 #'
 #' @export
 Wmat <- function(x,ties=FALSE,is.ipd=TRUE,...)
@@ -354,10 +366,10 @@ Wmat <- function(x,ties=FALSE,is.ipd=TRUE,...)
 #' more points share a NN, for data in any dimension. 
 #' 
 #' \code{Qvec} returns the Q-value and also yields the Qv vector \eqn{Qv=(Q_0,Q_1,\ldots)} as well for data in any 
-#' dimension, where \eqn{Q_j} is the number of points shared as a NN by j other points. 
+#' dimension, where \eqn{Q_j} is the number of points shared as a NN by \eqn{j} other points. 
 #' 
-#' \code{sharedNN} returns the vector of number of points with shared NNs, \eqn{Q=(Q_0,Q_1,\ldots)} where \eqn{Q_i} is
-#' the number of points that are NN to i points, and if a point is a NN of i points, then there are \eqn{i(i-1)} 
+#' \code{sharedNN} returns the \code{vector} of number of points with shared NNs, \eqn{Q=(Q_0,Q_1,\ldots)} where \eqn{Q_i} is
+#' the number of points that are NN to \eqn{i} points, and if a point is a NN of \eqn{i} points, then there are \eqn{i(i-1)} 
 #' points that share a NN. So \eqn{Q=\sum_{i>1} i(i-1)Q_i}.
 #' 
 #' \code{Rval} returns the number of reflexive NNs, R (i.e., twice the number of reflexive NN pairs).
@@ -369,10 +381,10 @@ Wmat <- function(x,ties=FALSE,is.ipd=TRUE,...)
 #' @param W The incidence matrix, \eqn{W}, for the NN digraph
 #'
 #' @return \code{Qval} returns the \eqn{Q} value
-#' \code{Qvec} returns a list with two elements
+#' \code{Qvec} returns a \code{list} with two elements
 #'  \item{q}{the \eqn{Q} value, the number of shared NNs}
-#'  \item{qvec}{the vector of \eqn{Q_j} values} 
-#' \code{sharedNN} returns a matrix with 2 rows, where first row is the \eqn{j} values and second row is
+#'  \item{qvec}{the \code{vector} of \eqn{Q_j} values} 
+#' \code{sharedNN} returns a \code{matrix} with 2 rows, where first row is the \eqn{j} values and second row is
 #' the corresponding vector of \eqn{Q_j} values
 #' \code{Rval}{the \eqn{R} value, the number of reflexive NNs}
 #' 
@@ -385,6 +397,8 @@ NULL
 #'
 #' @rdname funsQandR
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #Examples for Qval
 #' #3D data points
@@ -395,8 +409,8 @@ NULL
 #' Qval(W)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(10)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(10) would not work
+#' X<-as.matrix(runif(10)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(10) would not work
 #' ipd<-ipd.mat(X)
 #' W<-Wmat(ipd)
 #' Qval(W)
@@ -441,8 +455,8 @@ Qval <- function(W)
 #' Qvec(W)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(15) would not work
+#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(15) would not work
 #' ipd<-ipd.mat(X)
 #' W<-Wmat(ipd)
 #' Qvec(W)
@@ -481,8 +495,8 @@ Qvec <- function(W)
 #' Qvec(W)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' W<-Wmat(ipd)
 #' sharedNN(W)
@@ -527,8 +541,8 @@ sharedNN <- function(W)
 #' Rval(W)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' W<-Wmat(ipd)
 #' Rval(W)
@@ -553,38 +567,40 @@ Rval <- function(W)
 #'
 #' @description Returns the \code{Qvec} and \code{R} where \eqn{Qvec=(Q_0,Q_1,\ldots)} with
 #' \eqn{Q_j} is the number of points shared as a NN
-#' by j other points i.e. number of points that are NN of i points, for \eqn{i=0,1,2,\ldots}
+#' by \eqn{j} other points i.e. number of points that are NN of \eqn{i} points, for \eqn{i=0,1,2,\ldots}
 #' and \code{R} is the number of reflexive pairs where A and B are reflexive iff they are NN to each other.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' 
-#' @return Returns a list with two elements
+#' @return Returns a \code{list} with two elements
 #'  \item{Qvec}{vector of \eqn{Q_j} values}
 #'  \item{R}{number of reflexive points}
 #'
 #' @seealso \code{\link{Qval}}, \code{\link{Qvec}}, \code{\link{sharedNN}}, \code{\link{Rval}} 
 #' and \code{\link{QRval}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
 #' sharedNN(W)
 #' Qvec(W)
 #' Ninv(ipd)
-#' Ninv(Y,is.ipd=F)
-#' Ninv(Y,is.ipd=F,method="max")
+#' Ninv(Y,is.ipd = FALSE)
+#' Ninv(Y,is.ipd = FALSE,method="max")
 #'
 #' #1D data points
 #' n<-15
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column 
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
 #' W<-Wmat(ipd)
 #' sharedNN(W)
@@ -645,35 +661,37 @@ Ninv <- function(x,is.ipd=TRUE,...)
 #' These quantities are used, e.g., in computing the variances and covariances of the entries of the
 #' nearest neighbor contingency tables used for Dixon's tests and other NNCT tests. 
 #'
-#' @param njr A list that is the output of \code{\link{Ninv}} (with first entry in the list is vector of number of shared NNs
+#' @param njr A \code{list} that is the output of \code{\link{Ninv}} (with first entry in the \code{list} is \code{vector} of number of shared NNs
 #' and second is the \eqn{R} value, number of reflexive points)
 #' 
-#' @return A list with two elements
+#' @return A \code{list} with two elements
 #' \item{Q}{the \eqn{Q} value, the number of shared NNs}
 #' \item{R}{the \eqn{R} value, the number of reflexive NNs}
 #'
 #' @seealso \code{\link{Qval}}, \code{\link{Qvec}}, \code{\link{sharedNN}}, \code{\link{Rval}} 
 #' and \code{\link{Ninv}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' ninv<-Ninv(ipd)
 #' QRval(ninv)
 #' W<-Wmat(ipd)
-#' Qvec(W)$Q
+#' Qvec(W)$q
 #'
 #' #1D data points
 #' n<-15
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column 
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
 #' ninv<-Ninv(ipd)
 #' QRval(ninv)
 #' W<-Wmat(ipd)
-#' Qvec(W)$Q
+#' Qvec(W)$q
 #'
 #' #with possible ties in the data
 #' Y<-matrix(round(runif(30)*10),ncol=3)
@@ -682,7 +700,7 @@ Ninv <- function(x,is.ipd=TRUE,...)
 #' ninv<-Ninv(ipd)
 #' QRval(ninv)
 #' W<-Wmat(ipd)
-#' Qvec(W)$Q
+#' Qvec(W)$q
 #'
 #' @export
 QRval <- function(njr)
@@ -718,6 +736,8 @@ QRval <- function(njr)
 #'
 #' @seealso \code{\link{Qval}}, \code{\link{Qvec}}, \code{\link{sharedNN}} and \code{\link{Rval}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
 #' n<-10
@@ -728,8 +748,8 @@ QRval <- function(njr)
 #' Tval(W,R)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' W<-Wmat(ipd)
 #' R<-Rval(W)
@@ -762,7 +782,7 @@ Tval <- function(W,R)
 #'
 #' @description
 #' Returns the index (or indices) of the nearest neighbor(s) of subject \eqn{i} given data set or IPD matrix \code{x}.
-#' It will yield a vector if there are ties, and subject indices correspond to rows (i.e. rows \code{1:n} ) if \code{x} 
+#' It will yield a \code{vector} if there are ties, and subject indices correspond to rows (i.e. rows \code{1:n} ) if \code{x} 
 #' is the data set and to rows or columns if \code{x} is the IPD matrix.  
 #' 
 #' The argument \code{is.ipd} is a logical argument (default=\code{TRUE}) to determine the structure of the argument \code{x}.
@@ -770,7 +790,7 @@ Tval <- function(W,R)
 #' with rows representing the data points.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param i index of (i.e., row number for) the subject whose NN is to be found. 
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
@@ -780,20 +800,22 @@ Tval <- function(W,R)
 #'
 #' @seealso \code{\link{kNN}} and \code{\link{NNsub}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' NN(ipd,1)
-#' NN(Y,1,is.ipd = F)
+#' NN(Y,1,is.ipd = FALSE)
 #' NN(ipd,5)
-#' NN(Y,5,is.ipd = F)
-#' NN(Y,5,is.ipd = F,method="max")
+#' NN(Y,5,is.ipd = FALSE)
+#' NN(Y,5,is.ipd = FALSE,method="max")
 #'
 #' #1D data points
-#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' NN(ipd,1)
 #' NN(ipd,5)
@@ -803,7 +825,7 @@ Tval <- function(W,R)
 #' ny<-nrow(Y)
 #' ipd<-ipd.mat(Y)
 #' for (i in 1:ny)
-#'   cat(i,":",NN(ipd,i),"|",NN(Y,i,is.ipd = F),"\n")
+#'   cat(i,":",NN(ipd,i),"|",NN(Y,i,is.ipd = FALSE),"\n")
 #'
 #' @export 
 NN <- function(x,i,is.ipd=TRUE,...)
@@ -811,7 +833,7 @@ NN <- function(x,i,is.ipd=TRUE,...)
   ifelse(is.ipd,ipd<-x,ipd<-ipd.mat(x,...))
   
   n<-nrow(ipd)
-  if (n<=1)
+  if (n<=1 || i>n)
   {labind<-NA 
   return(labind)}
   
@@ -847,24 +869,26 @@ NN <- function(x,i,is.ipd=TRUE,...)
 #'
 #' @seealso \code{\link{NN}}, \code{\link{NNdist}} and \code{\link{NNdist2cl}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' k<-sample(1:5,1)
 #' k
 #' NN(ipd,1)
 #' kNN(ipd,1,k)
-#' kNN(Y,1,k,is.ipd = F)
-#' kNN(Y,1,k,is.ipd = F,method="max")
+#' kNN(Y,1,k,is.ipd = FALSE)
+#' kNN(Y,1,k,is.ipd = FALSE,method="max")
 #'
 #' NN(ipd,5)
 #' kNN(ipd,5,k)
-#' kNN(Y,5,k,is.ipd = F)
+#' kNN(Y,5,k,is.ipd = FALSE)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(15)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' kNN(ipd,3,k)
 #'
@@ -881,6 +905,10 @@ kNN <- function(x,i,k,is.ipd=TRUE,...)
   ifelse(is.ipd,ipd<-x,ipd<-ipd.mat(x,...))
   
   n<-nrow(ipd)
+  if (n<=1 || max(i,k+1)>n)
+  {knndis<-NA 
+  return(knndis)}
+  
   D<-max(ipd) 
   ind <- 1:ncol(ipd)
   
@@ -903,7 +931,7 @@ kNN <- function(x,i,k,is.ipd=TRUE,...)
 #' with rows representing the data points.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
@@ -913,21 +941,23 @@ kNN <- function(x,i,k,is.ipd=TRUE,...)
 #' 
 #' @seealso \code{\link{kthNNdist}}, \code{\link{kNNdist}}, and \code{\link{NNdist2cl}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' NNdist(ipd)
-#' NNdist(Y,is.ipd=F)
-#' NNdist(Y,is.ipd=F,method="max")
+#' NNdist(Y,is.ipd = FALSE)
+#' NNdist(Y,is.ipd = FALSE,method="max")
 #'
 #' #1D data points
-#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' NNdist(ipd)
-#' NNdist(X,is.ipd=F)
+#' NNdist(X,is.ipd = FALSE)
 #'
 #' @export
 NNdist <- function(x,is.ipd=TRUE,...)
@@ -954,14 +984,14 @@ NNdist <- function(x,is.ipd=TRUE,...)
 
 # funs.kNNdist
 #'
-#' @title Functions for the \eqn{k-th} and \code{k} NN distances
+#' @title Functions for the \eqn{k^{th}} and \code{k} NN distances
 #'
 #' @description
 #' Two functions: \code{kthNNdist} and \code{kNNdist}.
 #'
-#' \code{kthNNdist} returns the distances between subjects and their \eqn{k-th} NNs. The output is an \eqn{n \times 2} matrix where 
+#' \code{kthNNdist} returns the distances between subjects and their \eqn{k^{th}} NNs. The output is an \eqn{n \times 2} matrix where 
 #' \eqn{n} is the data size and first column is the subject index and second column contains the corresponding 
-#' distances to \eqn{k-th} NN subjects. 
+#' distances to \eqn{k^{th}} NN subjects. 
 #' 
 #' \code{kNNdist} returns the distances between subjects and their \code{k} NNs.
 #' The output is an \eqn{n \times (k+1)} matrix where 
@@ -969,41 +999,43 @@ NNdist <- function(x,is.ipd=TRUE,...)
 #' distances to \code{k} NN subjects. 
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param k Integer specifying the number of NNs (of subjects).
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'
 #' @return \code{kthNNdist} returns an \eqn{n \times 2} matrix where \eqn{n} is data size (i.e. number of subjects) and
-#' first column is the subject index and second column is the \eqn{k-th} NN distances.
+#' first column is the subject index and second column is the \eqn{k^{th}} NN distances.
 #' 
 #' \code{kNNdist} returns an \eqn{n \times (k+1)} matrix where \eqn{n} is data size (i.e. number of subjects) and
 #' first column is the subject index and the remaining \code{k} columns contain the corresponding 
 #' distances to \code{k} NN subjects. 
 #' 
-#' @seealso \code{\link{Ndist}} and \code{\link{NNdist2cl}}
+#' @seealso \code{\link{NNdist}} and \code{\link{NNdist2cl}}
 #' 
 #' @name funs.kNNdist
 NULL
 #'
 #' @rdname funs.kNNdist
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #Examples for kthNNdist
 #' #3D data points, gives NAs when n<=k
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' kthNNdist(ipd,3)
-#' kthNNdist(Y,3,is.ipd=F)
+#' kthNNdist(Y,3,is.ipd = FALSE)
 #' kthNNdist(ipd,5)
-#' kthNNdist(Y,5,is.ipd=F)
-#' kthNNdist(Y,3,is.ipd=F,method="max")
+#' kthNNdist(Y,5,is.ipd = FALSE)
+#' kthNNdist(Y,3,is.ipd = FALSE,method="max")
 #'
 #' #1D data points
-#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' kthNNdist(ipd,3)
 #'
@@ -1031,21 +1063,21 @@ kthNNdist <- function(x,k,is.ipd=TRUE,...)
 #' @examples
 #' #Examples for kNNdist
 #' #3D data points, gives NAs if n<=k for n,n+1,...,kNNs
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' kNNdist(ipd,3)
 #' kNNdist(ipd,5)
-#' kNNdist(Y,5,is.ipd = F)
+#' kNNdist(Y,5,is.ipd = FALSE)
 #'
-#' kNNdist(Y,5,is.ipd = F,method="max")
+#' kNNdist(Y,5,is.ipd = FALSE,method="max")
 #'
 #' kNNdist(ipd,1)
 #' kthNNdist(ipd,1)
 #'
 #' #1D data points
-#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(5) would not work
+#' X<-as.matrix(runif(5)) # need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(5) would not work
 #' ipd<-ipd.mat(X)
 #' kNNdist(ipd,3)
 #'
@@ -1075,32 +1107,32 @@ kNNdist <- function(x,k,is.ipd=TRUE,...)
 #'
 #' @description
 #' Returns the distances between subjects from class \eqn{i} and their nearest neighbors (NNs) from class \eqn{j}. 
-#' The output is a list with first entry (\code{nndist}) is an \eqn{n_i \times 3} matrix where \eqn{n_i} is the size of class \eqn{i}
+#' The output is a \code{list} with first entry (\code{nndist}) being an \eqn{n_i \times 3} matrix where \eqn{n_i} is the size of class \eqn{i}
 #' and first column is the subject index in class \eqn{i}, second column is the subject index in NN class \eqn{j},  
 #' and third column contains the corresponding distances of each class \eqn{i} subject to its NN among class \eqn{j}
-#' subjects. Class i is labeled as base class and class \eqn{j} is labeled as NN class.
+#' subjects. Class \eqn{i} is labeled as base class and class \eqn{j} is labeled as NN class.
 #' 
-#' The argument \code{within.lab.ind} is a logical argument (default=\code{FALSE}) to determine the indexing of the class \eqn{i}
-#' subjects. If \code{TRUE}, index numbering of subjects is within the class, from 1 to class size (i.e., \code{1:n_i}), 
-#' according to their order in the original data; otherwise, index numbering within class \eqn{i}s just the indices
-#' in the original data.
+#' The argument \code{within.class.ind} is a logical argument (default=\code{FALSE}) to determine the indexing of 
+#' the class \eqn{i} subjects. If \code{TRUE}, index numbering of subjects is within the class, 
+#' from 1 to class size (i.e., \code{1:n_i}), according to their order in the original data;
+#' otherwise, index numbering within class is just the indices in the original data.
 #' 
 #' The argument \code{is.ipd} is a logical argument (default=\code{TRUE}) to determine the structure of the argument \code{x}.
 #' If \code{TRUE}, \code{x} is taken to be the inter-point distance (IPD) matrix, and if \code{FALSE}, \code{x} is taken to be the data set
 #' with rows representing the data points.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param i,j class label of base class and NN classes, respectively.
-#' @param lab Vector of class labels (numerical or categorical)
-#' @param within.lab.ind A logical parameter (default=\code{FALSE}). If \code{TRUE}, index numbering of subjects is within the class, from 1 to class size (i.e., \code{1:n_i}), 
-#' according to their order in the original data; otherwise, index numbering within class \eqn{i}s just the indices
-#' in the original data.
+#' @param lab The \code{vector} of class labels (numerical or categorical)
+#' @param within.class.ind A logical parameter (default=\code{FALSE}). If \code{TRUE}, index numbering of subjects 
+#' is within the class, from 1 to class size (i.e., \code{1:n_i}), according to their order in the original data;
+#' otherwise, index numbering within class is just the indices in the original data.
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'
-#' @return Returns a list with three elements
+#' @return Returns a \code{list} with three elements
 #'  \item{nndist}{\eqn{n_i \times 3} matrix where \eqn{n_i} is the size of class \eqn{i} and first column is the subject index in 
 #'  class \eqn{i}, second column is the subject index in NN class \eqn{j}, and third column contains the corresponding
 #'  distances of each class \eqn{i} subject to its NN among class \eqn{j} subjects.}
@@ -1109,44 +1141,46 @@ kNNdist <- function(x,k,is.ipd=TRUE,...)
 #' 
 #' @seealso \code{\link{kthNNdist}}, \code{\link{kNNdist}}, and \code{\link{NNdist2cl}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
 #' table(clab)
 #' NNdist2cl(ipd,1,2,clab)
-#' NNdist2cl(Y,1,2,clab,is.ipd=F)
+#' NNdist2cl(Y,1,2,clab,is.ipd = FALSE)
 #'
 #' NNdist2cl(ipd,1,2,clab,within = TRUE)
 #'
 #' #three class case
-#' clab<-sample(1:3,30,replace=TRUE) #class labels
+#' clab<-sample(1:3,n,replace=TRUE) #class labels
 #' table(clab)
 #' NNdist2cl(ipd,2,1,clab)
 #'
 #' #1D data points
 #' n<-15
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
 #' table(clab)
 #' NNdist2cl(ipd,1,2,clab)
-#' NNdist2cl(Y,1,2,clab,is.ipd=F)
+#' NNdist2cl(X,1,2,clab,is.ipd = FALSE)
 #'
 #' @export 
-NNdist2cl <- function(x,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
+NNdist2cl <- function(x,i,j,lab,within.class.ind=FALSE,is.ipd=TRUE,...)
 { 
   ifelse(is.ipd,ipd<-x,ipd<-ipd.mat(x,...))
   
   if (any(lab==i)*any(lab==j)==0)
-  {stop('given labels \eqn{i} and \eqn{j} are not among the class labels')}
+  {stop('given labels i and j are not among the class labels')}
   
-  if (within.lab.ind==FALSE)
+  if (within.class.ind==FALSE)
   {
     ns<-length(lab) #sample size of data for which IPDM is computed
     i.ind<-(1:ns)[lab==i]
@@ -1181,28 +1215,28 @@ NNdist2cl <- function(x,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
 
 # funs.kNNdist2cl
 #'
-#' @title Functions for the \eqn{k-th} and \code{k} NN distances
+#' @title Functions for the \eqn{k^{th}} and \code{k} NN distances
 #'
 #' @description
 #' Two functions: \code{kthNNdist2cl} and \code{kNNdist2cl}.
 #'
-#' \code{kthNNdist2cl} returns the distances between subjects from class \eqn{i} and their \eqn{k-th} NNs from class \eqn{j}.
-#' The output is a list with first entry (\code{kth.nndist}) is an \eqn{n_i \times 3} matrix where \eqn{n_i} is the size of class \eqn{i}
+#' \code{kthNNdist2cl} returns the distances between subjects from class \eqn{i} and their \eqn{k^{th}} NNs from class \eqn{j}.
+#' The output is a \code{list} with first entry (\code{kth.nndist}) is an \eqn{n_i \times 3} matrix where \eqn{n_i} is the size of class \eqn{i}
 #' and first column is the subject index for class \eqn{i},
-#' second column is the index of the \eqn{k-th} NN of class \eqn{i} subjects among class \eqn{j} subjects and third column 
-#' contains the corresponding \eqn{k-th} NN distances. The other entries in the list are labels of base class and NN class
+#' second column is the index of the \eqn{k^{th}} NN of class \eqn{i} subjects among class \eqn{j} subjects and third column 
+#' contains the corresponding \eqn{k^{th}} NN distances. The other entries in the \code{list} are labels of base class and NN class
 #' and the value of \code{k}, respectively.
 #' 
 #' \code{kNNdist2cl} returns the distances between subjects from class \eqn{i} and their \code{k} NNs from class \eqn{j}.
-#' The output is a list with first entry (\code{ind.knndist}) is an \eqn{n_i \times (k+1)} matrix where \eqn{n_i} is the size of class \eqn{i},
+#' The output is a \code{list} with first entry (\code{ind.knndist}) is an \eqn{n_i \times (k+1)} matrix where \eqn{n_i} is the size of class \eqn{i},
 #' first column is the indices of class \eqn{i} subjects, 2nd to \eqn{(k+1)}-st  columns are the indices of \code{k} NNs of class \eqn{i}
-#' subjects among class \eqn{j} subjects. The second list entry (\code{knndist}) is an \eqn{n_i \times k} matrix where \eqn{n_i} is the 
+#' subjects among class \eqn{j} subjects. The second \code{list} entry (\code{knndist}) is an \eqn{n_i \times k} matrix where \eqn{n_i} is the 
 #' size of class \eqn{i} and the columns are the \code{k}NN distances of class \eqn{i} subjects to class \eqn{j} subjects. 
-#' The other entries in the list are labels of base class and NN class and the value of \code{k}, respectively. 
+#' The other entries in the \code{list} are labels of base class and NN class and the value of \code{k}, respectively. 
 #' 
-#' The argument \code{within.lab.ind} is a logical argument (default=\code{FALSE}) to determine the indexing of the class \eqn{i}
+#' The argument \code{within.class.ind} is a logical argument (default=\code{FALSE}) to determine the indexing of the class \eqn{i}
 #' subjects. If \code{TRUE}, index numbering of subjects is within the class, from 1 to class size (i.e., \code{1:n_i}), 
-#' according to their order in the original data; otherwise, index numbering within class \eqn{i}s just the indices
+#' according to their order in the original data; otherwise, index numbering within class is just the indices
 #' in the original data.
 #' 
 #' The argument \code{is.ipd} is a logical argument (default=\code{TRUE}) to determine the structure of the argument \code{x}.
@@ -1210,26 +1244,27 @@ NNdist2cl <- function(x,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
 #' with rows representing the data points.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
 #' @param k Integer specifying the number of NNs (of subjects).
 #' @param i,j class label of base class and NN classes, respectively.
-#' @param lab Vector of class labels (numerical or categorical)
-#' @param within.lab.ind A logical parameter (default=\code{FALSE}). If \code{TRUE}, index numbering of subjects is within the class, from 1 to class size (i.e., \code{1:n_i}), 
-#' according to their order in the original data; otherwise, index numbering within class \eqn{i}s just the indices
+#' @param lab The \code{vector} of class labels (numerical or categorical)
+#' @param within.class.ind A logical parameter (default=\code{FALSE}). If \code{TRUE}, index numbering of subjects is within the class, from 1 to class size (i.e., \code{1:n_i}), 
+#' according to their order in the original data; otherwise, index numbering within class is just the indices
 #' in the original data.
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
-#'
-#' @return \code{kthNNdist2cl} returns a list with three elements
+#' 
+#' @return  \code{kthNNdist2cl} returns the \code{list} of elements
 #'  \item{kth.nndist}{\eqn{n_i \times 3} matrix where \eqn{n_i} is the size of class \eqn{i}
-#' and first column is the subject index for class \eqn{i}, second column is the index of the \eqn{k-th} NN of class \eqn{i} 
-#' subjects among class \eqn{j} subjects and third column contains the corresponding \eqn{k-th} NN distances. 
+#' and first column is the subject index for class \eqn{i}, second column is the index of the \code{k}-th NN of class \eqn{i} 
+#' subjects among class \eqn{j} subjects and third column contains the corresponding \code{k}-th NN distances,
+#' , returned by \code{Zseg.ind.ct} only} 
 #'  \item{base.class}{label of base class} 
 #'  \item{nn.class}{label of NN class} 
-#'  \item{k}{value of \code{k} in \code{k}NN} 
+#'  \item{k}{value of \code{k} in \code{k}NN}
 #'  
-#' \code{kNNdist2cl} returns a list with three elements
+#' \code{kNNdist2cl} returns the \code{list} of elements
 #'  \item{ind.knndist}{\eqn{n_i \times (k+1)} matrix where \eqn{n_i} is the size of class \eqn{i}, first column is the indices of class \eqn{i}
 #'  subjects, 2nd to \eqn{(k+1)}-st  columns are the indices of \eqn{k} NNs of class \eqn{i} subjects among class \eqn{j} subjects.}
 #' \item{knndist}{\eqn{n_i \times k} matrix where \eqn{n_i} is the size of class \eqn{i} and the columns are the \eqn{k}NN distances of class \eqn{i}
@@ -1245,47 +1280,47 @@ NULL
 #'
 #' @rdname funs.kNNdist2cl
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #Examples for kthNNdist2cl
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
 #' table(clab)
 #' kthNNdist2cl(ipd,3,1,2,clab)
-#' kthNNdist2cl(Y,3,1,2,clab,is.ipd = F)
+#' kthNNdist2cl(Y,3,1,2,clab,is.ipd = FALSE)
 #' kthNNdist2cl(ipd,3,1,2,clab,within = TRUE)
 #'
 #' #three class case
-#' clab<-sample(1:3,30,replace=TRUE) #class labels
+#' clab<-sample(1:3,n,replace=TRUE) #class labels
 #' table(clab)
 #' kthNNdist2cl(ipd,3,2,3,clab)
 #'
 #' #1D data points
 #' n<-15
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
 #' table(clab)
-#' kthNNdist2cl(ipd,3,1,2,clab)
+#' kthNNdist2cl(ipd,3,1,2,clab) # here kthNNdist2cl(ipd,3,1,12,clab) #gives an error message
 #'
 #' kthNNdist2cl(ipd,3,"1",2,clab)
 #'
-#' kthNNdist2cl(ipd,3,1,12,clab) #gives an error message
-#'
 #' @export
-kthNNdist2cl <- function(x,k,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
+kthNNdist2cl <- function(x,k,i,j,lab,within.class.ind=FALSE,is.ipd=TRUE,...)
 { 
   ifelse(is.ipd,ipd<-x,ipd<-ipd.mat(x,...))
   
   if (any(lab==i)*any(lab==j)==0)
-  {stop('given labels \eqn{i} and \eqn{j} are not among the class labels')}
+  {stop('given labels i and j are not among the class labels')}
   
-  if (within.lab.ind==FALSE)
+  if (within.class.ind==FALSE)
   {
     ns<-length(lab) #sample size of data for which IPDM is computed
     i.ind<-(1:ns)[lab==i]
@@ -1322,45 +1357,43 @@ kthNNdist2cl <- function(x,k,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
 #' @examples
 #' #Examples for kNNdist2cl
 #' #3D data points
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
 #' table(clab)
 #' kNNdist2cl(ipd,3,1,2,clab)
-#' kNNdist2cl(Y,3,1,2,clab,is.ipd=F)
+#' kNNdist2cl(Y,3,1,2,clab,is.ipd = FALSE)
 #'
 #' kNNdist2cl(ipd,3,1,2,clab,within = TRUE)
 #'
 #' #three class case
-#' clab<-sample(1:3,30,replace=TRUE) #class labels
+#' clab<-sample(1:3,n,replace=TRUE) #class labels
 #' table(clab)
 #' kNNdist2cl(ipd,3,1,2,clab)
 #'
 #' #1D data points
 #' n<-15
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
 #' table(clab)
 #'
 #' kNNdist2cl(ipd,3,1,2,clab)
-#' kNNdist2cl(ipd,3,"1",2,clab)
-#'
-#' kNNdist2cl(ipd,3,"a",2,clab) #gives an error message
+#' kNNdist2cl(ipd,3,"1",2,clab) #here kNNdist2cl(ipd,3,"a",2,clab) #gives an error message
 #'
 #' @export
-kNNdist2cl <- function(x,k,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
+kNNdist2cl <- function(x,k,i,j,lab,within.class.ind=FALSE,is.ipd=TRUE,...)
 { 
   ifelse(is.ipd,ipd<-x,ipd<-ipd.mat(x,...))
   
   if (any(lab==i)*any(lab==j)==0)
-  {stop('given labels for \eqn{i} and \eqn{j} are not among the class labels')}
+  {stop('given labels for i and j are not among the class labels')}
   
-  if (within.lab.ind==FALSE)
+  if (within.class.ind==FALSE)
   {
     ns<-length(lab) #sample size of data for which IPDM is computed
     i.ind<-(1:ns)[lab==i]
@@ -1403,17 +1436,17 @@ kNNdist2cl <- function(x,k,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
 #' Returns the index (indices) of the nearest neighbor(s) of subject \eqn{i} (other than subject \eqn{i}) among the indices of points 
 #' provided in the subsample \code{ss} using the given data set or IPD matrix \code{x}. The indices in \code{ss} determine the
 #' columns of the IPD matrix to be used in this function. 
-#' It will yield a vector if there are ties, and subject indices correspond to rows (i.e. rows \code{1:n} ) if \code{x} 
+#' It will yield a \code{vector} if there are ties, and subject indices correspond to rows (i.e. rows \code{1:n} ) if \code{x} 
 #' is the data set and to rows or columns if \code{x} is the IPD matrix.  
 #' 
 #' The argument \code{is.ipd} is a logical argument (default=\code{TRUE}) to determine the structure of the argument \code{x}.
 #' If \code{TRUE}, \code{x} is taken to be the inter-point distance (IPD) matrix, and if \code{FALSE}, \code{x} is taken to be the data set
 #' with rows representing the data points.
 #' 
-#' @param \code{ss} indices of subjects (i.e., row indices in the data set) among with the NN of subject is to be found
+#' @param ss indices of subjects (i.e., row indices in the data set) among with the NN of subject is to be found
 #' @inheritParams NN
 #'
-#' @return Returns a list with the elements
+#' @return Returns a \code{list} with the elements
 #'  \item{base.ind}{index of the base subject}
 #'  \item{ss.ind}{the index (indices) i.e. row number(s) of the NN of subject \eqn{i} among the subjects with indices
 #' provided in \code{ss}}
@@ -1421,26 +1454,28 @@ kNNdist2cl <- function(x,k,i,j,lab,within.lab.ind=FALSE,is.ipd=TRUE,...)
 #'
 #' @seealso \code{\link{NN}} and \code{\link{kNN}}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' #3D data points
-#' n<-20
+#' #3D data points bura
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' #indices of the subsample \code{ss}
-#' ss<-sample(1:n,10,replace=FALSE)
+#' #indices of the subsample ss
+#' ss<-sample(1:n,floor(n/2),replace=FALSE)
 #' NNsub(ss,ipd,2)
-#' NNsub(ss,Y,2,is.ipd=F)
+#' NNsub(ss,Y,2,is.ipd = FALSE)
 #' NNsub(ss,ipd,5)
 #'
 #' #1D data points
 #' n<-15
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
 #' #two class case
 #' clab<-sample(1:2,n,replace=TRUE) #class labels
-#' #indices of the subsample \code{ss}
-#' ss<-sample(1:n,10,replace=FALSE)
+#' #indices of the subsample ss
+#' ss<-sample(1:n,floor(n/2),replace=FALSE)
 #' NNsub(ss,ipd,2)
 #' NNsub(ss,ipd,5)
 #'
@@ -1456,6 +1491,14 @@ NNsub <- function(ss,x,i,is.ipd=TRUE,...)
 {
   ifelse(is.ipd,ipd<-x,ipd<-ipd.mat(x,...))
   
+  n<-nrow(ipd)
+  if (n<=1 || i>n)
+  {
+  res<-list(base.ind=NA,
+         ss.ind=NA,
+         ss.dis=NA)
+    return(res)
+  }
   if (sum(ss==i)==1)
   { 
     ssi<-ss[ss!=i]
@@ -1504,8 +1547,8 @@ NNsub <- function(ss,x,i,is.ipd=TRUE,...)
 #' and the references therein.
 #'
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
-#' @param lab Vector of class labels (numerical or categorical)
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param ties A logical argument (default=\code{FALSE}) to take ties into account or not. If \code{TRUE} a NN 
 #' contributes \eqn{1/m} to the NN count if it is one of the \eqn{m} tied NNs of a subject.
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
@@ -1519,63 +1562,67 @@ NNsub <- function(ss,x,i,is.ipd=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct(ipd,cls)
 #' nnct(ipd,cls,ties = TRUE)
 #'
-#' nnct(Y,cls,is.ipd = F)
-#' nnct(Y,cls,is.ipd = F,method="max")
-#' nnct(Y,cls,is.ipd = F,method="mink",p=6)
+#' nnct(Y,cls,is.ipd = FALSE)
+#' nnct(Y,cls,is.ipd = FALSE,method="max")
+#' nnct(Y,cls,is.ipd = FALSE,method="mink",p=6)
 #'
 #' #with one class, it works but really uninformative
-#' cls<-rep(1,20)
+#' cls<-rep(1,n)
 #' nnct(ipd,cls)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' nnct(ipd,fcls)
 #'
 #' #cls as an unsorted factor
-#' fcls1<-sample(c("a","b"),20,replace = T)
+#' fcls1<-sample(c("a","b"),n,replace = TRUE)
 #' nnct(ipd,fcls1)
 #'
 #' fcls2<-sort(fcls1)
 #' nnct(ipd,fcls2) #ipd needs to be sorted as well, otherwise this result will not agree with fcls1
 #'
-#' nnct(Y,fcls1,ties = T,is.ipd = F)
+#' nnct(Y,fcls1,ties = TRUE,is.ipd = FALSE)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct(ipd,cls)
-#' nnct(Y,cls,is.ipd = F)
+#' nnct(Y,cls,is.ipd = FALSE)
 #'
 #' #cls as a factor
 #' fcls<-rep(letters[1:4],rep(10,4))
 #' nnct(ipd,fcls)
 #'
 #' #1D data points
-#' n<-20
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' n<-20  #or try sample(1:20,1)
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct(ipd,cls)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' nnct(ipd,fcls)
 #'
 #' #with possible ties in the data
-#' Y<-matrix(round(runif(60)*10),ncol=3)
+#' Y<-matrix(round(runif(3*n)*10),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct(ipd,cls)
 #' nnct(ipd,cls,ties = TRUE)
 #'
@@ -1639,25 +1686,28 @@ nnct <- function(x,lab,ties=FALSE,is.ipd=TRUE,...)
 #'
 #' @seealso \code{\link{nnct}} and \code{\link{nnct.boot.dis}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct(ipd,cls)
 #'
 #' #subsampling indices
-#' ss<-sample(1:n,10)
+#' ss<-sample(1:n,floor(n/2))
 #' nnct.sub(ss,ipd,cls)
-#' nnct.sub(ss,Y,cls,is.ipd = F)
+#' nnct.sub(ss,Y,cls,is.ipd = FALSE)
 #' nnct.sub(ss,ipd,cls,ties = TRUE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' nnct.sub(ss,ipd,fcls)
 #'
 #' #cls as an unsorted factor
-#' fcls<-sample(c("a","b"),20,replace = T)
+#' fcls<-sample(c("a","b"),n,replace = TRUE)
 #' nnct(ipd,fcls)
 #' nnct.sub(ss,ipd,fcls)
 #'
@@ -1668,7 +1718,7 @@ nnct <- function(x,lab,ties=FALSE,is.ipd=TRUE,...)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ss<-sample(1:40,30)
 #' nnct.sub(ss,ipd,cls)
 #'
@@ -1677,21 +1727,21 @@ nnct <- function(x,lab,ties=FALSE,is.ipd=TRUE,...)
 #' nnct.sub(ss,ipd,cls)
 #'
 #' #1D data points
-#' n<-20
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' n<-20  #or try sample(1:20,1)
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct(ipd,cls)
 #'
 #' #subsampling indices
-#' ss<-sample(1:n,10)
+#' ss<-sample(1:n,floor(n/2))
 #' nnct.sub(ss,ipd,cls)
 #'
 #' #with possible ties in the data
 #' Y<-matrix(round(runif(120)*10),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ss<-sample(1:40,30)
 #' nnct.sub(ss,ipd,cls)
 #' nnct.sub(ss,ipd,cls,ties = TRUE)
@@ -1760,8 +1810,8 @@ nnct.sub <- function(ss,x,lab,ties=FALSE,is.ipd=TRUE,...)
 #' with rows representing the data points.
 #'
 #' @inheritParams nnct
-#' @param self A logical argument (default=\code{TRUE}). If \code{TRUE}, for each base point all entries in the row are
-#' sampled (with replacement) and if \code{FALSE} the point is excluded from the resampling (i.e. other points
+#' @param self A logical argument (default=\code{TRUE}). If \code{TRUE}, for each base point, all entries in the 
+#' row are sampled (with replacement) and if \code{FALSE} the point is excluded from the resampling (i.e. other points
 #' are sampled with replacement).
 #'
 #' @return Returns the \eqn{k \times k} NNCT where \eqn{k} is the number of classes in the data set with sampling replacement
@@ -1769,22 +1819,25 @@ nnct.sub <- function(ss,x,lab,ties=FALSE,is.ipd=TRUE,...)
 #'
 #' @seealso \code{\link{nnct}} and \code{\link{nnct.sub}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct.boot.dis(ipd,cls)
-#' nnct.boot.dis(Y,cls,is.ipd = F) #may give different result from above due to random sub-sampling
+#' nnct.boot.dis(Y,cls,is.ipd = FALSE) #may give different result from above due to random sub-sampling
 #' nnct.boot.dis(ipd,cls,self = FALSE)
 #' nnct.boot.dis(ipd,cls,ties = FALSE) #differences are due to ties and resampling of distances
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' nnct.boot.dis(ipd,fcls)
 #'
 #' #cls as an unsorted factor
-#' fcls<-sample(c("a","b"),20,replace = T)
+#' fcls<-sample(c("a","b"),n,replace = TRUE)
 #' nnct.boot.dis(ipd,fcls)
 #'
 #' fcls<-sort(fcls)
@@ -1794,7 +1847,7 @@ nnct.sub <- function(ss,x,lab,ties=FALSE,is.ipd=TRUE,...)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct.boot.dis(ipd,cls)
 #'
 #' #cls as a factor
@@ -1802,21 +1855,22 @@ nnct.sub <- function(ss,x,lab,ties=FALSE,is.ipd=TRUE,...)
 #' nnct.boot.dis(ipd,fcls)
 #'
 #' #1D data points
-#' n<-20
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' n<-20  #or try sample(1:20,1)
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct.boot.dis(ipd,cls)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' nnct.boot.dis(ipd,fcls)
 #'
 #' #with possible ties in the data
-#' Y<-matrix(round(runif(60)*10),ncol=3)
+#' Y<-matrix(round(runif(3*n)*10),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' nnct.boot.dis(ipd,cls)
 #' nnct.boot.dis(ipd,cls,self = FALSE)
 #' nnct.boot.dis(ipd,cls,ties = FALSE) #differences are due to ties and resampling of distances
@@ -1842,11 +1896,12 @@ nnct.boot.dis <- function(x,lab,self=TRUE,ties=TRUE,is.ipd=TRUE,...)
   if (n<=1)
   {return(ct)}
   
-  pr<-rep(1,n)
+ # pr<-rep(1,n)
   
   nlab<-as.numeric(flab)  #converting class labels to numbers
   for(i in 1:n)
   {
+    pr<-rep(1,n)
     if (self==FALSE) { pr[i]<-0 }
     ss<-sample(1:n,replace=TRUE,prob=pr) # sampling with replacement of column indices of the ipd
     ind <- NNsub(ss,ipd,i)$ss.ind;
@@ -1876,7 +1931,7 @@ nnct.boot.dis <- function(x,lab,self=TRUE,ties=TRUE,is.ipd=TRUE,...)
 #' See also (\insertCite{ceyhan:jkss-posthoc-2017;textual}{nnspat}).
 #' 
 #' @param i label of the class that is to be retained in the post-hoc comparison. 
-#' @param lab Vector of class labels (numerical or categorical)
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' 
 #' @return Both functions return the data relabeled as class \eqn{i} label is retained and the remaining is
 #' relabeled as "rest".
@@ -1891,14 +1946,17 @@ NULL
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' n<-20  #or try sample(1:20,1)
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' lab.onevsrest(1,cls)
 #' classirest(2,cls)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' lab.onevsrest("a",fcls)
 #' lab.onevsrest("b",fcls)
 #' classirest("b",fcls)
@@ -1942,10 +2000,10 @@ classirest <- function(i,lab)
 #' See also (\insertCite{ceyhan:jkss-posthoc-2017;textual}{nnspat}).
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
-#' @param lab Vector of class labels (numerical or categorical)
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param i,j Label of the classes that are to be retained in the post-hoc comparison.
 #'
-#' @return A list with two elements
+#' @return A \code{list} with two elements
 #' \item{data.pair}{The type of the pattern from which points are to be generated}
 #' \item{lab.pair}{The \code{"main"} title for the plot of the point pattern}
 #' 
@@ -1954,16 +2012,18 @@ classirest <- function(i,lab)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' pairwise.lab(Y,cls,1,2)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' pairwise.lab(Y,cls,2,3)
 #'
 #' #cls as a factor
@@ -1974,7 +2034,7 @@ classirest <- function(i,lab)
 pairwise.lab <- function(dat,lab,i,j)
 {
   if (any(lab==i)*any(lab==j)==0)
-  {stop('at least one of the given labels for \eqn{i} and \eqn{j} are not among the class labels')}
+  {stop('at least one of the given labels for i and j are not among the class labels')}
   
   ind<-(lab==i | lab == j)
   pair.dat <-dat[ind,];
@@ -1995,28 +2055,30 @@ pairwise.lab <- function(dat,lab,i,j)
 #' Two functions: \code{row.sum} and \code{col.sum}.
 #'
 #' \code{row.sum} returns the row sums of a given matrix (in particular a contingency table) as a vector and 
-#' \code{col.sum} returns the column sums of a given matrix a vector. \code{row.sum} is equivalent to 
+#' \code{col.sum} returns the column sums of a given matrix as a vector. \code{row.sum} is equivalent to 
 #' \code{\link[base]{rowSums}} function and \code{col.sum} is equivalent to \code{\link[base]{colSums}}
 #' function in the \code{base} package.
-#' 
+#'   
 #' @param ct A matrix, in particular a contingency table
 #' 
 #' @return 
 #' \code{row.sum} returns the row sums of \code{ct} as a vector
 #' \code{col.sum} returns the column sums of \code{ct} as a vector
 #' 
-#' @seealso \code{\link[base]{row.sum}} and \code{\link[base]{col.sum}}
+#' @seealso \code{\link[base]{rowSums}} and \code{\link[base]{colSums}}
 #' 
 #' @name funsRowColSums
 NULL
 #'
 #' @rdname funsRowColSums
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' row.sum(ct)
@@ -2026,7 +2088,8 @@ NULL
 #' colSums(ct)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' row.sum(ct)
@@ -2039,7 +2102,7 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' row.sum(ct)
@@ -2071,10 +2134,10 @@ col.sum <- function(ct)
 #' Returns Dixon's segregation indices in matrix form based on entries of the NNCT, \code{ct}. 
 #' Segregation index for cell \eqn{i,j} is defined as \eqn{log(N_{ii}(n-n_i)/((n_i-N_{ii})(n_i-1))} if \eqn{i=j}
 #' and
-#' as \eqn{log(N_{ij}(n-n_j-1)/((n_i-N_{ij})(n_j))} if \eqn{\eqn{i \ne j}}. 
+#' as \eqn{log(N_{ij}(n-n_j-1)/((n_i-N_{ij})(n_j))} if \eqn{i \ne j}. 
 #' See (\insertCite{dixon:NNCTEco2002,ceyhan:SiM-seg-ind2014;textual}{nnspat}).
 #' 
-#' The argument \code{inf.corr} is a logical argument (default=\code{FALSE}) to avoid \pm infinity for the segregation
+#' The argument \code{inf.corr} is a logical argument (default=\code{FALSE}) to avoid \eqn{\pm \infty} for the segregation
 #' indices. If \code{TRUE} indices are modified so that they are finite and if \code{FALSE} the above definition is used. 
 #' (See \insertCite{ceyhan:SiM-seg-ind2014;textual}{nnspat} for more detail).
 #'
@@ -2082,23 +2145,26 @@ col.sum <- function(ct)
 #' @param inf.corr A logical argument (default=\code{FALSE}). If \code{TRUE}, indices are modified so that 
 #' they are finite and if \code{FALSE} the above definition in the description is used.
 #' 
-#' @return Returns a matrix of segregation indices which is of the same dimension as \code{ct}.
+#' @return Returns a \code{matrix} of segregation indices which is of the same dimension as \code{ct}.
 #'
 #' @seealso \code{\link{Pseg.coeff}}, \code{\link{seg.coeff}}, \code{\link{Zseg.ind}}
 #' and \code{\link{Zseg.ind.ct}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #' seg.ind(ct)
-#' seg.ind(ct,inf.corr = T)
+#' seg.ind(ct,inf.corr = TRUE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' seg.ind(ct)
@@ -2107,7 +2173,7 @@ col.sum <- function(ct)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' seg.ind(ct)
@@ -2172,7 +2238,7 @@ seg.ind <- function(ct,inf.corr=FALSE)
 #' @description
 #' Two functions: \code{Zseg.ind.ct} and \code{Zseg.ind}.
 #'
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' segregation indices from their expected values under RL or CSR for each segregation index in the NNCT.
 #' The test for each cell \eqn{i,j} is based on the normal approximation of the corresponding segregation index.
@@ -2186,21 +2252,21 @@ seg.ind <- function(ct,inf.corr=FALSE)
 #'
 #' See also (\insertCite{ceyhan:SiM-seg-ind2014;textual}{nnspat}).
 #' 
-#' @param ct A nearest neighbor contingency table, used in  \code{Zseg.ind.ct} only 
+#' @param ct A nearest neighbor contingency table, used in \code{Zseg.ind.ct} only 
 #' @param varN The variance matrix for cell counts in the NNCT, \code{ct} ; used in \code{Zseg.ind.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zseg.ind} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zseg.ind} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zseg.ind} only
 #' @param inf.corr A logical argument (default=\code{FALSE}). If \code{TRUE}, indices are modified so that 
 #' they are finite and if \code{FALSE} the above definition in the description is used.
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, for the segregation indices
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, for the segregation indices
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{Zseg.ind} only
 #'
-#' @return A list with the elements
-#' \item{statistic}{The matrix of test statistics for the segregation indices}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of test statistics for the segregation indices}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels for the segregation indices at the given confidence
 #' level \code{conf.level} and depends on the type of \code{alternative}.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits of the segregation indices,
@@ -2210,7 +2276,7 @@ seg.ind <- function(ct,inf.corr=FALSE)
 #' \item{null.value}{Hypothesized values for the parameters, i.e. the null values of the segregation indices, 
 #' which are all 0 under RL or CSR.}
 #' \item{null.name}{Name of the null value}
-#' \item{alternative}{Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}"}
+#' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{Zseg.ind.ct} only}
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Zseg.ind} only}
@@ -2225,24 +2291,26 @@ NULL
 #'
 #' @rdname funsZsegind
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' seg.ind(ct)
-#' seg.ind(ct,inf.corr=T)
+#' seg.ind(ct,inf.corr=TRUE)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' varN
 #'
 #' Zseg.ind(Y,cls)
-#' Zseg.ind(Y,cls,inf.corr=T)
+#' Zseg.ind(Y,cls,inf.corr=TRUE)
 #' Zseg.ind.ct(ct,varN)
 #'
 #' Zseg.ind(Y,cls,alt="g")
@@ -2251,19 +2319,19 @@ NULL
 #' Zseg.ind(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Zseg.ind(Y,cls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' varN
@@ -2275,21 +2343,21 @@ NULL
 #' Zseg.ind.ct(ct,varN,inf.corr = TRUE)
 #'
 #' #1D data points
-#' n<-20
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' n<-20  #or try sample(1:20,1)
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
 #' Zseg.ind(X,cls)
 #' Zseg.ind.ct(ct,varN)
-#' Zseg.ind.ct(ct,varN,inf.corr=T)
+#' Zseg.ind.ct(ct,varN,inf.corr=TRUE)
 #'
 #' @export
 Zseg.ind.ct <- function(ct,varN,inf.corr=FALSE,
@@ -2429,11 +2497,11 @@ Zseg.ind <- function(dat,lab,inf.corr=FALSE,
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   
-  res<- Zseg.ind.ct(ct,varN,inf.corr=inf.corr,alternative=alternative,conf.level =conf.level)
+  res<- Zseg.ind.ct(ct,varN,inf.corr=inf.corr,alternative=alternative,conf.level=conf.level)
   
   dname <-deparse(substitute(dat))
   res$data.name<-dname
@@ -2446,7 +2514,7 @@ Zseg.ind <- function(dat,lab,inf.corr=FALSE,
 
 #' @title Expected Values of the Cell Counts in NNCT
 #'
-#' @description Returns a matrix of same dimension as, \code{ct}, whose entries are the expected cell counts of
+#' @description Returns a \code{matrix} of same dimension as, \code{ct}, whose entries are the expected cell counts of
 #' the NNCT under RL or CSR. The class sizes given as the row sums of \code{ct} and the row and column names are
 #' inherited from \code{ct}.
 #' 
@@ -2454,33 +2522,35 @@ Zseg.ind <- function(dat,lab,inf.corr=FALSE,
 #'
 #' @param ct A nearest neighbor contingency table
 #'
-#' @return A matrix of the expected values of cell counts in the NNCT.
+#' @return A \code{matrix} of the expected values of cell counts in the NNCT.
 #'
 #' @seealso \code{\link{nnct}} and \code{\link{EV.tct}}
 #' 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' EV.nnct(ct)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
-#'
 #' EV.nnct(ct)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' EV.nnct(ct)
@@ -2515,7 +2585,7 @@ EV.nnct <- function(ct)
 
 #' @title Expected Values of the Type I cell-specific tests
 #'
-#' @description Returns a matrix of same dimension as, \code{ct}, whose entries are the expected values
+#' @description Returns a \code{matrix} of same dimension as, \code{ct}, whose entries are the expected values
 #' of the Type I cell-specific test statistics, \eqn{T^I_{ij}}. 
 #' The row and column names are inherited from \code{ct}. 
 #' These expected values are valid under RL or CSR.
@@ -2524,22 +2594,25 @@ EV.nnct <- function(ct)
 #' 
 #' @param ct A nearest neighbor contingency table
 #' 
-#' @return A matrix of the expected values of Type I cell-specific tests.
+#' @return A \code{matrix} of the expected values of Type I cell-specific tests.
 #'
 #' @seealso \code{\link{EV.tct}}, \code{\link{tct}} and \code{\link{EV.nnct}}
 #' 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' EV.tctI(ct)
 #' 
+#' @export
 EV.tctI <- function(ct)
 {
   rs <- row.sum(ct); 
@@ -2565,7 +2638,7 @@ EV.tctI <- function(ct)
 
 #' @title Expected Values of the Types I-IV cell-specific tests
 #'
-#' @description Returns a matrix of same dimension as, \code{ct}, whose entries are the expected values
+#' @description Returns a \code{matrix} of same dimension as, \code{ct}, whose entries are the expected values
 #' of the \eqn{T_{ij}} values which are the Types I-IV cell-specific test statistics (i.e., \eqn{T^I_{ij}-T^{IV}_{ij}})
 #' under RL or CSR. 
 #' The row and column names are inherited from \code{ct}. The type argument specifies the type
@@ -2574,38 +2647,40 @@ EV.tctI <- function(ct)
 #' See also (\insertCite{ceyhan:jkss-posthoc-2017;textual}{nnspat}) and the references therein.
 #' 
 #' @param ct A nearest neighbor contingency table
-#' @param type The type of the cell-specific test, default="\code{III}". Takes on values "\code{I}"-"\code{IV}" (or 
+#' @param type The type of the cell-specific test, default=\code{"III"}. Takes on values \code{"I"}-\code{"IV"} (or 
 #' equivalently \code{1-4}, respectively.
 #' 
-#' @return A matrix of the expected values of Type I-IV cell-specific tests.
+#' @return A \code{matrix} of the expected values of Type I-IV cell-specific tests.
 #'
 #' @seealso \code{\link{EV.tctI}}, \code{\link{tct}} and \code{\link{EV.nnct}}
 #' 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' EV.tct(ct,2)
 #' EV.tct(ct,"II")
 #' EV.tctI(ct)
-#'
+#' 
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
-#'
 #' EV.tct(ct,2)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' EV.tct(ct,2)
@@ -2616,25 +2691,25 @@ EV.tctI <- function(ct)
 #' @export
 EV.tct <- function(ct,type="III")
 {
-  switch(type,
-         I = { ET<- EV.tctI(ct) },
-         II = { ET<- EV.tctI(ct) },
-         III = { k<-nrow(ct)
-         ET<- matrix(0,k,k) },
-         IV = { k<-nrow(ct)
-         ET<- matrix(0,k,k) },
-         stop("Enter numbers 1-4 or I-IV in quotes for type")
+  ET<-  switch(type,
+               I = { ET<- EV.tctI(ct) },
+               II = { ET<- EV.tctI(ct) },
+               III = { k<-nrow(ct)
+               ET<- matrix(0,k,k) },
+               IV = { k<-nrow(ct)
+               ET<- matrix(0,k,k) }
   )
-  
+  if (is.null(ET)) stop("Enter numbers 1-4 or I-IV in quotes for type")
+
   clnames<-colnames(ct)
-  rownames(ET)<-colnames(ET)<-clnames #row and column names from the NNCT
+  rownames(ET)<-colnames(ET)<-clnames #row and column names from the nnct
   ET
 } #end for the function
 #'
 
 #################################################################
 
-#' @title T Contingency Table (TCT)
+#' @title \eqn{T} Contingency Table (TCT)
 #'
 #' @description Returns the \code{T} contingency table (TCT), which is a matrix of same dimension as, \code{ct}, 
 #' whose entries are the values of the Types I-IV cell-specific test statistics, \eqn{T^I_{ij}-T^{IV}_{ij}}. 
@@ -2645,31 +2720,34 @@ EV.tct <- function(ct,type="III")
 #' 
 #' @inheritParams EV.tct
 #' 
-#' @return A matrix of the values of Type I-IV cell-specific tests
+#' @return A \code{matrix} of the values of Type I-IV cell-specific tests
 #'
 #' @seealso \code{\link{cellsTij}} and \code{\link{nnct}}
 #' 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' type.lab<-c("I","II","III","IV")
 #' for (i in 1:4)
-#' { print(paste("T_i\eqn{j} values for cell specific tests for type",type.lab[i]))
+#' { print(paste("T_ij values for cell specific tests for type",type.lab[i]))
 #'   print(tct(ct,i))
 #' }
 #'
 #' tct(ct,"II")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #' tct(ct,2)
 #'
@@ -2677,7 +2755,7 @@ EV.tct <- function(ct,type="III")
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' tct(ct,2)
 #'
@@ -2694,19 +2772,21 @@ tct <- function(ct,type="III")
   n<-sum(ct) 
   
   cells<- matrix(0,k,k);
-  switch(type,
+  cells <- switch(type,
          I = { 
            for (i in 1:k)
              for (j in 1:k)
              {
                cells[i,j]<- ct[i,j]-(rs[i]*cs[j])/n 
-             } },
+             } 
+           cells},
          II = { 
            for (i in 1:k)
              for (j in 1:k)
              {
                cells[i,j]<- ct[i,j]-(rs[i]*rs[j])/n 
-             } },
+             } 
+           cells},
          III = {   
            for (i in 1:k)
              for (j in 1:k)
@@ -2715,7 +2795,8 @@ tct <- function(ct,type="III")
                  cells[i,j]<- ct[i,j]-(rs[i]-1)*cs[j]/(n-1)  
                else 
                  cells[i,j]<- ct[i,j]-rs[i]*cs[j]/(n-1)
-             } },
+             } 
+           cells},
          IV = { 
            for (i in 1:k)
              for (j in 1:k)
@@ -2724,9 +2805,11 @@ tct <- function(ct,type="III")
                  cells[i,j]<- (rs[i]/n)* ((n-1)*ct[i,j]/(rs[i]-1)-cs[j])  
                else 
                  cells[i,j]<- (1/n)*((n-1)*ct[i,j]-rs[i]*cs[j])
-             } },
-         stop("Enter numbers 1-4 or I-IV in quotes for type")
+             } 
+           cells}
   )
+  
+  if (is.null(cells)) stop("Enter numbers 1-4 or I-IV in quotes for type")
   
   clnames<-colnames(ct)
   rownames(cells)<-colnames(cells)<-clnames #row and column names from the NNCT 
@@ -2739,7 +2822,7 @@ tct <- function(ct,type="III")
 
 #' @title Entries for the Types I-IV cell-specific tests
 #'
-#' @description Returns a matrix of same dimension as, \code{ct}, whose entries are the values
+#' @description Returns a \code{matrix} of same dimension as, \code{ct}, whose entries are the values
 #' of the Types I-IV cell-specific test statistics, \eqn{T^I_{ij}-T^{IV}_{ij}}. 
 #' The row and column names are inherited from \code{ct}. The type argument specifies the type
 #' of the cell-specific test among the types I-IV tests. 
@@ -2749,31 +2832,34 @@ tct <- function(ct,type="III")
 #' 
 #' @inheritParams EV.tct
 #' 
-#' @return A matrix of the values of Type I-IV cell-specific tests
+#' @return A \code{matrix} of the values of Type I-IV cell-specific tests
 #'
 #' @seealso \code{\link{tct}} and \code{\link{nnct}}
 #' 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' type.lab<-c("I","II","III","IV")
 #' for (i in 1:4)
-#' { print(paste("T_i\eqn{j} values for cell specific tests for type",type.lab[i]))
+#' { print(paste("T_ij values for cell specific tests for type",type.lab[i]))
 #'   print(cellsTij(ct,i))
 #' }
 #'
 #' cellsTij(ct,"II")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #' cellsTij(ct,2)
 #'
@@ -2781,7 +2867,7 @@ tct <- function(ct,type="III")
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' cellsTij(ct,2)
 #'
@@ -2797,19 +2883,21 @@ cellsTij <- function(ct,type="III")
   n<-sum(ct)
   
   cells<- matrix(0,k,k);
-  switch(type,
+  cells <- switch(type,
          I = { 
            for (i in 1:k)
              for (j in 1:k)
              {
                cells[i,j]<- ct[i,j]-(rs[i]*cs[j])/n 
-             } },
+             } 
+           cells},
          II = { 
            for (i in 1:k)
              for (j in 1:k)
              {
                cells[i,j]<- ct[i,j]-(rs[i]*rs[j])/n 
-             } },
+             } 
+           cells},
          III = {   
            for (i in 1:k)
              for (j in 1:k)
@@ -2818,7 +2906,8 @@ cellsTij <- function(ct,type="III")
                  cells[i,j]<- ct[i,j]-(rs[i]-1)*cs[j]/(n-1)  
                else 
                  cells[i,j]<- ct[i,j]-rs[i]*cs[j]/(n-1)
-             } },
+             } 
+           cells},
          IV = { 
            for (i in 1:k)
              for (j in 1:k)
@@ -2827,9 +2916,11 @@ cellsTij <- function(ct,type="III")
                  cells[i,j]<- (rs[i]/n)* ((n-1)*ct[i,j]/(rs[i]-1)-cs[j])  
                else 
                  cells[i,j]<- (1/n)*((n-1)*ct[i,j]-rs[i]*cs[j])
-             } },
-         stop("Enter numbers 1-4 or I-IV in quotes for type")
+             } 
+           cells}
   )
+  
+  if (is.null(cells)) stop("Enter numbers 1-4 or I-IV in quotes for type")
   
   clnames<-colnames(ct)
   rownames(cells)<-colnames(cells)<-clnames #row and column names from the NNCT 
@@ -2857,7 +2948,7 @@ cellsTij <- function(ct,type="III")
 #' @param k,l,m,p Positive integers, usually representing the class sizes, used in \code{pij} type functions only.
 #' Number of these arguments required depends on the number of distinct indices of \eqn{p}, e.g. \eqn{p_{ij}} requires
 #' \code{k,l,n} and \eqn{p_{iijk}} requires \code{k,l,m,n} as input.
-#' @param nvec A vector of positive integers representing the sizes of classes in the data set, used in 
+#' @param nvec A \code{vector} ofpositive integers representing the sizes of classes in the data set, used in 
 #' \code{Pij} type functions only.
 #'
 #' @return Probability values for the selected points being from the indicated classes.
@@ -3166,7 +3257,7 @@ pk <- function(n,n1,k)
 #' @param Q The number of shared NNs
 #' @param R The number of reflexive NNs (i.e., twice the number of reflexive NN pairs)
 #'
-#' @return A matrix of same dimension as, \code{ct}, whose entries are the variances of the cell counts 
+#' @return A \code{matrix} of same dimension as, \code{ct}, whose entries are the variances of the cell counts 
 #' in the NNCT with class sizes given as the row sums of \code{ct}. The row and column names are inherited from \code{ct}.
 #'
 #' @seealso \code{\link{var.tct}}, \code{\link{var.nnsym}} and \code{\link{cov.nnct}}
@@ -3174,21 +3265,24 @@ pk <- function(n,n1,k)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' var.nnct(ct,Qv,Rv)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #' var.nnct(ct,Qv,Rv)
 #'
@@ -3196,11 +3290,11 @@ pk <- function(n,n1,k)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' var.nnct(ct,Qv,Rv)
 #'
@@ -3242,7 +3336,7 @@ var.nnct <- function(ct,Q,R)
 #' @description
 #' Two functions: \code{Zcell.nnct.ct} and \code{Zcell.nnct}.
 #'
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' cell counts from the expected values under RL or CSR for each cell (i.e., entry) in the NNCT.
 #' The test for each cell \eqn{i,j} is based on the normal approximation of the corresponding cell count, \eqn{N_{ij}}
@@ -3254,30 +3348,30 @@ var.nnct <- function(ct,Q,R)
 #' the data set used.
 #' 
 #' The null hypothesis for each cell \eqn{i,j} is that the corresponding cell count is equal to the expected value
-#' under RL or CSR, that is \eqn{E[N_{ii}] = n_i(n_i − 1)/(n − 1)} and \eqn{E[N_{ij}] = \eqn{n_i} n_j/(n − 1)}
+#' under RL or CSR, that is \eqn{E[N_{ii}] = n_i(n_i - 1)/(n - 1)} and \eqn{E[N_{ij}] = n_i n_j/(n - 1)}
 #' where \eqn{n_i} is the size of 
 #' class \eqn{i} and \eqn{n} is the size of the data set.
 #'
 #' See also (\insertCite{dixon:1994,dixon:NNCTEco2002,ceyhan:eest-2010;textual}{nnspat}).
 #' 
-#' @param ct A nearest neighbor contingency table, used in \code{\lin{Zcell.nnct.ct}} only 
-#' @param varN The variance matrix for cell counts in the NNCT, \code{ct} ; used in \code{\lin{Zcell.nnct.ct}} only 
+#' @param ct A nearest neighbor contingency table, used in \code{\link{Zcell.nnct.ct}} only 
+#' @param varN The variance matrix for cell counts in the NNCT, \code{ct} ; used in \code{\link{Zcell.nnct.ct}} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
-#' used in \code{\lin{Zcell.nnct}} only 
-#' @param lab Vector of class labels (numerical or categorical), used in \code{\lin{Zcell.nnct}} only 
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, for the cell counts, i.e.
+#' used in \code{\link{Zcell.nnct}} only 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{\link{Zcell.nnct}} only 
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, for the cell counts, i.e.
 #' \eqn{N_{ij}} values
-#' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{\lin{Zcell.nnct}} only 
+#' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{\link{Zcell.nnct}} only 
 #' 
-#' @return A list with the elements
-#' \item{statistic}{The matrix of Dixon's cell-specific test statistics}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of Dixon's cell-specific test statistics}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels for the cell counts at the given confidence
 #' level \code{conf.level} and depends on the type of \code{alternative}.}
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits of the cell counts,
 #' provided in \code{conf.level}.}
 #' \item{estimate}{Estimates of the parameters, i.e., matrix of the observed cell counts which is the NNCT}
@@ -3285,12 +3379,12 @@ var.nnct <- function(ct,Q,R)
 #' \item{null.value}{Matrix of hypothesized null values for the parameters which are expected values of 
 #' the cell counts.}
 #' \item{null.name}{Name of the null values}
-#' \item{alternative}{Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}"}
+#' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{\link{Zcell.nnct.ct}} only}
-#' \item{data.name}{Name of the data set, \code{dat}, returned by \code{\lin{Zcell.nnct}} only }
+#' \item{data.name}{Name of the data set, \code{dat}, returned by \code{\link{Zcell.nnct}} only }
 #' 
-#' @seealso \code{\link{Zcell.nnct.ts}}, \code{\link{Zcell.nnct.rs}}, \code{\link{Zcell.nnct.ls}},
+#' @seealso \code{\link{Zcell.nnct.2s}}, \code{\link{Zcell.nnct.rs}}, \code{\link{Zcell.nnct.ls}},
 #' \code{\link{Zcell.nnct.pval}} and \code{\link{Zcell.tct}}
 #' 
 #' @references
@@ -3301,16 +3395,18 @@ NULL
 #'
 #' @rdname funsZcell.nnct
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' varN
@@ -3324,19 +3420,19 @@ NULL
 #' Zcell.nnct(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Zcell.nnct(Y,cls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -3376,7 +3472,7 @@ Zcell.nnct.ct <- function(ct,varN,alternative=c("two.sided", "less", "greater"),
   if (all(is.na(ts)))
   {stop('All of the test stat statistics are NaN, these cell-specific tests are not defined')}
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            lcl <-NULL
@@ -3393,13 +3489,14 @@ Zcell.nnct.ct <- function(ct,varN,alternative=c("two.sided", "less", "greater"),
            crit.val <-qnorm(1-alpha/2)
            lcl <-estimate-crit.val*stderrN
            ucl <-estimate+crit.val*stderrN
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
-  method <-c("Dixon's Nearest Neighbor Contingency Table (NNCT) Cell-Specific Tests")
+  method <-c("Alternative must be one of less, greater, or two.sided")
   
   clnames<-rownames(ct) #row and column names for the NNCT, \code{ct} 
   rownames(ts)<-colnames(ts)<-clnames #row and column names for the test stat matrix
@@ -3442,11 +3539,11 @@ Zcell.nnct <- function(dat,lab,alternative=c("two.sided", "less", "greater"),con
   EV<-EV.nnct(ct)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   
-  res<- Zcell.nnct.ct(ct,varN,alternative=alternative,conf.level =conf.level)
+  res<- Zcell.nnct.ct(ct,varN,alternative=alternative,conf.level=conf.level)
   
   dname <-deparse(substitute(dat))
   
@@ -3473,7 +3570,7 @@ Zcell.nnct <- function(dat,lab,alternative=c("two.sided", "less", "greater"),con
 #' for the two-sided, right-sided and left-sided alternative, respectively.
 #' 
 #' The functions \code{Zcell.nnct.2s}, \code{Zcell.nnct.rs} and \code{Zcell.nnct.ls} are equivalent to
-#' \code{\link{Zcell.nnct}(...,alt)$p.val} where \code{alt=}"\code{two-sided}", "\code{greater}" and "\code{less}", respectively, with the appropriate
+#' \code{\link{Zcell.nnct}(...,alt)$p.val} where \code{alt="two-sided"}, \code{"greater"} and \code{"less"}, respectively, with the appropriate
 #' arguments for the function \code{\link{Zcell.nnct}} (see the examples below).
 #'
 #' See also (\insertCite{dixon:1994,dixon:NNCTEco2002,ceyhan:eest-2010;textual}{nnspat}).
@@ -3498,10 +3595,12 @@ NULL
 #'
 #' @rdname funsZcell.nnct.pval
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' TS<-Zcell.nnct(Y,cls)$statistic
 #' TS
 #' pv<-Zcell.nnct.pval(TS)
@@ -3529,7 +3628,7 @@ Zcell.nnct.pval <- function(zt)
     pval[i,j,] <- c(p2s,pls,prs)
     }
   clnames<-rownames(zt)
-  ct.names <- c("\eqn{p}-values for two-sided tests","\eqn{p}-values for left-sided tests","\eqn{p}-values for right-sided tests")
+  ct.names <- c("p-values for two-sided tests","p-values for left-sided tests","p-values for right-sided tests")
   dimnames(pval)<-list(clnames,clnames,ct.names)
   
   pval
@@ -3537,7 +3636,7 @@ Zcell.nnct.pval <- function(zt)
 #'
 #' @rdname funsZcell.nnct.pval
 #'
-#' @export
+#' @export 
 Zcell.nnct.2s <- function(zt) 
 {
   k<-nrow(zt);
@@ -3596,36 +3695,38 @@ Zcell.nnct.rs <- function(zt)
 #' @title Conversion of a Matrix to a Vector
 #'
 #' @description
-#' Converts the contingency table (or any matrix) \code{ct} to a vector by default row-wise (i.e., by appending
+#' Converts the contingency table (or any matrix) \code{ct} to a \code{vector} by default row-wise (i.e., by appending
 #' each row one after the other) or column-wise, and also returns the entry indices (in the original matrix \code{ct})
-#' in a \eqn{k^2 \times 2}  matrix
+#' in a \eqn{k^2 \times 2} matrix
 #' 
 #' @param ct A matrix, in particular a contingency table
 #' @param byrow A logical argument (default=\code{TRUE}). If \code{TRUE}, rows of \code{ct} are appended to obtain the vector
 #' and if \code{FALSE} columns of \code{ct} are appended to obtain the vector.
 #'
-#' @return A list with two elements
-#' \item{vec}{The vectorized form the matrix \code{ct}, by default appending the rows of \code{ct}}
-#' \item{ind}{The \eqn{k^2 \times 2}  matrix of entry indices (in the original matrix \code{ct}) whose i-th row corresponds
-#' to the i-th entry in \code{vec}.
+#' @return A \code{list} with two elements
+#' \item{vec}{The \code{vector}ized form the matrix \code{ct}, by default appending the rows of \code{ct}}
+#' \item{ind}{The \eqn{k^2 \times 2} matrix of entry indices (in the original matrix \code{ct}) whose i-th row corresponds
+#' to the i-th entry in \code{vec}.}
 #'
 #' @seealso \code{\link{ind.nnsym}} and \code{\link{ind.seg.coeff}},
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #' mat2vec(ct)
-#' mat2vec(ct,byrow=F)
+#' mat2vec(ct,byrow=FALSE)
 #'
 #' #an arbitrary 3x3 matrix
 #' M<-matrix(sample(10:20,9),ncol=3)
 #' M
 #' mat2vec(M)
-#' mat2vec(M,byrow=F)
+#' mat2vec(M,byrow=FALSE)
 #'
 #' @export
 mat2vec <- function(ct,byrow=TRUE)
@@ -3680,15 +3781,17 @@ mat2vec <- function(ct,byrow=TRUE)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -3699,11 +3802,11 @@ mat2vec <- function(ct,byrow=TRUE)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -3711,18 +3814,18 @@ mat2vec <- function(ct,byrow=TRUE)
 #' cov.nnct(ct,varN,Qv,Rv,byrow=FALSE)
 #' 
 #' #1D data points
-#' n<-20
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' n<-20  #or try sample(1:20,1)
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' cov.nnct(ct,varN,Qv,Rv)
@@ -3899,15 +4002,17 @@ cov.nnct <- function(ct,varN,Q,R,byrow=TRUE)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -3925,11 +4030,11 @@ cov.nnct <- function(ct,varN,Q,R,byrow=TRUE)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -3944,18 +4049,18 @@ cov.nnct <- function(ct,varN,Q,R,byrow=TRUE)
 #' all.equal(covNcol1,covNcol2)
 #'
 #' #1D data points
-#' n<-20
-#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column (i.e., a column vector)
-#' #hence X<-runif(n) would not work
+#' n<-20  #or try sample(1:20,1)
+#' X<-as.matrix(runif(n))# need to be entered as a matrix with one column
+#' #(i.e., a column vector), hence X<-runif(n) would not work
 #' ipd<-ipd.mat(X)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' cov.nnct(ct,varN,Qv,Rv)
@@ -3995,7 +4100,7 @@ covNrow2col <- function(covN)
 #' @param ct A nearest neighbor contingency table
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized cell counts of NNCT, \code{ct}.
 #' 
-#' @return Each of these functions returns a matrix of same dimension as, \code{ct}, whose entries are the variances of
+#' @return Each of these functions returns a \code{matrix} of same dimension as, \code{ct}, whose entries are the variances of
 #' the entries in the TCT for the corresponding type of cell-specific test.
 #' The row and column names are inherited from \code{ct}.
 #' 
@@ -4102,17 +4207,17 @@ var.tctIV <- function(ct,covN)
 #' @description Returns the variances of \eqn{T_{ij}} values for \eqn{i,j=1,\ldots,k} in the TCT in matrix form which
 #' is of the same dimension as TCT for types I-IV tests. 
 #' The argument \code{covN} must be the covariance between \eqn{N_{ij}} values which are obtained from the NNCT by row-wise
-#' vectorization. type determines the type of the test for which variances are to be computed, with default="\code{III}".
+#' vectorization. type determines the type of the test for which variances are to be computed, with default=\code{"III"}.
 #' These variances are valid under RL or conditional on \eqn{Q} and \eqn{R} under CSR.
 #' 
 #' See also (\insertCite{ceyhan:SJScorrected2010,ceyhan:jkss-posthoc-2017;textual}{nnspat}).
 #' 
 #' @param ct A nearest neighbor contingency table
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized cell counts of NNCT, \code{ct}.
-#' @param type The type of the cell-specific test, default="\code{III}". Takes on values "\code{I}"-"\code{IV}" (or 
+#' @param type The type of the cell-specific test, default=\code{"III"}. Takes on values \code{"I"}-\code{"IV"} (or 
 #' equivalently \code{1-4}, respectively.
 #'
-#' @return A matrix of same dimension as, \code{ct}, whose entries are the variances of
+#' @return A \code{matrix} of same dimension as, \code{ct}, whose entries are the variances of
 #' the entries in the TCT for the corresponding type of cell-specific test.
 #' The row and column names are inherited from \code{ct}.
 #'
@@ -4122,15 +4227,17 @@ var.tctIV <- function(ct,covN)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4144,11 +4251,11 @@ var.tctIV <- function(ct,covN)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -4161,14 +4268,15 @@ var.tctIV <- function(ct,covN)
 var.tct <- function(ct,covN,type="III") 
 {
   
-  switch(type,
+  var <-  switch(type,
          I = { var <- var.tctI(ct,covN) },
          II = { k<-nrow(ct)
          var <- matrix(diag(covN),nrow=k,byrow = TRUE) },
          III = { var <- var.tctIII(ct,covN) },
-         IV = { var <- var.tctIII(ct,covN)  },
-         stop("Enter numbers 1-4 or I-IV in quotes for type")
+         IV = { var <- var.tctIII(ct,covN)  }
   )
+  
+  if (is.null(var)) stop("Enter numbers 1-4 or I-IV in quotes for type")
   
   clnames<-rownames(ct)
   rownames(var)<-colnames(var)<-clnames #row and column names from the NNCT 
@@ -4219,15 +4327,17 @@ NULL
 #'
 #' @rdname funs.auxcovtct
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4244,11 +4354,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4261,6 +4371,7 @@ NULL
 #' cov.2cols(3,4,ct,covN)
 #' covCiCj(3,4,ct,covN)
 #' 
+#' @export
 cov.2cells <- function(i,j,k,l,ct,covN)  
 {
   nr<-nrow(ct);
@@ -4269,6 +4380,7 @@ cov.2cells <- function(i,j,k,l,ct,covN)
 #' 
 #' @rdname funs.auxcovtct
 #'
+#' @export
 cov.cell.col <- function(i,j,k,ct,covN)
 {
   nr<-nrow(ct);
@@ -4282,6 +4394,7 @@ cov.cell.col <- function(i,j,k,ct,covN)
 #'
 #' @rdname funs.auxcovtct
 #'
+#' @export
 covNijCk <- function(i,j,k,ct,covN)
 {
   nr<-nrow(ct);
@@ -4299,6 +4412,7 @@ covNijCk <- function(i,j,k,ct,covN)
 #'
 #' @rdname funs.auxcovtct
 #'
+#' @export
 cov.2cols <- function(i,j,ct,covN)
 {
   nr<-nrow(ct);
@@ -4315,6 +4429,7 @@ cov.2cols <- function(i,j,ct,covN)
 #'
 #' @rdname funs.auxcovtct
 #'
+#' @export
 covCiCj <- function(i,j,ct,covN)
 {
   nr<-nrow(ct);
@@ -4344,7 +4459,7 @@ covCiCj <- function(i,j,ct,covN)
 #' cell-specific tests in matrix form which is of dimension \eqn{k^2 \times k^2}.
 #' The covariance matrix entries are \eqn{cov(T_{ij},T_{kl})} when \eqn{T_{ij}} values are by default corresponding to 
 #' the row-wise vectorization of TCT. 
-#' The argument \code{covN} must be the covariance between \eqn{N_{ij}} values which are obtained from the NNCT by row-wise
+#' The argument \code{CovN} must be the covariance between \eqn{N_{ij}} values which are obtained from the NNCT by row-wise
 #' vectorization.
 #' The functions \code{cov.tctIII} and \code{cov.tct3} are equivalent.
 #' These covariances are valid under RL or conditional on \eqn{Q} and \eqn{R} under CSR.
@@ -4352,7 +4467,7 @@ covCiCj <- function(i,j,ct,covN)
 #' See also (\insertCite{ceyhan:jkss-posthoc-2017;textual}{nnspat}).
 #' 
 #' @param ct A nearest neighbor contingency table
-#' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized cell counts of NNCT, \code{ct}.
+#' @param CovN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized cell counts of NNCT, \code{ct}.
 #' 
 #' @return Each of these functions returns a \eqn{k^2 \times k^2} covariance matrix, whose entries are the covariances of
 #' the entries in the TCTs for the corresponding type I-IV cell-specific test.
@@ -4365,15 +4480,18 @@ covCiCj <- function(i,j,ct,covN)
 #' 
 #' @name funs.covtct
 NULL
+#' 
+#' @author Elvan Ceyhan
+#'
 #' @examples 
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4384,6 +4502,7 @@ NULL
 #' 
 #' @rdname funs.covtct
 #' 
+#' @export
 cov.tctI <- function(ct,CovN) 
 {
   rs <- row.sum(ct); 
@@ -4405,16 +4524,17 @@ cov.tctI <- function(ct,CovN)
       indj<-j+seq(0,q-1)*q
       
       covNijCl<-sum(CovN[r,indl])
-      cov\eqn{N_{kl}}Cj<-sum(CovN[s,indj])
+      covNklCj<-sum(CovN[s,indj])
       covCjCl<-sum(CovN[indj,indl])
       
-      cov[r,s]<-CovN[r,s]-(rs[k]/n)*covNijCl-(rs[i]/n)*cov\eqn{N_{kl}}Cj+(rs[i]*rs[k]/(n^2))*covCjCl
+      cov[r,s]<-CovN[r,s]-(rs[k]/n)*covNijCl-(rs[i]/n)*covNklCj+(rs[i]*rs[k]/(n^2))*covCjCl
     }
   cov
 } #end for the function
 #' 
 #' @rdname funs.covtct
 #'
+#' @export
 cov.tctIII <- function(ct,CovN) 
 {
   rs <- row.sum(ct); 
@@ -4436,19 +4556,19 @@ cov.tctIII <- function(ct,CovN)
       indj<-j+seq(0,q-1)*q
       
       covNijCl<-sum(CovN[r,indl])
-      cov\eqn{N_{kl}}Cj<-sum(CovN[s,indj])
+      covNklCj<-sum(CovN[s,indj])
       covCjCl<-sum(CovN[indj,indl])
       
       if (i==j & k==l)
-      {cov[r,s]<-CovN[r,s]-(rs[k]-1)/(n-1)*covNijCl-(rs[i]-1)/(n-1)*cov\eqn{N_{kl}}Cj+(rs[i]-1)*(rs[k]-1)/(n-1)^2*covCjCl}
+      {cov[r,s]<-CovN[r,s]-(rs[k]-1)/(n-1)*covNijCl-(rs[i]-1)/(n-1)*covNklCj+(rs[i]-1)*(rs[k]-1)/(n-1)^2*covCjCl}
       else
       {if (i==j & k!=l)
-      {cov[r,s]<-CovN[r,s]-rs[k]/(n-1)*covNijCl-(rs[i]-1)/(n-1)*cov\eqn{N_{kl}}Cj+(rs[i]-1)*rs[k]/(n-1)^2*covCjCl}
+      {cov[r,s]<-CovN[r,s]-rs[k]/(n-1)*covNijCl-(rs[i]-1)/(n-1)*covNklCj+(rs[i]-1)*rs[k]/(n-1)^2*covCjCl}
         else
         {if (i!=j & k==l)
-        {cov[r,s]<-CovN[r,s]-(rs[k]-1)/(n-1)*covNijCl-rs[i]/(n-1)*cov\eqn{N_{kl}}Cj+rs[i]*(rs[k]-1)/(n-1)^2*covCjCl}
+        {cov[r,s]<-CovN[r,s]-(rs[k]-1)/(n-1)*covNijCl-rs[i]/(n-1)*covNklCj+rs[i]*(rs[k]-1)/(n-1)^2*covCjCl}
           else
-          {cov[r,s]<-CovN[r,s]-rs[k]/(n-1)*covNijCl-rs[i]/(n-1)*cov\eqn{N_{kl}}Cj+rs[i]*rs[k]/(n-1)^2*covCjCl}          
+          {cov[r,s]<-CovN[r,s]-rs[k]/(n-1)*covNijCl-rs[i]/(n-1)*covNklCj+rs[i]*rs[k]/(n-1)^2*covCjCl}          
         }
       }
     }
@@ -4457,7 +4577,8 @@ cov.tctIII <- function(ct,CovN)
 #'
 #' @rdname funs.covtct
 #' 
-cov.tct3 <- function(ct,covN)
+#' @export
+cov.tct3 <- function(ct,CovN)
 { 
   q<-nrow(ct)
   qsq<-q^2;
@@ -4475,26 +4596,26 @@ cov.tct3 <- function(ct,covN)
       k<- (u-l)/q+1
       if (i==j & k==l)
       {
-        CM[t,u]<-cov.2cells(i,j,k,l,ct,covN)-(rs[i]-1)/(n-1)*cov.cell.col(k,l,i,ct,covN)-
-         (rs[k]-1)/(n-1)*cov.cell.col(i,j,k,ct,covN)+(rs[i]-1)*(rs[k]-1)/(n-1)^2*cov.2cols(i,k,ct,covN)  
+        CM[t,u]<-cov.2cells(i,j,k,l,ct,CovN)-(rs[i]-1)/(n-1)*cov.cell.col(k,l,i,ct,CovN)-
+          (rs[k]-1)/(n-1)*cov.cell.col(i,j,k,ct,CovN)+(rs[i]-1)*(rs[k]-1)/(n-1)^2*cov.2cols(i,k,ct,CovN)  
       }
       
       if (i==j & k!=l)
       {
-        CM[t,u]<-cov.2cells(i,j,k,l,ct,covN)-(rs[i]-1)/(n-1)*cov.cell.col(k,l,i,ct,covN)-
-          rs[k]/(n-1)*cov.cell.col(i,j,l,ct,covN)+(rs[i]-1)*rs[k]/(n-1)^2*cov.2cols(i,l,ct,covN)  
+        CM[t,u]<-cov.2cells(i,j,k,l,ct,CovN)-(rs[i]-1)/(n-1)*cov.cell.col(k,l,i,ct,CovN)-
+          rs[k]/(n-1)*cov.cell.col(i,j,l,ct,CovN)+(rs[i]-1)*rs[k]/(n-1)^2*cov.2cols(i,l,ct,CovN)  
       }
       
       if (i!=j & k==l)
       {
-        CM[t,u]<-cov.2cells(i,j,k,l,ct,covN)-(rs[k]-1)/(n-1)*cov.cell.col(i,j,k,ct,covN)-
-          rs[i]/(n-1)*cov.cell.col(k,l,j,ct,covN)+rs[i]*(rs[k]-1)/(n-1)^2*cov.2cols(j,k,ct,covN)  
+        CM[t,u]<-cov.2cells(i,j,k,l,ct,CovN)-(rs[k]-1)/(n-1)*cov.cell.col(i,j,k,ct,CovN)-
+          rs[i]/(n-1)*cov.cell.col(k,l,j,ct,CovN)+rs[i]*(rs[k]-1)/(n-1)^2*cov.2cols(j,k,ct,CovN)  
       }
       
       if (i!=j & k!=l)
       {
-        CM[t,u]<-cov.2cells(i,j,k,l,ct,covN)-rs[k]/(n-1)*cov.cell.col(i,j,l,ct,covN)-
-          rs[i]/(n-1)*cov.cell.col(k,l,j,ct,covN)+rs[i]*rs[k]/(n-1)^2*cov.2cols(j,l,ct,covN)  
+        CM[t,u]<-cov.2cells(i,j,k,l,ct,CovN)-rs[k]/(n-1)*cov.cell.col(i,j,l,ct,CovN)-
+          rs[i]/(n-1)*cov.cell.col(k,l,j,ct,CovN)+rs[i]*rs[k]/(n-1)^2*cov.2cols(j,l,ct,CovN)  
       }
     }
   }
@@ -4503,6 +4624,7 @@ cov.tct3 <- function(ct,covN)
 #'
 #' @rdname funs.covtct
 #' 
+#' @export
 cov.tctIV <- function(ct,CovN) 
 {
   rs <- row.sum(ct); 
@@ -4524,19 +4646,19 @@ cov.tctIV <- function(ct,CovN)
       indj<-j+seq(0,q-1)*q
       
       covNijCl<-sum(CovN[r,indl])
-      cov\eqn{N_{kl}}Cj<-sum(CovN[s,indj])
+      covNklCj<-sum(CovN[s,indj])
       covCjCl<-sum(CovN[indj,indl])
       
       if (i==j & k==l)
-      {cov[r,s]<-rs[i]*rs[k]/(n^2)*((n-1)^2/((rs[i]-1)*(rs[k]-1))*CovN[r,s]-(n-1)/(rs[i]-1)*covNijCl-(n-1)/(rs[k]-1)*cov\eqn{N_{kl}}Cj+covCjCl)}
+      {cov[r,s]<-rs[i]*rs[k]/(n^2)*((n-1)^2/((rs[i]-1)*(rs[k]-1))*CovN[r,s]-(n-1)/(rs[i]-1)*covNijCl-(n-1)/(rs[k]-1)*covNklCj+covCjCl)}
       else
       {if (i==j & k!=l)
-      {cov[r,s]<-rs[i]/(n^2)*((n-1)^2/(rs[i]-1)*CovN[r,s]-(n-1)*rs[k]/(rs[i]-1)*covNijCl-(n-1)*cov\eqn{N_{kl}}Cj+rs[k]*covCjCl)}
+      {cov[r,s]<-rs[i]/(n^2)*((n-1)^2/(rs[i]-1)*CovN[r,s]-(n-1)*rs[k]/(rs[i]-1)*covNijCl-(n-1)*covNklCj+rs[k]*covCjCl)}
         else
         {if (i!=j & k==l)
-        {cov[r,s]<-rs[k]/(n^2)*((n-1)^2/(rs[k]-1)*CovN[r,s]-(n-1)*covNijCl-(n-1)*rs[i]/(rs[k]-1)*cov\eqn{N_{kl}}Cj+rs[i]*covCjCl)}
+        {cov[r,s]<-rs[k]/(n^2)*((n-1)^2/(rs[k]-1)*CovN[r,s]-(n-1)*covNijCl-(n-1)*rs[i]/(rs[k]-1)*covNklCj+rs[i]*covCjCl)}
           else
-          {cov[r,s]<-1/(n^2)*((n-1)^2*CovN[r,s]-(n-1)*rs[k]*covNijCl-(n-1)*rs[i]*cov\eqn{N_{kl}}Cj+rs[i]*rs[k]*covCjCl)}          
+          {cov[r,s]<-1/(n^2)*((n-1)^2*CovN[r,s]-(n-1)*rs[k]*covNijCl-(n-1)*rs[i]*covNklCj+rs[i]*rs[k]*covCjCl)}          
         }
       }
     }
@@ -4567,15 +4689,17 @@ cov.tctIV <- function(ct,CovN)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4595,11 +4719,11 @@ cov.tctIV <- function(ct,CovN)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #'
@@ -4615,13 +4739,14 @@ cov.tctIV <- function(ct,CovN)
 cov.tct <- function(ct,covN,type="III") 
 {
   
-  switch(type,
+  cov <- switch(type,
          I = { cov <- cov.tctI(ct,covN) },
          II = { cov <- covN },
          III = { cov <- cov.tctIII(ct,covN) },
-         IV = { cov <- cov.tctIII(ct,covN)  },
-         stop("Enter numbers 1-4 or I-IV in quotes for type")
+         IV = { cov <- cov.tctIII(ct,covN)  }
   )
+  
+  if (is.null(cov)) stop("Enter numbers 1-4 or I-IV in quotes for type")  
   
   cov
 } #end for the function
@@ -4636,7 +4761,7 @@ cov.tct <- function(ct,covN,type="III")
 #' @description
 #' Two functions: \code{Zcell.tct.ct} and \code{Zcell.tct}.
 #'
-#' All functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' All functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' entries of types I-IV TCT, \eqn{T_{ij}}, from their expected values under RL or CSR for each entry.
 #' The test for each entry \eqn{i,j} is based on the normal approximation of the corresponding \eqn{T_{ij}} value
@@ -4655,30 +4780,30 @@ cov.tct <- function(ct,covN,type="III")
 #' @param ct A nearest neighbor contingency table, used in \code{Zcell.tct.ct} only 
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized cell counts of NNCT, \code{ct} ;
 #' used in \code{Zcell.tct.ct} only.
-#' @param type The type of the cell-specific test, default="\code{III}". Takes on values "\code{I}"-"\code{IV}" (or 
+#' @param type The type of the cell-specific test, default=\code{"III"}. Takes on values \code{"I"}-\code{"IV"} (or 
 #' equivalently \code{1-4}, respectively.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zcell.tct} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zcell.tct} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, for the \eqn{T_{ij}} values
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zcell.tct} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, for the \eqn{T_{ij}} values
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{Zcell.tct} only
 #'    
-#' @return A list with the elements
-#' \item{statistic}{The matrix of Types I-IV cell-specific test statistics}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of Types I-IV cell-specific test statistics}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels for the \eqn{T_{ij}} values at the given confidence
 #' level \code{conf.level} and depends on the type of \code{alternative}.}
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits of the entries, provided in \code{conf.level}.}
 #' \item{estimate}{Estimates of the parameters, i.e., matrix of the observed \eqn{T_{ij}} values which is the TCT}
 #' \item{est.name,est.name2}{Names of the estimates, both are same in this function}
 #' \item{null.value}{Matrix of hypothesized null values for the parameters which are expected values of 
 #' \eqn{T_{ij}} values in the TCT.}
 #' \item{null.name}{Name of the null values}
-#' \item{alternative}{Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}"}
+#' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{Zcell.tct.ct} only}
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Zcell.tct} only}
@@ -4693,15 +4818,17 @@ NULL
 #'
 #' @rdname funsZcell.tct
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4716,19 +4843,19 @@ NULL
 #' Zcell.tct.ct(ct,covN,type,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Zcell.tct(Y,cls,type)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4771,7 +4898,7 @@ Zcell.tct.ct <- function(ct,covN,type="III",alternative=c("two.sided", "less", "
   if (all(is.na(ts)))
   {stop('All of the test stat statistics are NaN, the test are not well defined')}
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            lcl <-NULL
@@ -4788,9 +4915,10 @@ Zcell.tct.ct <- function(ct,covN,type="III",alternative=c("two.sided", "less", "
            crit.val <-qnorm(1-alpha/2)
            lcl <-estimate-crit.val*stderrT
            ucl <-estimate+crit.val*stderrT
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+ 
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
@@ -4836,12 +4964,12 @@ Zcell.tct <- function(dat,lab,type="III",alternative=c("two.sided", "less", "gre
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv)
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
-  res<- Zcell.tct.ct(ct,covN,type,alternative=alternative,conf.level =conf.level)
+  res<- Zcell.tct.ct(ct,covN,type,alternative=alternative,conf.level=conf.level)
   
   dname <-deparse(substitute(dat))
   res$data.name<-dname
@@ -4859,15 +4987,15 @@ Zcell.tct <- function(dat,lab,type="III",alternative=c("two.sided", "less", "gre
 #' @description
 #' Two functions: \code{Zcell.spec.ct} and \code{Zcell.spec}.
 #'
-#' All functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' All functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' entries of NNCT or types I-IV TCTs from the expected values under RL or CSR for each entry.
 #' The test for each entry \eqn{i,j} is based on the normal approximation of the corresponding \eqn{T_{ij}} value
 #' and are due to \insertCite{dixon:NNCTEco2002;textual}{nnspat}
 #' and \insertCite{ceyhan:jkss-posthoc-2017;textual}{nnspat}, respectively.
 #' 
-#' The \code{type=dixon"} or "\code{nnct}" refers to Dixon's cell-specific test of segregation, and
-#' \code{type=}"\code{I}"-"\code{IV}" refers to types I-IV cell-specific tests, respectively.
+#' The \code{type="dixon"} or \code{"nnct"} refers to Dixon's cell-specific test of segregation, and
+#' \code{type="I"}-\code{"IV"} refers to types I-IV cell-specific tests, respectively.
 #'
 #' Each function yields a contingency table of the test statistics, \eqn{p}-values for the corresponding 
 #' alternative, expected values (i.e. null value(s)), lower and upper confidence levels and sample estimates (i.e. observed values)
@@ -4885,23 +5013,23 @@ Zcell.tct <- function(dat,lab,type="III",alternative=c("two.sided", "less", "gre
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT, \code{ct} ;
 #' used in \code{Zcell.spec.ct} only.
 #' @param type The type of the cell-specific test with no default.
-#' Takes on values "\code{dixon}" or "\code{nnct}" for Dixon's cell-specific tests and "\code{I}"-"\code{IV}" for types I-IV cell-specific
+#' Takes on values \code{"dixon"} or \code{"nnct"} for Dixon's cell-specific tests and \code{"I"}-\code{"IV"} for types I-IV cell-specific
 #' tests (or equivalently \code{1-6}, respectively).
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zcell.spec} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zcell.spec} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, for the \eqn{N_{ij}} or \eqn{T_{ij}} values
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zcell.spec} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, for the \eqn{N_{ij}} or \eqn{T_{ij}} values
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{Zcell.spec} only
 #'    
-#' @return A list with the elements
-#' \item{statistic}{The matrix of cell-specific test statistics}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of cell-specific test statistics}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels for the \eqn{N_{ij}} or \eqn{T_{ij}} values at the given confidence
 #' level \code{conf.level} and depends on the type of \code{alternative}.}
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits of the entries, provided in \code{conf.level}.}
 #' \item{estimate}{Estimates of the parameters, NNCT or TCT, i.e., matrix of the observed \eqn{N_{ij}} or \eqn{T_{ij}} values
 #' which is NNCT or TCT, respectively.}
@@ -4909,7 +5037,7 @@ Zcell.tct <- function(dat,lab,type="III",alternative=c("two.sided", "less", "gre
 #' \item{null.value}{Matrix of hypothesized null values for the parameters which are expected values of the 
 #' the null \eqn{N_{ij}} values in an NNCT or \eqn{T_{ij}} values in an TCT.}
 #' \item{null.name}{Name of the null values}
-#' \item{alternative}{Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}"}
+#' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{Zcell.spec.ct} only}
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Zcell.spec} only}
@@ -4925,15 +5053,17 @@ NULL
 #'
 #' @rdname funsZcell.spec
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4948,18 +5078,19 @@ NULL
 #' cell.spec(Y,cls,type,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' cell.spec(Y,cls,type="I")
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -4977,10 +5108,10 @@ cell.spec.ct <- function(ct,covN,type,alternative=c("two.sided", "less", "greate
   if (type %in% c("dixon","nnct"))
   {
     varN<-matrix(diag(covN),byrow=T,ncol=k)
-    res<- Zcell.nnct.ct(ct,varN,alternative=alternative,conf.level =conf.level)
+    res<- Zcell.nnct.ct(ct,varN,alternative=alternative,conf.level=conf.level)
   } else
   {
-    res<- Zcell.tct.ct(ct,covN,type=type,alternative=alternative,conf.level =conf.level) 
+    res<- Zcell.tct.ct(ct,covN,type=type,alternative=alternative,conf.level=conf.level) 
   }
   return(res)
 } #end for the function
@@ -4995,10 +5126,10 @@ cell.spec <- function(dat,lab,type,alternative=c("two.sided", "less", "greater")
   
   if (type %in% c("dixon","nnct"))
   {
-    res<- Zcell.nnct(dat,lab,alternative=alternative,conf.level =conf.level,...)
+    res<- Zcell.nnct(dat,lab,alternative=alternative,conf.level=conf.level,...)
   } else
   {
-    res<- Zcell.tct(dat,lab,type=type,alternative=alternative,conf.level =conf.level,...) 
+    res<- Zcell.tct(dat,lab,type=type,alternative=alternative,conf.level=conf.level,...) 
   }
   
   dname <-deparse(substitute(dat))
@@ -5044,15 +5175,17 @@ NULL
 #'
 #' @rdname funsC_MI_II
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -5152,11 +5285,13 @@ NULL
 #'
 #' @rdname funsN_I_II
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' #correction type 1
@@ -5216,7 +5351,7 @@ nnct.cr2 <- function(ct)
 #' @description
 #' Two functions: \code{base.class.spec.ct} and \code{base.class.spec}.
 #'
-#' Both functions are objects of class "\code{classhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"classhtest"} but with different arguments (see the parameter list below).
 #' Each one performs class specific segregation tests due to Dixon for \eqn{k \ge 2} classes. That is,
 #' each one performs hypothesis tests of deviations of 
 #' entries in each row of NNCT from the expected values under RL or CSR for each row. 
@@ -5239,15 +5374,15 @@ nnct.cr2 <- function(ct)
 #' used in \code{base.class.spec.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{base.class.spec} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{base.class.spec} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{base.class.spec} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. 
 #' used in \code{base.class.spec} only
 #'    
-#' @return A list with the elements
-#' \item{type}{Type of the class-specific test, which is "\code{base}" for this function}
-#' \item{statistic}{The vector of base class-specific test statistics}
+#' @return A \code{list} with the elements
+#' \item{type}{Type of the class-specific test, which is \code{"base"} for this function}
+#' \item{statistic}{The \code{vector} of base class-specific test statistics}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The vector of \eqn{p}-values for the hypothesis test}
+#' \item{p.value}{The \code{vector} of \eqn{p}-values for the hypothesis test}
 #' \item{df}{Degrees of freedom for the chi-squared test, which is \eqn{k-1} for this function.}
 #' \item{estimate}{Estimates of the parameters, NNCT, i.e., matrix of the observed \eqn{N_{ij}} values
 #' which is the NNCT.}
@@ -5269,15 +5404,17 @@ NULL
 #'
 #' @rdname funs.base.class.spec
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -5287,7 +5424,8 @@ NULL
 #' base.class.spec(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' base.class.spec(Y,fcls)
@@ -5297,11 +5435,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -5359,7 +5497,7 @@ base.class.spec <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q; Rv<-Rval(W)
+  Qv<-Qvec(W)$q; Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
@@ -5381,7 +5519,7 @@ base.class.spec <- function(dat,lab,...)
 #' @description
 #' Two functions: \code{NN.class.spec.ct} and \code{NN.class.spec}.
 #'
-#' Both functions are objects of class "\code{classhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"classhtest"} but with different arguments (see the parameter list below).
 #' Each one performs class specific segregation tests for the columns, i.e., NN categories for \eqn{k \ge 2} classes.
 #' That is,
 #' each one performs hypothesis tests of deviations of 
@@ -5391,7 +5529,7 @@ base.class.spec <- function(dat,lab,...)
 #' and are due to \insertCite{ceyhan:stat-neer-class2009;textual}{nnspat}.
 #' 
 #' The argument \code{covN} must be covariance of column-wise vectorization of NNCT if the logical argument \code{byrow=FALSE}
-#' otherwise the function converts covN (which is done row-wise) to columnwise version with \code{\link{covNrow2col}}
+#' otherwise the function converts \code{covN} (which is done row-wise) to columnwise version with \code{\link{covNrow2col}}
 #' function.
 #'
 #' Each function yields the test statistic, \eqn{p}-value and \code{df} for each base class \eqn{i}, description of the 
@@ -5412,15 +5550,15 @@ base.class.spec <- function(dat,lab,...)
 #' to obtain the \eqn{N_{ij}} vector and \code{covN} is converted to the row-wise version by covNrow2col function;used in \code{NN.class.spec.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{NN.class.spec} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{NN.class.spec} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{NN.class.spec} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. 
 #' used in \code{NN.class.spec} only
 #'    
-#' @return A list with the elements
-#' \item{type}{Type of the class-specific test, which is "\code{NN}" for this function}
-#' \item{statistic}{The vector of NN class-specific test statistics}
+#' @return A \code{list} with the elements
+#' \item{type}{Type of the class-specific test, which is \code{"NN"} for this function}
+#' \item{statistic}{The \code{vector} of NN class-specific test statistics}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The vector of \eqn{p}-values for the hypothesis test}
+#' \item{p.value}{The \code{vector} of \eqn{p}-values for the hypothesis test}
 #' \item{df}{Degrees of freedom for the chi-squared test, which is \eqn{k} for this function.}
 #' \item{estimate}{Estimates of the parameters, transpose of the NNCT, i.e., transpose of the matrix of the 
 #' observed \eqn{N_{ij}} values which is the transpose of NNCT.}
@@ -5442,15 +5580,17 @@ NULL
 #'
 #' @rdname funsNNclass.spec
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covNrow<-cov.nnct(ct,varN,Qv,Rv)
@@ -5460,10 +5600,11 @@ NULL
 #' NN.class.spec(Y,cls,method="max")
 #'
 #' NN.class.spec.ct(ct,covNrow)
-#' NN.class.spec.ct(ct,covNcol,byrow = F)
+#' NN.class.spec.ct(ct,covNcol,byrow = FALSE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' NN.class.spec(Y,fcls)
@@ -5473,11 +5614,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covNrow<-cov.nnct(ct,varN,Qv,Rv)
@@ -5486,17 +5627,17 @@ NULL
 #' NN.class.spec(Y,cls)
 #'
 #' NN.class.spec.ct(ct,covNrow)
-#' NN.class.spec.ct(ct,covNcol,byrow = F)
+#' NN.class.spec.ct(ct,covNcol,byrow = FALSE)
 #'
 #' @export
 NN.class.spec.ct <- function(ct,covN,byrow=TRUE)
 {
   typ="NN" #type of the class-specific test, it is NN here (for the columns) in the NNCT
   k<-nrow(ct);
-  nsq<-mat2vec(ct,byrow=F)$vec #row-wise vectorization
+  nsq<-mat2vec(ct,byrow=FALSE)$vec #row-wise vectorization
   
   EN<-EV.nnct(ct)
-  Ensq <- mat2vec(EN,byrow=F)$vec
+  Ensq <- mat2vec(EN,byrow=FALSE)$vec
   
   ifelse(byrow==TRUE,covN<-covNrow2col(covN),covN<-covN)
   
@@ -5543,7 +5684,7 @@ NN.class.spec <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q; Rv<-Rval(W)
+  Qv<-Qvec(W)$q; Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv) #row-wise vectorization
   
@@ -5565,7 +5706,7 @@ NN.class.spec <- function(dat,lab,...)
 #' @description
 #' Two functions: \code{class.spec.ct} and \code{class.spec}.
 #'
-#' Both functions are objects of class "\code{classhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"classhtest"} but with different arguments (see the parameter list below).
 #' Each one performs class specific segregation tests for the rows if \code{type="base"} and 
 #' columns if \code{type="NN"} for \eqn{k \ge 2} classes.
 #' That is,
@@ -5597,24 +5738,24 @@ NN.class.spec <- function(dat,lab,...)
 #' used in \code{class.spec.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{class.spec} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{class.spec} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{class.spec} only
 #' @param type The type of the class-specific tests with default=\code{"base"}. 
 #' Takes on values\code{"base"} for (Dixon's) base class-specific test
 #' and\code{"NN"} for NN class-specific test.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. 
 #' used in \code{class.spec} only
 #'    
-#' @return A list with the elements
-#' \item{type}{Type of the class-specific test, which is "\code{base}" or \code{"NN"} for this function}
-#' \item{statistic}{The vector of class-specific test statistics}
+#' @return A \code{list} with the elements
+#' \item{type}{Type of the class-specific test, which is \code{"base"} or \code{"NN"} for this function}
+#' \item{statistic}{The \code{vector} of class-specific test statistics}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The vector of \eqn{p}-values for the hypothesis test}
+#' \item{p.value}{The \code{vector} of \eqn{p}-values for the hypothesis test}
 #' \item{df}{Degrees of freedom for the chi-squared test, which is \eqn{k-1} for base class-specific test
 #' and \eqn{k} for NN class-specific test.}
 #' \item{estimate}{Estimates of the parameters, NNCT, i.e., the matrix of the 
 #' observed \eqn{N_{ij}} values for base class-specific test and transpose of the NNCT for
 #' the NN class-specific test.}
-#' \item{null.value}{The matrix of hypothesized null values for the parameters which are expected values
+#' \item{null.value}{The \code{matrix} of hypothesized null values for the parameters which are expected values
 #' of the \eqn{N_{ij}} values for the base class-specific test and transpose of this
 #' matrix for the NN-class specific test.}
 #' \item{null.name}{Name of the null values}
@@ -5637,54 +5778,55 @@ NULL
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
 #'
 #' class.spec(Y,cls)
-#' class.spec(Y,cls,\code{type="NN"})
+#' class.spec(Y,cls,type="NN")
 #'
 #' class.spec.ct(ct,covN)
-#' class.spec.ct(ct,covN,\code{type="NN"})
+#' class.spec.ct(ct,covN,type="NN")
 #'
 #' class.spec(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' class.spec(Y,fcls)
-#' class.spec(Y,fcls,\code{type="NN"})
+#' class.spec(Y,fcls,type="NN")
 #'
 #' class.spec.ct(ct,covN)
-#' class.spec.ct(ct,covN,\code{type="NN"})
+#' class.spec.ct(ct,covN,type="NN")
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
 #'
 #' class.spec(Y,cls)
-#' class.spec(Y,cls,\code{type="NN"})
+#' class.spec(Y,cls,type="NN")
 #'
 #' class.spec.ct(ct,covN)
-#' class.spec.ct(ct,covN,\code{type="NN"})
+#' class.spec.ct(ct,covN,type="NN")
 #'
 #' @export
-class.spec.ct <- function(ct,covN,\code{type="base"})
+class.spec.ct <- function(ct,covN,type="base")
 {
   if ((type %in% c("NN","base"))==FALSE)
   {stop("type is misspecified, should be one of base or NN (in quotes)")}
@@ -5703,13 +5845,13 @@ class.spec.ct <- function(ct,covN,\code{type="base"})
 #' @rdname funs.class.spec
 #'
 #' @export
-class.spec <- function(dat,lab,\code{type="base"},...)
+class.spec <- function(dat,lab,type="base",...)
 {
   ipd<-ipd.mat(dat,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q; Rv<-Rval(W)
+  Qv<-Qvec(W)$q; Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
@@ -5731,7 +5873,7 @@ class.spec <- function(dat,lab,\code{type="base"},...)
 #' @description
 #' Two functions: \code{overall.nnct.ct} and \code{overall.nnct}.
 #'
-#' Both functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' cell counts from the expected values under RL or CSR for all cells (i.e., entries) combined in the NNCT.
 #' That is, each test is Dixon's overall test of segregation based on NNCTs for \eqn{k \ge 2} classes.
@@ -5756,11 +5898,11 @@ class.spec <- function(dat,lab,\code{type="base"},...)
 #' used in \code{overall.nnct.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{overall.nnct} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{overall.nnct} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{overall.nnct} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. 
 #' used in \code{overall.nnct} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The overall chi-squared statistic}
 #' \item{stat.names}{Name of the test statistic}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
@@ -5787,15 +5929,17 @@ NULL
 #'
 #' @rdname funs.overall.nnct
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -5806,7 +5950,8 @@ NULL
 #' overall.nnct(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' overall.nnct(Y,fcls)
@@ -5816,11 +5961,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -5879,7 +6024,7 @@ overall.nnct <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q; Rv<-Rval(W)
+  Qv<-Qvec(W)$q; Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
@@ -5901,7 +6046,7 @@ overall.nnct <- function(dat,lab,...)
 #' @description
 #' Two functions: \code{overall.tct.ct} and \code{overall.tct}.
 #'
-#' All functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' All functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' cell counts from the expected values under RL or CSR for all cells (i.e., entries) combined in the TCT.
 #' That is, each test is one of Types I-IV overall test of segregation based on TCTs for \eqn{k \ge 2} classes.
@@ -5926,15 +6071,15 @@ overall.nnct <- function(dat,lab,...)
 #' @param ct A nearest neighbor contingency table, used in \code{overall.tct.ct} only
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT, \code{ct} ;
 #' used in \code{overall.tct.ct} only.
-#' @param type The type of the overall segregation test, default="\code{III}".
-#' Takes on values "\code{I}"-"\code{IV}" (or equivalently \code{1-4}, respectively.
+#' @param type The type of the overall segregation test, default=\code{"III"}.
+#' Takes on values \code{"I"}-\code{"IV"} (or equivalently \code{1-4}, respectively.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{overall.tct} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{overall.tct} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{overall.tct} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. 
 #' used in \code{overall.tct} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The overall chi-squared statistic for the specified type}
 #' \item{stat.names}{Name of the test statistic}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
@@ -5961,15 +6106,17 @@ NULL
 #'
 #' @rdname funs.overall.tct
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -5986,7 +6133,8 @@ NULL
 #' overall.tct.ct(ct,covN,type="I")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' overall.tct(Y,fcls)
@@ -5996,11 +6144,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -6071,7 +6219,7 @@ overall.tct <- function(dat,lab,type="III",...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q; Rv<-Rval(W)
+  Qv<-Qvec(W)$q; Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
@@ -6093,7 +6241,7 @@ overall.tct <- function(dat,lab,type="III",...)
 #' @description
 #' Two functions: \code{overall.seg.ct} and \code{overall.seg}.
 #'
-#' All functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' All functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' cell counts from the expected values under RL or CSR for all cells (i.e., entries) combined in the NNCT or TCT.
 #' That is, each test is one of Dixon's or Types I-IV overall test of segregation based on NNCTs or TCTs
@@ -6104,8 +6252,8 @@ overall.tct <- function(dat,lab,type="III",...)
 #' All functions exclude some row and/or column of the TCT, to avoid ill-conditioning of the covariance matrix
 #' of the NNCT (for its inversion in the quadratic form), see the relevant functions under See also section below.
 #' 
-#' The \code{type=dixon"} or "\code{nnct}" refers to Dixon's overall test of segregation, and
-#' \code{type=}"\code{I}"-"\code{IV}" refers to types I-IV overall tests, respectively.
+#' The \code{type="dixon"} or \code{"nnct"} refers to Dixon's overall test of segregation, and
+#' \code{type="I"}-\code{"IV"} refers to types I-IV overall tests, respectively.
 #'
 #' Each function yields the test statistic, \eqn{p}-value and \code{df} which is \eqn{k(k-1)} for type II and Dixon's test 
 #' and \eqn{(k-1)^2} for the other types, description of the 
@@ -6120,18 +6268,18 @@ overall.tct <- function(dat,lab,type="III",...)
 #' and the references therein.
 #' 
 #' @param ct A nearest neighbor contingency table, used in \code{overall.seg.ct} only 
-#' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT, \code{ct} ;
+#' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT, \code{ct};
 #' used in \code{overall.seg.ct} only.
 #' @param type The type of the overall test with no default.
-#' Takes on values "\code{dixon}" or "\code{nnct}" for Dixon's overall test and "\code{I}"-"\code{IV}" for types I-IV cell-specific
+#' Takes on values \code{"dixon"} or \code{"nnct"} for Dixon's overall test and \code{"I"}-\code{"IV"} for types I-IV cell-specific
 #' test (or equivalently \code{1-6}, respectively).
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{overall.seg} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{overall.seg} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{overall.seg} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{overall.seg} only
 #'    
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The overall chi-squared statistic for the specified type}
 #' \item{stat.names}{Name of the test statistic}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
@@ -6158,15 +6306,17 @@ NULL
 #'
 #' @rdname funs.overall.seg
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -6180,7 +6330,8 @@ NULL
 #' overall.seg.ct(ct,covN,type="I")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' overall.seg(Y,fcls,type="I")
@@ -6190,11 +6341,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -6224,7 +6375,6 @@ overall.seg.ct <- function(ct,covN,type)
 #' @export
 overall.seg <- function(dat,lab,type,...)
 {
-  k<-nrow(ct)
   if ((type %in% c("dixon","nnct","I","II","III","IV"))==FALSE)
   {stop("type is misspecified, should be one of dixon, nnct, I, II, III or IV (in quotes)")}
   
@@ -6252,7 +6402,7 @@ overall.seg <- function(dat,lab,type,...)
 #' @description
 #' Two functions: \code{Xsq.nnsym.ss.ct} and \code{Xsq.nnsym.ss}.
 #' 
-#' Both functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs the hypothesis test of equality of the expected value of the off-diagonal 
 #' cell counts (i.e., entries) under RL or CSR in the NNCT for \eqn{k \ge 2} classes.
 #' That is, each performs Pielou's first type of NN symmetry test which is also equivalent to McNemar's
@@ -6284,14 +6434,14 @@ overall.seg <- function(dat,lab,type,...)
 #' @param ct A nearest neighbor contingency table, used in \code{Xsq.nnsym.ss.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Xsq.nnsym.ss} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Xsq.nnsym.ss} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Xsq.nnsym.ss} only
 #' @param cont.corr A logical argument (default=\code{TRUE}). 
 #' If \code{TRUE} the continuity correction to McNemar's test is implemented, 
 #' and if \code{FALSE} such a correction is not implemented. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Xsq.nnsym.ss} only
 #'    
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for Pielou's first type of NN symmetry test}
 #' \item{stat.names}{Name of the test statistic}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
@@ -6318,11 +6468,13 @@ NULL
 #'
 #' @rdname funsXsq.nnsym.ss
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
@@ -6335,20 +6487,20 @@ NULL
 #' Xsq.nnsym.ss.ct(ct,cont.corr=FALSE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Xsq.nnsym.ss(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' Xsq.nnsym.ss(Y,cls)
 #' Xsq.nnsym.ss.ct(ct)
-#' Xsq.nnsym.ss.ct(ct,cont.corr = F)
+#' Xsq.nnsym.ss.ct(ct,cont.corr = FALSE)
 #'
 #' @export
 Xsq.nnsym.ss.ct <- function(ct,cont.corr=TRUE) 
@@ -6356,7 +6508,7 @@ Xsq.nnsym.ss.ct <- function(ct,cont.corr=TRUE)
   k<-nrow(ct)
   
   if (k==1)
-  {stop('contingency table must be \eqn{k \times k} with \eqn{k \ge 2}')}
+  {stop('contingency table must be kxk with k>=2')}
   
   ts<-0;
   for (i in 1:(k-1))
@@ -6431,7 +6583,7 @@ Xsq.nnsym.ss <- function(dat,lab,cont.corr=TRUE,...)
 #' @description
 #' Two functions: \code{Znnsym2cl.ss.ct} and \code{Znnsym2cl.ss}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected value of the off-diagonal 
 #' cell counts (i.e., entries) under RL or CSR in the NNCT for \eqn{k=2} classes.
 #' That is, each performs Pielou's first type of NN symmetry test which is appropriate 
@@ -6458,14 +6610,14 @@ Xsq.nnsym.ss <- function(dat,lab,cont.corr=TRUE,...)
 #' @param ct A nearest neighbor contingency table, used in \code{Znnsym2cl.ss.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnsym2cl.ss} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnsym2cl.ss} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnsym2cl.ss} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Znnsym2cl.ss} only
 #'    
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for Pielou's first type of NN symmetry test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}} in the \eqn{2 \times 2} NNCT
@@ -6488,11 +6640,13 @@ NULL
 #'
 #' @rdname funsZnnsym2cl.ss
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
@@ -6507,14 +6661,13 @@ NULL
 #' Znnsym2cl.ss.ct(ct,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Znnsym2cl.ss(Y,fcls)
 #' 
 #' #############
-#' ct<-matrix(sample(1:20,9),ncol=3)
-#'
-#' Znnsym2cl.ss.ct(ct) #gives an error message
+#' ct<-matrix(sample(1:20,4),ncol=2)
+#' Znnsym2cl.ss.ct(ct) #gives an error message if ct<-matrix(sample(1:20,9),ncol=3)
 #'
 #' @export
 Znnsym2cl.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),conf.level = 0.95) 
@@ -6545,7 +6698,7 @@ Znnsym2cl.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
   nullij<-0
   names(nullij) <-"(expected) difference between # of mixed NNs"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -6559,9 +6712,11 @@ Znnsym2cl.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(ct))
@@ -6590,7 +6745,7 @@ Znnsym2cl.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
   ipd<-ipd.mat(dat,...)
   ct<-nnct(ipd,lab)
   
-  rval<-Znnsym2cl.ss.ct(ct,alternative=alternative,conf.level =conf.level) 
+  rval<-Znnsym2cl.ss.ct(ct,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -6608,7 +6763,7 @@ Znnsym2cl.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @description
 #' Two functions: \code{Znnsym2cl.dx.ct} and \code{Znnsym2cl.dx}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs the hypothesis test of equality of the expected value of the off-diagonal 
 #' cell counts (i.e., entries) under RL or CSR in the NNCT for \eqn{k=2} classes.
 #' That is, each performs Dixon's NN symmetry test which is appropriate 
@@ -6636,14 +6791,14 @@ Znnsym2cl.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' used in \code{Znnsym2cl.dx.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnsym2cl.dx} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnsym2cl.dx} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnsym2cl.dx} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Znnsym2cl.dx} only
 #'  
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for Pielou's first type of NN symmetry test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}} in the \eqn{2 \times 2} NNCT
@@ -6666,16 +6821,18 @@ NULL
 #'
 #' @rdname funsZnnsym2cl.dx
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' Znnsym2cl.dx(Y,cls)
@@ -6687,13 +6844,14 @@ NULL
 #' Znnsym2cl.dx.ct(ct,Qv,Rv,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Znnsym2cl.dx(Y,fcls)
 #'
 #' #############
-#' ct<-matrix(sample(1:20,9),ncol=3)
-#' Znnsym2cl.dx.ct(ct) #gives an error message
+#' ct<-matrix(sample(1:20,4),ncol=2)
+#' Znnsym2cl.dx.ct(ct,Qv,Rv) #gives an error message if ct<-matrix(sample(1:20,9),ncol=3)
+#' #here, Qv and Rv values are borrowed from above, to highlight a point
 #'
 #' @export
 Znnsym2cl.dx.ct <- function(ct,Q,R,alternative=c("two.sided", "less", "greater"),conf.level = 0.95) 
@@ -6733,7 +6891,7 @@ Znnsym2cl.dx.ct <- function(ct,Q,R,alternative=c("two.sided", "less", "greater")
   nullij<-0
   names(nullij) <-"(expected) difference between # of mixed NNs"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -6747,9 +6905,11 @@ Znnsym2cl.dx.ct <- function(ct,Q,R,alternative=c("two.sided", "less", "greater")
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(ct))
@@ -6779,10 +6939,10 @@ Znnsym2cl.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   
-  rval<-Znnsym2cl.dx.ct(ct,Qv,Rv,alternative=alternative,conf.level =conf.level) 
+  rval<-Znnsym2cl.dx.ct(ct,Qv,Rv,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -6796,7 +6956,7 @@ Znnsym2cl.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @title NN Symmetry Test with Normal Approximation for Two Classes
 #'
 #' @description
-#' An object of class "\code{htest}" performing hypothesis test of equality of the expected value of the off-diagonal 
+#' An object of class \code{"htest"} performing hypothesis test of equality of the expected value of the off-diagonal 
 #' cell counts (i.e., entries) under RL or CSR in the NNCT for \eqn{k=2} classes.
 #' That is, the test performs Dixon's or Pielou's (first type of) NN symmetry test which is appropriate 
 #' (i.e. have the appropriate asymptotic sampling distribution)
@@ -6821,14 +6981,14 @@ Znnsym2cl.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' and the references therein.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
-#' @param lab Vector of class labels (numerical or categorical)
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param type The type of the NN symmetry test with default=\code{"dixon"}.
 #' Takes on values \code{"dixon"} and \code{"pielou"} for Dixon's and Pielou's (first type) NN symmetry test
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #'   
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for Pielou's first type of NN symmetry test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}} in the \eqn{2 \times 2} NNCT
@@ -6847,10 +7007,12 @@ Znnsym2cl.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' Znnsym2cl(Y,cls)
 #' Znnsym2cl(Y,cls,type="pielou")
@@ -6885,7 +7047,7 @@ Znnsym2cl <- function(dat,lab,type="dixon",alternative=c("two.sided", "less", "g
 #' @description
 #' Two functions: \code{Znnsym.ss.ct} and \code{Znnsym.ss}.
 #' 
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected values of the off-diagonal 
 #' cell counts (i.e., entries) for each pair \eqn{i,j} of classes under RL or CSR in the NNCT for \eqn{k \ge 2} classes.
 #' That is, each performs Pielou's first type of NN symmetry test which is appropriate 
@@ -6915,23 +7077,23 @@ Znnsym2cl <- function(dat,lab,type="dixon",alternative=c("two.sided", "less", "g
 #' @param ct A nearest neighbor contingency table, used in \code{Znnsym.ss.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnsym.ss} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnsym.ss} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnsym.ss} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{ij}-N_{ji}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Znnsym.ss} only
 #'    
-#' @return A list with the elements
-#' \item{statistic}{The matrix of \eqn{Z} test statistics for Pielou's first type of NN symmetry test
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of \eqn{Z} test statistics for Pielou's first type of NN symmetry test
 #' (in the upper-triangular form)}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative
 #' (in the upper-triangular form)}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels (in the upper-triangular form) for the \eqn{N_{ij}-N_{ji}}
 #' values for \eqn{i \ne j} at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits (i.e., conf.level) of the differences of the
 #' off-diagonal entries.}
 #' \item{estimate}{Estimates of the parameters, i.e., matrix of the difference of the off-diagonal entries 
@@ -6957,11 +7119,13 @@ NULL
 #'
 #' @rdname funsZnnsym.ss
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
@@ -6974,15 +7138,15 @@ NULL
 #' Znnsym.ss.ct(ct,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Znnsym.ss(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' Znnsym.ss(Y,cls)
@@ -7001,7 +7165,7 @@ Znnsym.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),conf.l
   
   k<-nrow(ct);
   if (k==1)
-  {stop('contingency table must be \eqn{k \times k} with \eqn{k \ge 2}')}
+  {stop('contingency table must be kxk with k>=2')}
   
   diff.mat<-abs(ct[upper.tri(ct)]- t(ct)[upper.tri(ct)])
   estimate<-matrix(0,k,k)
@@ -7024,7 +7188,7 @@ Znnsym.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),conf.l
     { ts[i,j] <-ts[i,j] +(ct[i,j]-ct[j,i])/stderr[i,j]}
     }
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            lcl <-NULL
@@ -7041,9 +7205,10 @@ Znnsym.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),conf.l
            crit.val <-qnorm(1-alpha/2)
            lcl <-estimate-crit.val*stderr
            ucl <-estimate+crit.val*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
@@ -7092,7 +7257,7 @@ Znnsym.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
   ipd<-ipd.mat(dat,...)
   ct<-nnct(ipd,lab)
   
-  rval<-Znnsym.ss.ct(ct,alternative=alternative,conf.level =conf.level) 
+  rval<-Znnsym.ss.ct(ct,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -7107,20 +7272,17 @@ Znnsym.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #'
 #' @description Returns the index matrix for choosing the entries in the covariance matrix for NNCT 
 #' used for computing the covariance for Dixon's NN symmetry test.
-#' The matrix is \eqn{\eqn{k(k-1)/2} \times 2} with each row is the \eqn{i,j} 
+#' The matrix is \eqn{k(k-1)/2 \times 2} with each row is the \eqn{i,j} 
 #' corresponding to \eqn{N_{ij}} in the NNCT.
 #'
 #' @param k An integer specifying the number of classes in the data set
 #' 
-#' @return The \eqn{\eqn{k(k-1)/2} \times 2} index matrix with each row is the \eqn{i,j} 
+#' @return The \eqn{k(k-1)/2 \times 2} index matrix with each row is the \eqn{i,j} 
 #' corresponding to \eqn{N_{ij}} in the NNCT
 #' 
 #' @seealso \code{\link{cov.nnsym}} and \code{\link{ind.seg.coeff}}
 #'
-#' @examples
-#' ind.nnsym(2)
-#' ind.nnsym(3)
-#' ind.nnsym(4)
+#' @author Elvan Ceyhan
 #'
 ind.nnsym <- function(k)
 {
@@ -7145,14 +7307,14 @@ ind.nnsym <- function(k)
 #'
 #' @description Returns the variances of differences of off-diagonal cell counts \eqn{N_{ij}-N_{ji}} for \eqn{i,j=1,\ldots,k} and \eqn{i \ne j}
 #' in the NNCT, \code{ct} in a vector of length \eqn{k(k-1)/2}, the order of \eqn{i,j} for \eqn{N_{ij}-N_{ji}}
-#' is as in the output of \code{\lin{ind.nnsym}(k)}.
+#' is as in the output of \code{\link{ind.nnsym}(k)}.
 #' These variances are valid under RL or conditional on \eqn{Q} and \eqn{R} under CSR.
 #' 
 #' See also (\insertCite{dixon:1994,ceyhan:SWJ-spat-sym2014;textual}{nnspat}).
 #'
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT
 #'
-#' @return A vector of length \eqn{k(k-1)/2}, whose entries are the variances of differences of off-diagonal 
+#' @return A \code{vector} of length \eqn{k(k-1)/2}, whose entries are the variances of differences of off-diagonal 
 #' cell counts \eqn{N_{ij}-N_{ji}} for \eqn{i,j=1,\ldots,k} and \eqn{i \ne j} in the NNCT.
 #'
 #' @seealso \code{\link{var.nnct}}, \code{\link{var.tct}} and \code{\link{cov.nnct}}
@@ -7160,15 +7322,17 @@ ind.nnsym <- function(k)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -7179,11 +7343,11 @@ ind.nnsym <- function(k)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -7222,7 +7386,7 @@ var.nnsym <- function(covN)
 #' @description
 #' Two functions: \code{Znnsym.dx.ct} and \code{Znnsym.dx}.
 #' 
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected values of the off-diagonal 
 #' cell counts (i.e., entries) for each pair \eqn{i,j} of classes under RL or CSR in the NNCT for \eqn{k \ge 2} classes.
 #' That is, each performs Dixon's NN symmetry test which is appropriate 
@@ -7253,23 +7417,23 @@ var.nnsym <- function(covN)
 #' of var.nnsym function.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnsym.dx} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnsym.dx} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnsym.dx} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{ij}-N_{ji}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Znnsym.dx} only
 #'  
-#' @return A list with the elements
-#' \item{statistic}{The matrix of \eqn{Z} test statistics for Dixon's NN symmetry test
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of \eqn{Z} test statistics for Dixon's NN symmetry test
 #' (in the upper-triangular form)}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative
 #' (in the upper-triangular form)}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels (in the upper-triangular form) for the \eqn{N_{ij}-N_{ji}}
 #' values for \eqn{i \ne j} at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits (i.e., conf.level) of the differences of the
 #' off-diagonal entries.}
 #' \item{estimate}{Estimates of the parameters, i.e., matrix of the difference of the off-diagonal entries
@@ -7295,16 +7459,18 @@ NULL
 #'
 #' @rdname funsZnnsym.dx
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -7320,19 +7486,19 @@ NULL
 #' Znnsym.dx.ct(ct,varS,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Znnsym.dx(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -7390,7 +7556,7 @@ Znnsym.dx.ct <- function(ct,varS,alternative=c("two.sided", "less", "greater"),c
   ts[lower.tri(ts, diag=FALSE)] <- ZT
   ts <- t(ts)
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            lcl <-NULL
@@ -7407,9 +7573,10 @@ Znnsym.dx.ct <- function(ct,varS,alternative=c("two.sided", "less", "greater"),c
            crit.val <-qnorm(1-alpha/2)
            lcl <-estimate-crit.val*stderr
            ucl <-estimate+crit.val*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
@@ -7459,14 +7626,14 @@ Znnsym.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
   
   varS<-var.nnsym(covN)
   
-  rval<-Znnsym.dx.ct(ct,varS,alternative=alternative,conf.level =conf.level) 
+  rval<-Znnsym.dx.ct(ct,varS,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -7480,7 +7647,7 @@ Znnsym.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #' @title NN Symmetry Test with Normal Approximation
 #'
 #' @description
-#' An object of class "\code{cellhtest}" performing hypothesis test of equality of the expected values of the
+#' An object of class \code{"cellhtest"} performing hypothesis test of equality of the expected values of the
 #' off-diagonal cell counts (i.e., entries) for each pair \eqn{i,j} of classes under RL or CSR in the NNCT
 #' for \eqn{k \ge 2} classes.
 #' That is, the test performs Dixon's or Pielou's (first type of) NN symmetry test which is appropriate 
@@ -7510,23 +7677,23 @@ Znnsym.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #' and the references therein.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
-#' @param lab Vector of class labels (numerical or categorical)
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param type The type of the NN symmetry test with default=\code{"dixon"}.
 #' Takes on values \code{"dixon"} and \code{"pielou"} for Dixon's and Pielou's (first type) NN symmetry test
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function
 #'   
-#' @return A list with the elements
-#' \item{statistic}{The matrix of \eqn{Z} test statistics for the NN symmetry test (in the upper-triangular form)}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of \eqn{Z} test statistics for the NN symmetry test (in the upper-triangular form)}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative
 #' (in the upper-triangular form)}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels (in the upper-triangular form) for the \eqn{N_{ij}-N_{ji}}
 #' values for \eqn{i \ne j} at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits (i.e., conf.level) of the differences of the
 #' off-diagonal entries.}
 #' \item{estimate}{Estimates of the parameters, i.e., matrix of the difference of the off-diagonal entries
@@ -7546,10 +7713,12 @@ Znnsym.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' Znnsym(Y,cls)
 #' Znnsym(Y,cls,method="max")
@@ -7560,13 +7729,14 @@ Znnsym.dx <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #' Znnsym(Y,cls,type="pielou",alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Znnsym(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' Znnsym(Y,cls)
 #' Znnsym(Y,cls,type="pielou")
@@ -7596,7 +7766,7 @@ Znnsym <- function(dat,lab,type="dixon",alternative=c("two.sided", "less", "grea
 #' for \eqn{i,j=1,\ldots,k} and \eqn{i \ne j}, in the NNCT, \code{ct}.
 #' The covariance matrix is of dimension \eqn{k(k-1)/2 \times k(k-1)/2} and its entries are
 #' \eqn{cov(N_{ij}-N_{ji}, N_{kl}-N_{lk})} where the order of \eqn{i,j} for \eqn{N_{ij}-N_{ji}} is as
-#' in the output of \code{\lin{ind.nnsym}(k)}. 
+#' in the output of \code{\link{ind.nnsym}(k)}. 
 #' These covariances are valid under RL or conditional on \eqn{Q} and \eqn{R} under CSR.
 #' 
 #' The argument \code{covN} is the covariance matrix of \eqn{N_{ij}} (concatenated rowwise).
@@ -7613,16 +7783,18 @@ Znnsym <- function(dat,lab,type="dixon",alternative=c("two.sided", "less", "grea
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -7633,11 +7805,11 @@ Znnsym <- function(dat,lab,type="dixon",alternative=c("two.sided", "less", "grea
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -7686,7 +7858,7 @@ cov.nnsym <- function(covN)
 #' @description
 #' Two functions: \code{Xsq.nnsym.dx.ct} and \code{Xsq.nnsym.dx}.
 #' 
-#' Both functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs the hypothesis test of equality of the expected value of the off-diagonal 
 #' cell counts (i.e., entries) under RL or CSR in the NNCT for \eqn{k \ge 2} classes.
 #' That is, each performs Dixon's overall NN symmetry test.
@@ -7713,14 +7885,14 @@ cov.nnsym <- function(covN)
 #' 
 #' @param ct A nearest neighbor contingency table, used in \code{Xsq.nnsym.dx.ct} only
 #' @param covS The \eqn{k(k-1)/2 \times k(k-1)/2} covariance matrix of the differences of the off-diagonal entries in the NNCT,
-#' \code{ct}, usually the output of the function \code{\link{cov.nnsym}.
+#' \code{ct}, usually the output of the function \code{\link{cov.nnsym}}.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Xsq.nnsym.dx} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Xsq.nnsym.dx} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Xsq.nnsym.dx} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Xsq.nnsym.dx} only
 #'    
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for Dixon's overall NN symmetry test}
 #' \item{stat.names}{Name of the test statistic}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
@@ -7747,15 +7919,17 @@ NULL
 #'
 #' @rdname funsXsq.nnsym.dx
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -7767,7 +7941,8 @@ NULL
 #' Xsq.nnsym.dx(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Xsq.nnsym.dx(Y,fcls)
@@ -7777,11 +7952,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -7848,7 +8023,7 @@ Xsq.nnsym.dx <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -7868,7 +8043,7 @@ Xsq.nnsym.dx <- function(dat,lab,...)
 #' @title Overall NN Symmetry Test with Chi-square Approximation
 #'
 #' @description
-#' An object of class "\code{Chisqtest}" performing the hypothesis test of equality of the expected
+#' An object of class \code{"Chisqtest"} performing the hypothesis test of equality of the expected
 #' values of the off-diagonal cell counts (i.e., entries) under RL or CSR in the NNCT for \eqn{k \ge 2} classes.
 #' That is, the test performs Dixon's or Pielou's (first type of) overall NN symmetry test which is appropriate 
 #' (i.e. have the appropriate asymptotic sampling distribution)
@@ -7898,12 +8073,12 @@ Xsq.nnsym.dx <- function(dat,lab,...)
 #' and the references therein.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
-#' @param lab Vector of class labels (numerical or categorical)
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param type The type of the overall NN symmetry test with default=\code{"dixon"}.
 #' Takes on values \code{"dixon"} and \code{"pielou"} for Dixon's and Pielou's (first type) overall NN symmetry test
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function
 #'   
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for Dixon's or Pielou's (first type of)
 #' overall NN symmetry test}
 #' \item{stat.names}{Name of the test statistic}
@@ -7923,17 +8098,20 @@ Xsq.nnsym.dx <- function(dat,lab,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' Xsq.nnsym(Y,cls)
 #' Xsq.nnsym(Y,cls,method="max")
 #' Xsq.nnsym(Y,cls,type="pielou")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #'
 #' Xsq.nnsym(Y,fcls)
 #' Xsq.nnsym(Y,fcls,type="pielou")
@@ -7941,7 +8119,7 @@ Xsq.nnsym.dx <- function(dat,lab,...)
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' Xsq.nnsym(Y,cls)
 #' Xsq.nnsym(Y,cls,type="pielou")
@@ -7969,7 +8147,7 @@ Xsq.nnsym <- function(dat,lab,type="dixon",...)
 #' @title The Shared NN Vectors for Multiple Classes
 #'
 #' @description 
-#' Returns a matrix with \eqn{k} rows where each row is the vector of number of points with shared NNs,
+#' Returns a \code{matrix} with \eqn{k} rows where each row is the vector of number of points with shared NNs,
 #' \eqn{Q_i=(Q_{i0},Q_{i1},\ldots)} where \eqn{Q_{ij}} is the number of class \eqn{i} points that are NN to class \eqn{j} points.
 #' The function also returns the indices of columns with nonzero sums as a vector.
 #' 
@@ -7982,52 +8160,55 @@ Xsq.nnsym <- function(dat,lab,type="dixon",...)
 #' and the references therein.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
-#' @param lab Vector of class labels (numerical or categorical)
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix (IPD matrix), otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'
 #' @return \code{Qval} returns the \eqn{Q} value
-#' \code{Qvec} returns a list with two elements
+#' \code{Qvec} returns a \code{list} with two elements
 #'  \item{q}{the \eqn{Q} value, the number of shared NNs}
-#'  \item{qvec}{the vector of \eqn{Q_j} values} 
-#' \code{sharedNN} returns a matrix with 2 rows, where first row is the \eqn{j} values and second row is
+#'  \item{qvec}{the \code{vector} of \eqn{Q_j} values} 
+#' \code{sharedNN} returns a \code{matrix} with 2 rows, where first row is the \eqn{j} values and second row is
 #' the corresponding vector of \eqn{Q_j} values
 #' \code{Rval}{the \eqn{R} value, the number of reflexive NNs}
 #' 
-#' @return Returns a list with two elements
+#' @return Returns a \code{list} with two elements
 #'  \item{Nv}{A \eqn{k}-row matrix of shared NNs by class where each row of the matrix is the vector of number of
 #'  points with shared NNs \eqn{Q_i=(Q_{i0},Q_{i1},\ldots)} where \eqn{Q_{ij}} is the number of class \eqn{i} points that are NN
 #'  to \eqn{j} points.}
-#'  \item{col.ind}{The vector of indices of columns with nonzero sums} 
+#'  \item{col.ind}{The \code{vector} of indices of columns with nonzero sums} 
 #' 
 #' @seealso \code{\link{Qval}}, \code{\link{Qvec}} and \code{\link{sharedNN}}
 #' 
 #' @references
 #' \insertAllCited{}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
-#'
-#' Nshared(ipd,cls)
-#' Nshared(Y,cls,is.ipd=F)
-#' Nshared(Y,cls,is.ipd=F,method="max")
-#'
+#' #'
+#' sharedNNmc(ipd,cls)
+#' sharedNNmc(Y,cls,is.ipd = FALSE)
+#' sharedNNmc(Y,cls,is.ipd = FALSE,method="max")
+#' #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
-#' Nshared(ipd,fcls)
-#'
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
+#' sharedNNmc(ipd,fcls)
+#' #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
-#'
-#' Nshared(ipd,cls)
+#' #'
+#' sharedNNmc(ipd,cls) 
 #'
 #' @export
 sharedNNmc <- function(x,lab,is.ipd=TRUE,...)
@@ -8099,8 +8280,8 @@ sharedNNmc <- function(x,lab,is.ipd=TRUE,...)
 #' and the references therein.
 #'
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
-#' @param lab Vector of class labels (numerical or categorical)
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
@@ -8112,24 +8293,27 @@ sharedNNmc <- function(x,lab,is.ipd=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(n*3),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' Qsym.ct(ipd,cls)
-#' Qsym.ct(Y,cls,is.ipd=F)
-#' Qsym.ct(Y,cls,is.ipd=F,method="max")
+#' Qsym.ct(Y,cls,is.ipd = FALSE)
+#' Qsym.ct(Y,cls,is.ipd = FALSE,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Qsym.ct(ipd,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' Qsym.ct(ipd,cls)
@@ -8172,7 +8356,7 @@ Qsym.ct <- function(x,lab,is.ipd=TRUE,...)
 #' @title Pielou's Second Type of NN Symmetry Test with Chi-square Approximation
 #'
 #' @description
-#' An object of class "\code{Chisqtest}" performing the hypothesis test of equality of the probabilities for the rows
+#' An object of class \code{"Chisqtest"} performing the hypothesis test of equality of the probabilities for the rows
 #' in the \eqn{Q}-symmetry contingency table (QCT).
 #' Each row of the QCT is the vector of Qi\eqn{j} values where \eqn{Q_{ij}} is the number of class \eqn{i} points that are NN
 #' to \eqn{j} points.
@@ -8212,8 +8396,8 @@ Qsym.ct <- function(x,lab,is.ipd=TRUE,...)
 #' and the references therein.
 #' 
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
-#' @param lab Vector of class labels (numerical or categorical)
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix (IPD matrix), otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param combine A logical parameter (default=\code{TRUE}). If \code{TRUE}, 
@@ -8222,7 +8406,7 @@ Qsym.ct <- function(x,lab,is.ipd=TRUE,...)
 #' If \code{FALSE}, the function does not perform the pooling of the cells.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for Pielou's second type of NN symmetry test (i.e., \eqn{Q}-symmetry 
 #' which is equivalent to symmetry in the shared NN structure)}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
@@ -8241,32 +8425,35 @@ Qsym.ct <- function(x,lab,is.ipd=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' Qsym.ct(ipd,cls)
 #'
 #' Qsym.test(ipd,cls)
-#' Qsym.test(Y,cls,is.ipd=F)
-#' Qsym.test(Y,cls,is.ipd=F,method="max")
+#' Qsym.test(Y,cls,is.ipd = FALSE)
+#' Qsym.test(Y,cls,is.ipd = FALSE,method="max")
 #'
-#' Qsym.test(ipd,cls,combine = F)
+#' Qsym.test(ipd,cls,combine = FALSE)
 #'
 #' #cls as a faqctor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Qsym.test(ipd,fcls)
-#' Qsym.test(Y,fcls,is.ipd=F)
+#' Qsym.test(Y,fcls,is.ipd = FALSE)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' Qsym.test(ipd,cls)
-#' Qsym.test(Y,cls,is.ipd=F)
+#' Qsym.test(Y,cls,is.ipd = FALSE)
 #'
 #' @export
 Qsym.test <- function(x,lab,is.ipd=TRUE,combine=TRUE,...)
@@ -8279,7 +8466,7 @@ Qsym.test <- function(x,lab,is.ipd=TRUE,combine=TRUE,...)
   pval<-TS$p.val
   
   ifelse(combine,method <-"Pielou's Test of Q Symmetry (i.e., Symmetry in Shared NN structure)\n 
-        with the entries in columns Qk for \eqn{k \ge 2} (if exist) are combined in the Q symmetry contingency table",
+        with the entries in columns Qk for k>=2 (if exist) are combined in the Q symmetry contingency table",
          method <-"Pielou's Test of Q Symmetry (i.e., Symmetry in Shared NN structure)\n 
         with the entire Q symmetry contingency table")
   
@@ -8332,8 +8519,8 @@ Qsym.test <- function(x,lab,is.ipd=TRUE,combine=TRUE,...)
 #' and the references therein.
 #'
 #' @param x The IPD matrix (if \code{is.ipd=TRUE}) or a data set of points in matrix or data frame form where points
-#' correspond to the rows (if \code{is.ipd=FALSE}).
-#' @param lab Vector of class labels (numerical or categorical)
+#' correspond to the rows (if \code{is.ipd = FALSEALSE}).
+#' @param lab The \code{vector} of class labels (numerical or categorical)
 #' @param is.ipd A logical parameter (default=\code{TRUE}). If \code{TRUE}, \code{x} is taken as the inter-point distance
 #' matrix, otherwise, \code{x} is taken as the data set with rows representing the data points. 
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
@@ -8345,24 +8532,27 @@ Qsym.test <- function(x,lab,is.ipd=TRUE,combine=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' rct(ipd,cls)
-#' rct(Y,cls,is.ipd = F)
-#' rct(Y,cls,is.ipd = F,method="max")
+#' rct(Y,cls,is.ipd = FALSE)
+#' rct(Y,cls,is.ipd = FALSE,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' rct(ipd,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' rct(ipd,cls)
@@ -8418,26 +8608,28 @@ rct <- function(x,lab,is.ipd=TRUE,...)
 
 #' @title Expected Values of the Cell Counts in RCT
 #'
-#' @description Returns a matrix of same dimension as the RCT, \code{rfct}, 
+#' @description Returns a \code{matrix} of same dimension as the RCT, \code{rfct}, 
 #' whose entries are the expected cell counts of
 #' the RCT under RL or CSR.
 #' 
 #' See also (\insertCite{ceyhan:NNreflexivity2017;textual}{nnspat}).
 #'
 #' @param rfct An RCT
-#' @param nvec The vector of class sizes
+#' @param nvec The \code{vector} of class sizes
 #'
-#' @return A matrix of the expected values of cell counts in the RCT.
+#' @return A \code{matrix} of the expected values of cell counts in the RCT.
 #'
 #' @seealso \code{\link{rct}}, \code{\link{EV.nnct}} and \code{\link{EV.tct}}
 #' 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' nvec<-as.numeric(table(cls))
@@ -8445,7 +8637,8 @@ rct <- function(x,lab,is.ipd=TRUE,...)
 #' EV.rct(rfct,nvec)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' nvec<-as.numeric(table(fcls))
 #' rfct<-rct(ipd,fcls)
 #' EV.rct(rfct,nvec)
@@ -8453,7 +8646,7 @@ rct <- function(x,lab,is.ipd=TRUE,...)
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' rfct<-rct(ipd,cls)
@@ -8495,7 +8688,7 @@ EV.rct <- function(rfct,nvec)
 #' @description
 #' Two functions: \code{Znnref.ct} and \code{Znnref}.
 #'
-#' Both functions are objects of class "\code{refhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"refhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected values of the
 #' diagonal cell counts (i.e., entries) under RL or CSR in the RCT for \eqn{k \ge 2} classes.
 #' That is, each test performs NN reflexivity test (i.e., a test of self reflexivity and a test of
@@ -8528,25 +8721,25 @@ EV.rct <- function(rfct,nvec)
 #' the sum of the self column (i.e., the first column) in the SCCT.
 #' 
 #' @param rfct An RCT, used in \code{Znnref.ct} only
-#' @param nvec The vector of class sizes, used in \code{Znnref.ct} only
+#' @param nvec The \code{vector} of class sizes, used in \code{Znnref.ct} only
 #' @param Qv The number of shared NNs, used in \code{Znnref.ct} only
 #' @param Tv \eqn{T} value, which is the number of triplets \eqn{(z_i, z_j, z_k)} with 
 #' "\eqn{NN(z_i) = NN(z_j) = z_k} and \eqn{NN(z_k) = z_j} where \eqn{NN(\cdot)} is the nearest neighbor function, used in \code{Znnref.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnref} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnref} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnref} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{Znnref} only
 #'
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistics for self reflexivity and mixed non-reflexivity, corresponding to entries
 #' \eqn{(1,1)} and \eqn{(2,2)} in the RCT}
 #' \item{stat.names}{Name of the test statistics}
 #' \item{p.value}{The \eqn{p}-values for self reflexivity and mixed non-reflexivity tests}
 #' \item{conf.int}{Confidence intervals for the self reflexivity and mixed non-reflexivity values
-#' (i.e., diagonal entries \eqn{(1,1)} and \eqn{(2,2)} values, respectively) in the RCT at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' (i.e., diagonal entries \eqn{(1,1)} and \eqn{(2,2)} values, respectively) in the RCT at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{cnf.lvl}{Level of the onfidence intervals of the diagonal entries, provided in \code{conf.level}.}
 #' \item{estimate}{Estimates of the parameters, i.e., the observed diagonal entries \eqn{(1,1)} and \eqn{(2,2)}
 #' in the RCT, \code{rfct}.}
@@ -8570,14 +8763,16 @@ NULL
 #'
 #' @rdname funsZnnref
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' Tv<-Tval(W,Rv)
 #'
@@ -8593,11 +8788,11 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' R<-Rval(W)
 #' Tv<-Tval(W,R)
 #'
@@ -8663,7 +8858,8 @@ Znnref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", "greate
   names.null <-"diagonal rct entries"
   
   cint<-matrix(0,ncol=2,nrow=2)
-  switch(alternative,
+
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint[1,] <-estimate[1]+c(-Inf, qnorm(conf.level))*stderr[1]
@@ -8680,9 +8876,10 @@ Znnref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", "greate
            Cint <-qnorm(1 - alpha/2)
            cint[1,] <-estimate[1]+c(-Cint, Cint)*stderr[1]
            cint[2,] <-estimate[2]+c(-Cint, Cint)*stderr[2]
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
@@ -8717,14 +8914,14 @@ Znnref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.le
 {
   ipd<-ipd.mat(dat,...)
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   R<-Rval(W)
   Tv<-Tval(W,R)
   
   nvec<-as.numeric(table(lab))
   rfct<-rct(ipd,lab,...)
   
-  rval<-Znnref.ct(rfct,nvec,Qv,Tv,alternative=alternative,conf.level =conf.level) 
+  rval<-Znnref.ct(rfct,nvec,Qv,Tv,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -8742,7 +8939,7 @@ Znnref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.le
 #' @description
 #' Two functions: \code{Zself.ref.ct} and \code{Zself.ref}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of self reflexivity in the NN structure using the
 #' number of self-reflexive NN pairs (i.e. the first diagonal entry, \eqn{(1,1)}) in the RCT for \eqn{k \ge 2} classes.
 #' That is, each test performs a test of self reflexivity corresponding to entry \eqn{(1,1)} in the RCT)
@@ -8771,20 +8968,20 @@ Znnref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.le
 #' the first column) in the SCCT.
 #' 
 #' @param rfct An RCT, used in \code{Zself.ref.ct} only
-#' @param nvec The vector of class sizes, used in \code{Zself.ref.ct} only
+#' @param nvec The \code{vector} of class sizes, used in \code{Zself.ref.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zself.ref} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zself.ref} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zself.ref} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{Zself.ref} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for self reflexivity corresponding to entry \eqn{(1,1)} in the RCT}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the self reflexivity value (i.e., diagonal entry \eqn{(1,1)} value)
-#' in the RCT at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' in the RCT at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{estimate}{Estimate of the parameter, i.e., the observed diagonal entry \eqn{(1,1)} in the RCT, \code{rfct}.}
 #' \item{null.value}{Hypothesized null value for the self reflexivity value (i.e., expected value of the 
 #' diagonal entry \eqn{(1,1)} which is \eqn{E(N_{11})=R P_{aa}}) in the RCT.}
@@ -8804,10 +9001,12 @@ NULL
 #'
 #' @rdname funsZself.ref
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' nvec<-as.numeric(table(cls))
@@ -8822,7 +9021,7 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #'
 #' nvec<-as.numeric(table(cls))
@@ -8868,7 +9067,7 @@ Zself.ref.ct <- function(rfct,nvec,alternative=c("two.sided", "less", "greater")
   null.val<-ENsr
   names(null.val)<- "(expected) number of self-reflexive NN pairs"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -8882,9 +9081,11 @@ Zself.ref.ct <- function(rfct,nvec,alternative=c("two.sided", "less", "greater")
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   method <-"Z-test for Self-Reflexive NN Pattern"
@@ -8914,9 +9115,9 @@ Zself.ref.ct <- function(rfct,nvec,alternative=c("two.sided", "less", "greater")
 Zself.ref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.level = 0.95,...) 
 {
   nvec<-as.numeric(table(lab))
-  rfct<-rct(dat,lab,is.ipd=F,...)
+  rfct<-rct(dat,lab,is.ipd = FALSE,...)
   
-  rval<-Zself.ref.ct(rfct,nvec,alternative=alternative,conf.level =conf.level) 
+  rval<-Zself.ref.ct(rfct,nvec,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -8934,7 +9135,7 @@ Zself.ref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #' @description
 #' Two functions: \code{Zmixed.nonref.ct} and \code{Zmixed.nonref}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of mixed non-reflexivity in the NN structure using the
 #' number of mixed-non-reflexive NN pairs (i.e. the second diagonal entry, \eqn{(2,2)}) in the RCT for \eqn{k \ge 2} classes.
 #' That is, each test performs a test of mixed non-reflexivity corresponding to entry \eqn{(2,2)} in the RCT)
@@ -8953,24 +9154,24 @@ Zself.ref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf
 #' NNs and \eqn{P_{ab}} is the probability of any two points selected are being from two different classes.
 #' 
 #' @param rfct An RCT, used in \code{Zmixed.nonref.ct} only
-#' @param nvec The vector of class sizes, used in \code{Zmixed.nonref.ct} only
+#' @param nvec The \code{vector} of class sizes, used in \code{Zmixed.nonref.ct} only
 #' @param Qv The number of shared NNs, used in \code{Zmixed.nonref.ct} only
 #' @param Tv \eqn{T} value, which is the number of triplets \eqn{(z_i, z_j, z_k)} with 
 #' "\eqn{NN(z_i) = NN(z_j) = z_k} and \eqn{NN(z_k) = z_j} where \eqn{NN(\cdot)} is the nearest neighbor function, used in \code{Zmixed.nonref.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zmixed.nonref} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zmixed.nonref} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zmixed.nonref} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference of the off-diagonal entries, \eqn{N_{12}-N_{21}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Zmixed.nonref} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for mixed non-reflexivity corresponding to entry \eqn{(2,2)} in the RCT}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the mixed non-reflexivity value (i.e., diagonal entry \eqn{(2,2)} value)
-#' in the RCT at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' in the RCT at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{estimate}{Estimate of the parameter, i.e., the observed diagonal entry \eqn{(2,2)} in the RCT, \code{rfct}.}
 #' \item{null.value}{Hypothesized null value for the mixed non-reflexivity value (i.e., expected value of the 
 #' diagonal entry \eqn{(2,2)} which is \eqn{E(N_{22})=R P_{ab}}) in the RCT.}
@@ -8990,14 +9191,16 @@ NULL
 #'
 #' @rdname funsZmixed.nonref
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' R<-Rval(W)
 #' Tv<-Tval(W,R)
 #'
@@ -9013,11 +9216,11 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' R<-Rval(W)
 #' Tv<-Tval(W,R)
 #'
@@ -9068,7 +9271,7 @@ Zmixed.nonref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", 
   null.val<-ENmn
   names(null.val)<- "(expected) number of mixed non-reflexive NN pairs"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -9082,9 +9285,11 @@ Zmixed.nonref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", 
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   method <-"Z-test for Mixed Non-Reflexive NN Pattern"
@@ -9115,14 +9320,14 @@ Zmixed.nonref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),
 {
   ipd<-ipd.mat(dat,...)
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   R<-Rval(W)
   Tv<-Tval(W,R)
   
   nvec<-as.numeric(table(lab))
   rfct<-rct(ipd,lab,...)
   
-  rval<-Zmixed.nonref.ct(rfct,nvec,Qv,Tv,alternative=alternative,conf.level =conf.level) 
+  rval<-Zmixed.nonref.ct(rfct,nvec,Qv,Tv,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -9140,7 +9345,7 @@ Zmixed.nonref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),
 #' @description
 #' Two functions: \code{Xsq.nnref.ct} and \code{Xsq.nnref}.
 #' 
-#' Both functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected values of the
 #' diagonal cell counts (i.e., entries) under RL or CSR in the RCT for \eqn{k \ge 2} classes.
 #' That is, each test performs an overall NN reflexivity test (for the vector of entries \eqn{(1,1)} and \eqn{(2,2)},
@@ -9161,17 +9366,17 @@ Zmixed.nonref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),
 #' NNs and \eqn{P_{aa}} is the probability of any two points selected are being from the same class
 #' and \eqn{P_{ab}} is the probability of any two points selected are being from two different classes.
 #' 
-#' @param rfct An RCT, used in \codeXsq.nnref.ct} only
-#' @param nvec The vector of class sizes, used in \codeXsq.nnref.ct} only
-#' @param Qv The number of shared NNs, used in \codeXsq.nnref.ct} only
+#' @param rfct An RCT, used in \code{Xsq.nnref.ct} only
+#' @param nvec The \code{vector} of class sizes, used in \code{Xsq.nnref.ct} only
+#' @param Qv The number of shared NNs, used in \code{Xsq.nnref.ct} only
 #' @param Tv \eqn{T} value, which is the number of triplets \eqn{(z_i, z_j, z_k)} with 
-#' "\eqn{NN(z_i) = NN(z_j) = z_k} and \eqn{NN(z_k) = z_j} where \eqn{NN(\cdot)} is the nearest neighbor function, used in \codeXsq.nnref.ct} only.
+#' \eqn{NN(z_i) = NN(z_j) = z_k} and \eqn{NN(z_k) = z_j} where \eqn{NN(\cdot)} is the nearest neighbor function, used in \code{Xsq.nnref.ct} only.
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
-#' used in \codeXsq.nnref} only
-#' @param lab Vector of class labels (numerical or categorical), used in \codeXsq.nnref} only
-#' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \codeXsq.nnref} only
+#' used in \code{Xsq.nnref} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Xsq.nnref} only
+#' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{Xsq.nnref} only
 #'    
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for overall NN reflexivity test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
 #' \item{df}{Degrees of freedom for the chi-squared test, which is 2 for this function.}
@@ -9181,8 +9386,8 @@ Zmixed.nonref <- function(dat,lab,alternative=c("two.sided", "less", "greater"),
 #' \item{null.value}{Hypothesized null values for the diagonal entries \eqn{(1,1)} and \eqn{(2,2)} in the RCT, 
 #' which are \eqn{E(N_{11})=R P_{aa}} and \eqn{E(N_{22})=R P_{ab}}, respectively).}
 #' \item{method}{Description of the hypothesis test}
-#' \item{ct.name}{Name of the contingency table, \code{rfct}, returned by \codeXsq.nnref.ct} only}
-#' \item{data.name}{Name of the data set, \code{dat}, returned by \codeXsq.nnref} only}
+#' \item{ct.name}{Name of the contingency table, \code{rfct}, returned by \code{Xsq.nnref.ct} only}
+#' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Xsq.nnref} only}
 #'  
 #' @seealso \code{\link{Znnref.ct}}, \code{\link{Znnref}}, \code{\link{Zself.ref.ct}},
 #' \code{\link{Zself.ref}}, \code{\link{Zmixed.nonref.ct}} and \code{\link{Zmixed.nonref}}
@@ -9195,14 +9400,16 @@ NULL
 #'
 #' @rdname funsXsq.nnref
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' R<-Rval(W)
 #' Tv<-Tval(W,R)
 #'
@@ -9217,11 +9424,11 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #'
 #' ipd<-ipd.mat(Y)
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' R<-Rval(W)
 #' Tv<-Tval(W,R)
 #'
@@ -9304,7 +9511,7 @@ Xsq.nnref <- function(dat,lab,...)
 {
   ipd<-ipd.mat(dat,...)
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   R<-Rval(W)
   Tv<-Tval(W,R)
   
@@ -9335,9 +9542,9 @@ Xsq.nnref <- function(dat,lab,...)
 #' SCCT is constructed by categorizing the NN pairs according to pair type as self or mixed. 
 #' A base-NN pair is called a self pair, if the elements of the pair are from the same class;
 #' a mixed pair, if the elements of the pair are from different classes.
-#' Row labels in the RCT are the class labels and the column labels are "\code{self}" and "\code{mixed}".
+#' Row labels in the RCT are the class labels and the column labels are \code{"self"} and \code{"mixed"}.
 #' The \eqn{k \times 2} SCCT (whose first column is self column with entries \eqn{S_i} and second column is mixed with entries \eqn{M_i})
-#' is closely related to the \eqn{k \times k} nearest neighbor contingency table (NNCT) whose entries are \eqn{N__{ij}},
+#' is closely related to the \eqn{k \times k} nearest neighbor contingency table (NNCT) whose entries are \eqn{N_{ij}},
 #' where \eqn{S_i=N_{ii}} and \eqn{M_i=n_i-N_{ii}} with \eqn{n_i} is the size of class \eqn{i}.
 #' 
 #' The function \code{scct.ct} returns the SCCT given the inter-point distance (IPD) matrix or data set \code{x},
@@ -9352,11 +9559,11 @@ Xsq.nnref <- function(dat,lab,...)
 #' The argument nnct is a logical argument for \code{scct.ct} only (default=\code{FALSE}) to determine the structure of the
 #' argument \code{x}. If \code{TRUE}, \code{x} is taken to be the \eqn{k \times k} NNCT, and if \code{FALSE}, \code{x} is taken to be the IPD matrix.
 #' 
-#' The argument lab is the vector of class labels (default=\code{NULL} when \code{nnct=TRUE} in the function \code{scct.ct} and no default
+#' The argument lab is the \code{vector} of class labels (default=\code{NULL} when \code{nnct=TRUE} in the function \code{scct.ct} and no default
 #' specified for scct).
 #' 
 #' @param x The IPD matrix (if \code{nnct=FALSE}) or the NNCT (if \code{nnct=TRUE}), used in \code{scct.ct} only
-#' @param lab Vector of class labels (numerical or categorical), default=\code{NULL} when \code{nnct=FALSE} in the function \code{scct.ct} and no default
+#' @param lab The \code{vector} of class labels (numerical or categorical), default=\code{NULL} when \code{nnct=FALSE} in the function \code{scct.ct} and no default
 #' specified for scct.
 #' @param ties A logical argument (default=\code{FALSE}) to take ties into account or not. If \code{TRUE} a NN 
 #' contributes \eqn{1/m} to the NN count if it is one of the \eqn{m} tied NNs of a subject.
@@ -9378,11 +9585,13 @@ NULL
 #'
 #' @rdname funs.scct
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' NNCT<-nnct(ipd,cls)
 #' NNCT
 #'
@@ -9394,14 +9603,15 @@ NULL
 #' scct.ct(NNCT,nnct=TRUE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' scct.ct(ipd,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' NNCT<-nnct(ipd,cls)
 #' NNCT
 #'
@@ -9478,7 +9688,7 @@ scct <- function(dat,lab,ties=FALSE,...)
 #' @description
 #' Two functions: \code{varNii.ct} and \code{varNii}.
 #' 
-#' Both functions return a vector of length \eqn{k} of variances of the self entries (i.e. first column) in a
+#' Both functions return a \code{vector} of length \eqn{k} of variances of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT) or the variances of the diagonal entries \eqn{N_{ii}} in an NNCT,
 #' but have different arguments (see the parameter list below).
 #' These variances are valid under RL or conditional on \eqn{Q} and \eqn{R} under CSR.
@@ -9492,10 +9702,10 @@ scct <- function(dat,lab,ties=FALSE,...)
 #' @param R The number of reflexive NNs (i.e., twice the number of reflexive NN pairs), used in \code{varNii.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{varNii} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{varNii} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{varNii} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{varNii} only
 #' 
-#' @return A vector of length \eqn{k} whose entries are the variances of the self entries (i.e. first column) in a
+#' @return A \code{vector} of length \eqn{k} whose entries are the variances of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT) or of the diagonal entries in an NNCT.
 #'  
 #' @seealso \code{\link{scct}}, \code{\link{var.nnct}}, \code{\link{var.tct}}, \code{\link{var.nnsym}}
@@ -9509,15 +9719,17 @@ NULL
 #'
 #' @rdname funs.varNii
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' varNii(Y,cls)
@@ -9526,7 +9738,8 @@ NULL
 #' varNii(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' varNii(Y,fcls)
@@ -9536,11 +9749,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' varNii(Y,cls)
@@ -9571,7 +9784,7 @@ varNii <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   var<-varNii.ct(ct,Qv,Rv) 
 var
@@ -9601,16 +9814,16 @@ var
 #' See also (\insertCite{ceyhan:NNCorrespond2018;textual}{nnspat}).
 #' 
 #' @param ct The NNCT or SCCT, used in \code{covNii.ct} only
-#' @param Vsq The vector of variances of the diagonal entries \eqn{N_{ii}} in the NNCT or the self entries
+#' @param Vsq The \code{vector} of variances of the diagonal entries \eqn{N_{ii}} in the NNCT or the self entries
 #' (i.e. the first column) in the SCCT, used in \code{covNii.ct} only
 #' @param Q The number of shared NNs, used in \code{covNii.ct} only
 #' @param R The number of reflexive NNs (i.e., twice the number of reflexive NN pairs), used in \code{covNii.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{covNii} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{covNii} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{covNii} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function, used in \code{covNii} only
 #' 
-#' @return A vector of length \eqn{k} whose entries are the variances of the self entries (i.e. first column) in a
+#' @return A \code{vector} of length \eqn{k} whose entries are the variances of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT).
 #' 
 #' @return The \eqn{k \times k} covariance matrix of cell counts \eqn{S_i} in the self (i.e., first) column of the SCCT
@@ -9626,15 +9839,17 @@ NULL
 #'
 #' @rdname funs.covNii
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' vsq<-varNii.ct(ct,Qv,Rv)
@@ -9644,7 +9859,8 @@ NULL
 #' covNii(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' covNii(Y,fcls)
@@ -9654,11 +9870,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' vsq<-varNii.ct(ct,Qv,Rv)
@@ -9696,10 +9912,10 @@ covNii <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Q<-Qvec(W)$Q
+  Q<-Qvec(W)$q
   R<-Rval(W)
   
-  Vsq<-varNii.ct(ct,Qv,Rv) 
+  Vsq<-varNii.ct(ct,Q,R) 
   
   rs <- row.sum(ct); 
   n<-sum(ct)
@@ -9725,7 +9941,7 @@ covNii <- function(dat,lab,...)
 
 #' @title Expected Values of the Self Entries in a Species Correspondence Contingency Table (SCCT)
 #'
-#' @description Returns a vector of length \eqn{k} of expected values of the self entries (i.e. first column) in a
+#' @description Returns a \code{vector} of length \eqn{k} of expected values of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT) or the expected values of the diagonal entries \eqn{N_{ii}} in an NNCT.
 #' These expected values are valid under RL or CSR.
 #' 
@@ -9735,7 +9951,7 @@ covNii <- function(dat,lab,...)
 #' 
 #' @param ct The NNCT or SCCT
 #' 
-#' @return A vector of length \eqn{k} whose entries are the expected values of the self entries (i.e. first column) in a
+#' @return A \code{vector} of length \eqn{k} whose entries are the expected values of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT) or of the diagonal entries in an NNCT.
 #'  
 #' @seealso \code{\link{scct}} and \code{\link{EV.nnct}}
@@ -9743,11 +9959,13 @@ covNii <- function(dat,lab,...)
 #' @references
 #' \insertAllCited{}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
@@ -9756,7 +9974,8 @@ covNii <- function(dat,lab,...)
 #' EV.Nii(ct)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' EV.Nii(ct)
@@ -9765,7 +9984,7 @@ covNii <- function(dat,lab,...)
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' EV.Nii(ct)
@@ -9798,7 +10017,7 @@ EV.Nii <- function(ct)
 #' @description
 #' Two functions: \code{Znnself.ct} and \code{Znnself}.
 #' 
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected values of the self entries (i.e. first column)
 #' in a species correspondence contingency table (SCCT) or the expected values of the diagonal entries \eqn{N_{ii}} in
 #' an NNCT to the ones under RL or CSR.
@@ -9813,14 +10032,14 @@ EV.Nii <- function(ct)
 #' species correspondence contingency table (SCCT) or the diagonal entries \eqn{N_{ii}} in an NNCT and
 #' are due to \insertCite{ceyhan:NNCorrespond2018}{nnspat}.
 #' 
-#' Each function yields a vector of length \eqn{k} of the test statistics, \eqn{p}-values for the corresponding 
+#' Each function yields a \code{vector} of length \eqn{k} of the test statistics, \eqn{p}-values for the corresponding 
 #' alternative, null values (i.e. expected values), sample estimates (i.e. observed values) of self entries 
 #' in the SCCT or diagonal entries in the NNCT, a \eqn{k \times 2} matrix of confidence intervals (where each row is the
 #' confidence interval for self entry \eqn{S_i} in the SCCT or diagonal entry \eqn{N_{ii}} in the NNCT) and
 #' also names of the test statistics, estimates, null values and the method and the data
 #' set used.
 #' 
-#' The null hypothesis is that all \eqn{E[S_i] = E[N_{ii}] = n_i(n_i − 1)/(n − 1)} where \eqn{n_i} is the size of class \eqn{i} and
+#' The null hypothesis is that all \eqn{E[S_i] = E[N_{ii}] = n_i(n_i - 1)/(n - 1)} where \eqn{n_i} is the size of class \eqn{i} and
 #' \eqn{n} is the data size.
 #' 
 #' The \code{Znnself} functions (i.e. \code{Znnself.ct} and \code{Znnself}) are different from the \code{Znnref} functions 
@@ -9838,27 +10057,27 @@ EV.Nii <- function(ct)
 #' used in \code{Znnself.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnself} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnself} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnself} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the self entries in the SCCT or diagonal entries in the NNCT
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Znnself} only
 #' 
-#' @return A list with the elements
-#' \item{statistic}{The vector (of length k) of \eqn{Z} test statistics for NN self reflexivity test}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{vector} (of length k) of \eqn{Z} test statistics for NN self reflexivity test}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The vector of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{vector} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Lower and Upper Confidence Levels, it is \code{NULL} here since we provide confidence intervals
 #' as a \eqn{k \times 2} matrix.} 
 #' \item{conf.int}{The \eqn{k \times 2} matrix of confidence intervals for the estimates, (where each row is the
 #' confidence interval for self entry \eqn{S_i} in the SCCT or diagonal entry \eqn{N_{ii}} in the NNCT).}
 #' \item{cnf.lvl}{Level of the confidence intervals (i.e., conf.level) for the self entries in the SCCT or
 #' diagonal entries in the NNCT.}
-#' \item{estimate}{The vector of estimates of the parameters, i.e., observed values of self entries 
+#' \item{estimate}{The \code{vector} of estimates of the parameters, i.e., observed values of self entries 
 #' in the SCCT or diagonal entries in the NNCT.}
 #' \item{est.name,est.name2}{Names of the estimates, both are same in this function.}
-#' \item{null.value}{The vector of null values of the parameters, i.e., expected values of self entries 
+#' \item{null.value}{The \code{vector} of null values of the parameters, i.e., expected values of self entries 
 #' in the SCCT or diagonal entries in the NNCT under RL or CSR.}
 #' \item{null.name}{Name of the null values}
 #' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"}, \code{"greater"}}
@@ -9867,7 +10086,7 @@ EV.Nii <- function(ct)
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Znnself} only}
 #'  
 #' @seealso \code{\link{Zself.ref.ct}}, \code{\link{Zself.ref}}, \code{\link{Znnref.ct}},
-#' \code{\link{Znnref}} and \code{\link{Xsq.scct}}
+#' \code{\link{Znnref}}, \code{\link{Xsq.spec.cor}} and \code{\link{Xsq.spec.cor.ct}}
 #' 
 #' @references
 #' \insertAllCited{}
@@ -9877,15 +10096,17 @@ NULL
 #'
 #' @rdname funsZnnself
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' VarN.diag<-varNii.ct(ct,Qv,Rv)
 #'
@@ -9901,7 +10122,8 @@ NULL
 #' Znnself.ct(ct,VarN.diag)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Znnself(Y,fcls)
@@ -9911,11 +10133,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' VarN.diag<-varNii.ct(ct,Qv,Rv)
 #'
@@ -9952,26 +10174,28 @@ Znnself.ct <- function(ct,VarNii,alternative=c("two.sided", "less", "greater"),c
   {stop('Both test statistics are NaN, so the self NN Z-tests are not defined')}
   
   cint<-matrix(0,ncol=2,nrow=k)
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
-           pval <-pnorm(ts)
            for (i in 1:k)
            {cint[i,] <-estimate[i]+c(-Inf, qnorm(conf.level))*stderr[i]}
-         },
+           pval <-pnorm(ts)
+        },
          greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
            for (i in 1:k)
            {cint[i,] <-estimate[i]+c(-qnorm(conf.level),Inf)*stderr[i]}
+           pval <-pnorm(ts, lower.tail = FALSE)
          },
          two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
            alpha <-1 - conf.level
            Cint <-qnorm(1 - alpha/2)
            for (i in 1:k)
            {cint[i,] <-estimate[i]+c(-Cint, Cint)*stderr[i]}
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+           pval <-2 * pnorm(-abs(ts))
+        }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   cnf.lvl<-conf.level
   
   method <-c("z-Tests for Diagonal NNCT Entries (for Self NN Pairs)")
@@ -10014,11 +10238,11 @@ Znnself <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.l
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   VarN.diag<-varNii.ct(ct,Qv,Rv) 
   
-  rval<-Znnself.ct(ct,VarN.diag,alternative=alternative,conf.level =conf.level) 
+  rval<-Znnself.ct(ct,VarN.diag,alternative=alternative,conf.level=conf.level)
   
   dname <-deparse(substitute(dat))
   
@@ -10054,7 +10278,7 @@ Znnself <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.l
 #' The functions also provide names of the test statistics, the method and the data set used.
 #' 
 #' The null hypothesis is that all 
-#' \eqn{E[S_1,S_2,\ldots,S_k] = E[N_{11},N_{22},\ldots,N_{kk}] = ((n_1(n_1 − 1)/(n − 1),(n_2(n_2 − 1)/(n − 1),\ldots,(n_k(n_k − 1)/(n − 1) )}
+#' \eqn{E[S_1,S_2,\ldots,S_k] = E[N_{11},N_{22},\ldots,N_{kk}] = ((n_1(n_1 - 1)/(n - 1),(n_2(n_2 - 1)/(n - 1),\ldots,(n_k(n_k - 1)/(n - 1) )}
 #' where \eqn{n_i} is the size of class \eqn{i} and \eqn{n} is the data size.
 #' 
 #' @param ct The NNCT or SCCT, used in \code{Xsq.spec.cor.ct} only
@@ -10065,25 +10289,24 @@ Znnself <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.l
 #' and if \code{FALSE}, \code{x} is taken to be the IPD matrix, used in \code{Xsq.spec.cor.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Xsq.spec.cor} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Xsq.spec.cor} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Xsq.spec.cor} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Xsq.spec.cor} only
 #'    
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for overall species correspondence test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
 #' \item{df}{Degrees of freedom for the chi-squared test, which is \eqn{k} for this function.}
-#' \item{estimate}{The vector of estimates of the parameters, i.e., observed values of self entries 
+#' \item{estimate}{The \code{vector} of estimates of the parameters, i.e., observed values of self entries 
 #' in the SCCT or diagonal entries in the NNCT.}
 #' \item{est.name,est.name2}{Names of the estimates, they are identical for this function.}
-#' \item{null.value}{The vector of null values of the parameters, i.e., expected values of self entries 
+#' \item{null.value}{The \code{vector} of null values of the parameters, i.e., expected values of self entries 
 #' in the SCCT or diagonal entries in the NNCT under RL or CSR.}
 #' \item{method}{Description of the hypothesis test}
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{Xsq.spec.cor.ct} only}
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Xsq.spec.cor} only}
 #'  
-#' @seealso \code{\link{Zspec.cor.ct}}, \code{\link{Zspec.cor}}, \code{\link{Zself.ref.ct}},
-#' \code{\link{Zself.ref}}, \code{\link{Xsq.nnref.ct}} and \code{\link{Xsq.nnref}}
+#' @seealso \code{\link{Zself.ref.ct}}, \code{\link{Zself.ref}}, \code{\link{Xsq.nnref.ct}} and \code{\link{Xsq.nnref}}
 #' 
 #' @references
 #' \insertAllCited{}
@@ -10093,16 +10316,18 @@ NULL
 #'
 #' @rdname funsXsq.spec.cor
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-scct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' vsq<-varNii.ct(ct,Qv,Rv)
@@ -10115,7 +10340,8 @@ NULL
 #' Xsq.spec.cor.ct(ct,cv,nnct = TRUE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-scct(ipd,fcls)
 #' Xsq.spec.cor.ct(ct,cv)
 #' Xsq.spec.cor(Y,fcls)
@@ -10127,11 +10353,11 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-scct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' vsq<-varNii.ct(ct,Qv,Rv)
@@ -10194,7 +10420,7 @@ Xsq.spec.cor <- function(dat,lab,...)
   ct<-scct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   
   vsq<-varNii.ct(ct,Qv,Rv) 
@@ -10217,7 +10443,7 @@ Xsq.spec.cor <- function(dat,lab,...)
 #' @description
 #' Two functions: \code{Znnself.sum.ct} and \code{Znnself.sum}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected value of the sum of the self entries (i.e.
 #' first column) in a species correspondence contingency table (SCCT) or the expected values of the sum of the 
 #' diagonal entries \eqn{N_{ii}} in an NNCT to the one under RL or CSR.
@@ -10237,7 +10463,7 @@ Xsq.spec.cor <- function(dat,lab,...)
 #' and method and name of the data set used.
 #' 
 #' The null hypothesis is that all 
-#' \eqn{E[S] = \sum_{i=1}^k n_i(n_i − 1)/(n − 1)} where \eqn{S} is the sum of the self column
+#' \eqn{E[S] = \sum_{i=1}^k n_i(n_i - 1)/(n - 1)} where \eqn{S} is the sum of the self column
 #' in the SCCT, \eqn{n_i} is the size of class \eqn{i} and \eqn{n} is the data size. 
 #' 
 #' The \code{Znnself.sum} functions (i.e. \code{Znnself.sum.ct} and \code{Znnself.sum}) are different from the Znnself
@@ -10257,24 +10483,24 @@ Xsq.spec.cor <- function(dat,lab,...)
 #' and if \code{FALSE}, \code{x} is taken to be the IPD matrix, used in \code{Znnself.sum.ct} only
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Znnself.sum} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Znnself.sum} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Znnself.sum} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the self entries in the SCCT or diagonal entries in the NNCT
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Znnself.sum} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for the overall species correspondence test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the sum of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT) or the sum of the diagonal entries \eqn{N_{ii}} in an NNCT
-#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{estimate}{Estimate of the parameter, i.e., the observed sum of the self entries (i.e. first column)
 #' in a species correspondence contingency table (SCCT) or the sum of the diagonal entries \eqn{N_{ii}} in an NNCT.}
 #' \item{null.value}{Hypothesized null value for the sum of the self entries (i.e. first column) in a
 #' species correspondence contingency table (SCCT) or the sum of the diagonal entries \eqn{N_{ii}} in an NNCT
-#' which is \eqn{E[S] = \sum_{i=1}^k n_i(n_i − 1)/(n − 1)} where \eqn{S} is the sum of the self column
+#' which is \eqn{E[S] = \sum_{i=1}^k n_i(n_i - 1)/(n - 1)} where \eqn{S} is the sum of the self column
 #' in the SCCT, \eqn{n_i} is the size of class \eqn{i} and \eqn{n} is the data size.}
 #' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"}, \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
@@ -10292,16 +10518,18 @@ NULL
 #'
 #' @rdname funsZnnself.sum
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-scct(ipd,cls)
 #' ct
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' vsq<-varNii.ct(ct,Qv,Rv)
@@ -10320,12 +10548,12 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' ct<-scct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #'
 #' vsq<-varNii.ct(ct,Qv,Rv)
@@ -10372,7 +10600,7 @@ Znnself.sum.ct <- function(ct,covSC,nnct=FALSE,alternative=c("two.sided", "less"
   null.val<-Esum.dg
   names(null.val)<- "(expected) sum of self NN pairs"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -10386,9 +10614,11 @@ Znnself.sum.ct <- function(ct,covSC,nnct=FALSE,alternative=c("two.sided", "less"
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   method <-"Z-test for Sum of Self NN Pairs"
@@ -10421,13 +10651,13 @@ Znnself.sum <- function(dat,lab,alternative=c("two.sided", "less", "greater"),co
   ct<-scct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   
   vsq<-varNii.ct(ct,Qv,Rv) 
   cv<-covNii.ct(ct,vsq,Qv,Rv) 
   
-  rval<- Znnself.sum.ct(ct,cv,alternative=alternative,conf.level =conf.level) 
+  rval<- Znnself.sum.ct(ct,cv,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -10453,11 +10683,11 @@ Znnself.sum <- function(dat,lab,alternative=c("two.sided", "less", "greater"),co
 #' (\insertCite{ceyhan:SiM-seg-ind2014;textual}{nnspat}).
 #' Both functions use the same argument, \code{ct}, for NNCT.
 #' 
-#' Pielou's segregation coefficient (for two classes) is \eqn{S_P = 1 −(N_{12} + N_{21})/(E[N_{12}] + E[N_{21}])}
-#' and the extended segregations coefficents (for \eqn{k \ge 2} classes) are 
-#' \eqn{S_c = 1 −(N_{ii})/(E[N_{ii}])} for the diagonal cells in the NNCT
+#' Pielou's segregation coefficient (for two classes) is \eqn{S_P = 1-(N_{12} + N_{21})/(E[N_{12}] + E[N_{21}])}
+#' and the extended segregation coefficents (for \eqn{k \ge 2} classes) are 
+#' \eqn{S_c = 1 -(N_{ii})/(E[N_{ii}])} for the diagonal cells in the NNCT
 #' and
-#' \eqn{S_c = 1 −(N_{ij} + N_{ji})/(E[N_{ij}] + E[N_{ji}])} for the off-diagonal cells in the NNCT.
+#' \eqn{S_c = 1 -(N_{ij} + N_{ji})/(E[N_{ij}] + E[N_{ji}])} for the off-diagonal cells in the NNCT.
 #'   
 #' @param ct A nearest neighbor contingency table, used in both functions
 #' 
@@ -10476,18 +10706,21 @@ NULL
 #'
 #' @rdname funs.seg.coeff
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #Examples for Pseg.coeff
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #' Pseg.coeff(ct)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Pseg.coeff(ct)
@@ -10513,18 +10746,21 @@ Pseg.coeff <- function(ct)
 #'
 #' @rdname funs.seg.coeff
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #Examples for seg.coeff
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #' seg.coeff(ct)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' seg.coeff(ct)
@@ -10532,7 +10768,7 @@ Pseg.coeff <- function(ct)
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' ct<-nnct(ipd,cls)
 #'
@@ -10584,15 +10820,17 @@ seg.coeff <- function(ct)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -10600,7 +10838,8 @@ seg.coeff <- function(ct)
 #' varPseg.coeff(ct,covN)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' varPseg.coeff(ct,covN)
@@ -10632,20 +10871,17 @@ varPseg.coeff <- function(ct,covN)
 #'
 #' @description Returns the index matrix for choosing the entries in the covariance matrix for NNCT 
 #' used for computing the covariance for the extension of Pielou's segregation coefficient to the multi-class
-#' case. The matrix is \eqn{\eqn{k(k+1)/2} \times 2} with each row is the \eqn{i,j} 
+#' case. The matrix is \eqn{k(k+1)/2 \times 2} with each row is the \eqn{i,j} 
 #' corresponding to \eqn{N_{ij}} in the NNCT.
 #'
 #' @param k An integer specifying the number of classes in the data set
 #' 
-#' @return The \eqn{\eqn{k(k+1)/2} \times 2} index matrix with each row is the \eqn{i,j} 
+#' @return The \eqn{k(k+1)/2 \times 2} index matrix with each row is the \eqn{i,j} 
 #' corresponding to \eqn{N_{ij}} in the NNCT
 #' 
 #' @seealso \code{\link{cov.seg.coeff}}, \code{\link{seg.coeff}} and \code{\link{ind.nnsym}} 
 #'
-#' @examples
-#' ind.seg.coeff(2)
-#' ind.seg.coeff(3)
-#' ind.seg.coeff(4)
+#' @author Elvan Ceyhan
 #'
 ind.seg.coeff <- function(k)
 {
@@ -10667,7 +10903,7 @@ ind.seg.coeff <- function(k)
 #' @title Variances of Segregation Coefficients in a Multi-class Case
 #'
 #' @description Returns the variances of segregation coefficients in a multi-class case based on the NNCT, \code{ct} 
-#' in a vector of length \eqn{k(k+1)/2}, the order of the variances are as in the order of rows output of 
+#' in a \code{vector} of length \eqn{k(k+1)/2}, the order of the variances are as in the order of rows output of 
 #' \code{\link{ind.seg.coeff}(k)}. These variances are valid under RL or conditional on \eqn{Q} and \eqn{R} under CSR.
 #' 
 #' See also (\insertCite{ceyhan:SiM-seg-ind2014;textual}{nnspat}).
@@ -10677,9 +10913,9 @@ ind.seg.coeff <- function(k)
 #' @param ct A nearest neighbor contingency table
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT
 #'
-#' @return A vector of length \eqn{k(k+1)/2}, whose entries are the variances of segregation coefficients for the
+#' @return A \code{vector} of length \eqn{k(k+1)/2}, whose entries are the variances of segregation coefficients for the
 #' entry \eqn{i,j} in the NNCT, where the order of the variances are as in the order of rows output of 
-#' \code{\lin{ind.seg.coeff}(k)}.
+#' \code{\link{ind.seg.coeff}(k)}.
 #'
 #' @seealso \code{\link{seg.coeff}}, \code{\link{cov.seg.coeff}}, \code{\link{var.nnsym}}
 #' and \code{\link{var.nnct}} and 
@@ -10687,15 +10923,17 @@ ind.seg.coeff <- function(k)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -10704,7 +10942,8 @@ ind.seg.coeff <- function(k)
 #' varPseg.coeff(ct,covN)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' var.seg.coeff(ct,covN)
@@ -10712,12 +10951,12 @@ ind.seg.coeff <- function(k)
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -10777,15 +11016,17 @@ var.seg.coeff <- function(ct,covN)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -10793,7 +11034,8 @@ var.seg.coeff <- function(ct,covN)
 #' cov.seg.coeff(ct,covN)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' cov.seg.coeff(ct,covN)
@@ -10801,12 +11043,12 @@ var.seg.coeff <- function(ct,covN)
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -10857,7 +11099,7 @@ cov.seg.coeff <- function(ct,covN)
 #' @description
 #' Two functions: \code{Zseg.coeff.ct} and \code{Zseg.coeff}.
 #' 
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' segregation coefficients from their expected values under RL or CSR for each segregation coefficient
 #' in the NNCT.
@@ -10881,20 +11123,20 @@ cov.seg.coeff <- function(ct,covN)
 #' See also (\insertCite{ceyhan:SiM-seg-ind2014;textual}{nnspat}).
 #' 
 #' @param ct A nearest neighbor contingency table, used in \code{Zseg.coeff.ct} only 
-#' @param varT The variance matrix for the segregation coefficients in the NNCT, \code{ct} ; used in \code{Zseg.coeff.ct} only 
+#' @param VarSC The variance matrix for the segregation coefficients in the NNCT, \code{ct} ; used in \code{Zseg.coeff.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zseg.coeff} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zseg.coeff} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, for the segregation 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zseg.coeff} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, for the segregation 
 #' coefficients
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Zseg.coeff} only
 #'
-#' @return A list with the elements
-#' \item{statistic}{The matrix of test statistics for the segregation coefficients}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of test statistics for the segregation coefficients}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels for the segregation coefficients at the given
 #' confidence level \code{conf.level} and depends on the type of \code{alternative}.}
 #' \item{conf.int}{Confidence interval for segregation coefficients, it is \code{NULL} here since we provide the upper 
@@ -10906,7 +11148,7 @@ cov.seg.coeff <- function(ct,covN)
 #' \item{null.value}{Hypothesized null values for the parameters, i.e. expected values of the segregation 
 #' coefficients, which are all 0 under RL or CSR.}
 #' \item{null.name}{Name of the null value}
-#' \item{alternative}{Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}"}
+#' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{Zseg.coeff.ct} only}
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Zseg.coeff} only}
@@ -10916,20 +11158,22 @@ cov.seg.coeff <- function(ct,covN)
 #' @references
 #' \insertAllCited{}
 #' 
-#' @name funsZsegind
+#' @name funsZseg.coeff
 NULL
 #'
-#' @rdname funsZsegind
+#' @rdname funsZseg.coeff
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -10945,7 +11189,8 @@ NULL
 #' Zseg.coeff.ct(ct,varT,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Zseg.coeff.ct(ct,varT)
@@ -10953,12 +11198,12 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -11016,7 +11261,7 @@ Zseg.coeff.ct <- function(ct,VarSC,alternative=c("two.sided", "less", "greater")
   
   ts<-tstat+t(tstat)-diag(diag(tstat),k,k)
   stderr<-stderr0+t(stderr0)-diag(diag(stderr0),k,k)
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            lcl <-NULL
@@ -11033,9 +11278,10 @@ Zseg.coeff.ct <- function(ct,VarSC,alternative=c("two.sided", "less", "greater")
            crit.val <-qnorm(1-alpha/2)
            lcl <-estimate-crit.val*stderr
            ucl <-estimate+crit.val*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
@@ -11072,7 +11318,7 @@ Zseg.coeff.ct <- function(ct,VarSC,alternative=c("two.sided", "less", "greater")
   return(rval)
 } #end for the function
 #'
-#' @rdname funsZsegind
+#' @rdname funsZseg.coeff
 #'
 #' @export
 Zseg.coeff <- function(dat,lab,alternative=c("two.sided", "less", "greater"),conf.level = 0.95,...) 
@@ -11081,14 +11327,14 @@ Zseg.coeff <- function(dat,lab,alternative=c("two.sided", "less", "greater"),con
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
   varT<-var.seg.coeff(ct,covN) 
   
-  rval<- Zseg.coeff.ct(ct,varT,alternative=alternative,conf.level =conf.level) 
+  rval<- Zseg.coeff.ct(ct,varT,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -11132,15 +11378,15 @@ Zseg.coeff <- function(dat,lab,alternative=c("two.sided", "less", "greater"),con
 #' Usually output of the function \code{\link{cov.seg.coeff}}
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Xsq.seg.coeff} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Xsq.seg.coeff} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Xsq.seg.coeff} only
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Xsq.seg.coeff} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The chi-squared test statistic for the combined segregation coefficients}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
 #' \item{df}{Degrees of freedom for the chi-squared test, which is \eqn{k(k+1)/2-1} for this function.}
-#' \item{estimate}{The vector of estimates of the parameters, i.e., observed values of segregation coefficients 
+#' \item{estimate}{The \code{vector} of estimates of the parameters, i.e., observed values of segregation coefficients 
 #' in the NNCT.}
 #' \item{est.name,est.name2}{Names of the estimates, they are identical for this function.}
 #' \item{null.value}{The null value of the parameters, i.e., expected values of segregation coefficients
@@ -11159,15 +11405,17 @@ NULL
 #'
 #' @rdname funsXsq.seg.coeff
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -11180,7 +11428,8 @@ NULL
 #' Xsq.seg.coeff(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Xsq.seg.coeff.ct(ct,covSC)
@@ -11188,12 +11437,12 @@ NULL
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -11258,7 +11507,7 @@ Xsq.seg.coeff <- function(dat,lab,...)
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv) #default is byrow
@@ -11283,7 +11532,7 @@ Xsq.seg.coeff <- function(dat,lab,...)
 #' @description
 #' Two functions: \code{cell.spec.ss.ct} and \code{cell.spec.ss}.
 #' 
-#' Both functions are objects of class "\code{cellhtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"cellhtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected values of the 
 #' cell counts (i.e., entries) in the NNCT for \eqn{k \ge 2} classes.
 #' Each test is appropriate (i.e. have the appropriate asymptotic sampling distribution)
@@ -11309,21 +11558,21 @@ Xsq.seg.coeff <- function(dat,lab,...)
 #' @param ct A nearest neighbor contingency table, used in \code{cell.spec.ss.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{cell.spec.ss} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{cell.spec.ss} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{cell.spec.ss} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the entries, \eqn{N_{ij}} in the NNCT
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{cell.spec.ss} only
 #'    
-#' @return A list with the elements
-#' \item{statistic}{The matrix of \eqn{Z} test statistics for cell-specific tests}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \code{matrix} of \eqn{Z} test statistics for cell-specific tests}
 #' \item{stat.names}{Name of the test statistics}
-#' \item{p.value}{The matrix of \eqn{p}-values for the hypothesis test for the corresponding alternative}
+#' \item{p.value}{The \code{matrix} of \eqn{p}-values for the hypothesis test for the corresponding alternative}
 #' \item{LCL,UCL}{Matrix of Lower and Upper Confidence Levels for the entries \eqn{N_{ij}} in the NNCT 
 #' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{conf.int}{The confidence interval for the estimates, it is \code{NULL} here, since we provide the \code{UCL} and \code{LCL}
-#' in matrix form.}
+#' in \code{matrix} form.}
 #' \item{cnf.lvl}{Level of the upper and lower confidence limits (i.e., conf.level) of the NNCT entries.}
 #' \item{estimate}{Estimates of the parameters, i.e., matrix of the NNCT entries of the \eqn{k \times k} NNCT, Nij
 #' for i,j=1,2,\ldots,k.}
@@ -11347,11 +11596,13 @@ NULL
 #'
 #' @rdname funs.cell.spec.ss
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' cell.spec.ss(Y,cls)
@@ -11361,7 +11612,8 @@ NULL
 #' cell.spec.ss(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' cell.spec.ss(Y,fcls)
@@ -11371,7 +11623,7 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' cell.spec.ss(Y,cls,alt="l")
@@ -11410,7 +11662,7 @@ cell.spec.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
   nullNij<-Exp
   names.null <-"NNCT entries"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            lcl <-NULL
@@ -11427,9 +11679,10 @@ cell.spec.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
            crit.val <-qnorm(1-alpha/2)
            lcl <-estimate-crit.val*stderrN
            ucl <-estimate+crit.val*stderrN
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
   
@@ -11474,7 +11727,7 @@ cell.spec.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
   ipd<-ipd.mat(dat,...)
   ct<-nnct(ipd,lab)
   
-  rval<-cell.spec.ss.ct(ct,alternative=alternative,conf.level =conf.level) 
+  rval<-cell.spec.ss.ct(ct,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -11492,7 +11745,7 @@ cell.spec.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @description
 #' Two functions: \code{Pseg.ss.ct} and \code{Pseg.ss}.
 #'
-#' Both functions are objects of class "\code{Chisqtest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"Chisqtest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of deviations of 
 #' cell counts from the expected values under independence for all cells (i.e., entries) combined in the NNCT.
 #' That is, each test is Pielou's overall test of segregation based on NNCTs for \eqn{k \ge 2} classes.
@@ -11518,23 +11771,24 @@ cell.spec.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @param ct A nearest neighbor contingency table, used in \code{Pseg.ss.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Pseg.ss} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Pseg.ss} only
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Pseg.ss} only
 #' @param yates A logical parameter (default=\code{TRUE}). If \code{TRUE}, Yates continuity correction is applied,
 #' and if \code{FALSE} the continuity correction is not applied. 
-#' Equivalent to the \code{correct} argument in the base function \code{\link[stats]{chisq.test}
+#' Equivalent to the \code{correct} argument in the base function \code{\link[stats]{chisq.test}}
 #' @param sim A logical parameter (default=\code{FALSE}). If \code{TRUE}, \eqn{p}-values are computed by Monte Carlo simulation
 #' and if \code{FALSE} the \eqn{p}-value is based on the chi-squared approximation.
-#' Equivalent to the \code{simulate.p.value} argument in the base function \code{\link[stats]{chisq.test}
+#' Equivalent to the \code{simulate.p.value} argument in the base function \code{\link[stats]{chisq.test}}
 #' @param Nsim A positive integer specifying the number of replicates used in the Monte Carlo test.
-#' Equivalent to the \code{B} argument in the base function \code{\link[stats]{chisq.test}
+#' Equivalent to the \code{B} argument in the base function \code{\link[stats]{chisq.test}}
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. 
 #' used in \code{Pseg.ss} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The overall chi-squared statistic}
 #' \item{stat.names}{Name of the test statistic}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
-#' \item{df}{Degrees of freedom for the chi-squared test, which is (k-1)^2 for this function.}
+#' \item{df}{Degrees of freedom for the chi-squared test, which is (k-1)^2 for this function. 
+#' Yields \code{NA} if \code{sim=TRUE} and \code{NSim} is provided.}
 #' \item{estimate}{Estimates of the parameters, NNCT, i.e., matrix of the observed \eqn{N_{ij}} values
 #' which is the NNCT.}
 #' \item{est.name,est.name2}{Names of the estimates, they are identical for this function.}
@@ -11556,27 +11810,30 @@ NULL
 #'
 #' @rdname funsPseg.ss
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
 #' Pseg.ss(Y,cls)
 #'
 #' Pseg.ss.ct(ct)
-#' Pseg.ss.ct(ct,yates=F)
+#' Pseg.ss.ct(ct,yates=FALSE)
 #'
-#' Pseg.ss.ct(ct,yates=F,sim=T)
-#' Pseg.ss.ct(ct,yates=F,sim=T,Nsim=10000)
+#' Pseg.ss.ct(ct,yates=FALSE,sim=TRUE)
+#' Pseg.ss.ct(ct,yates=FALSE,sim=TRUE,Nsim=10000)
 #'
 #' Pseg.ss(Y,cls,method="max")
-#' Pseg.ss(Y,cls,yates=F,sim=T,Nsim=10000,method="max")
+#' Pseg.ss(Y,cls,yates=FALSE,sim=TRUE,Nsim=10000,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Pseg.ss(Y,fcls)
@@ -11586,14 +11843,14 @@ NULL
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' Pseg.ss(Y,cls)
-#' Pseg.ss.ct(ct,yates=F)
+#' Pseg.ss.ct(ct,yates=FALSE)
 #'
-#' Pseg.ss(Y,cls, simulate.p.value = T, B = 2000)
-#' Pseg.ss.ct(ct,yates=F) 
+#' Pseg.ss(Y,cls, sim = TRUE, Nsim = 2000)
+#' Pseg.ss.ct(ct,yates=FALSE) 
 #'
 #' @export
 Pseg.ss.ct <- function(ct,yates=TRUE,sim = FALSE, Nsim = 2000)
@@ -11658,10 +11915,10 @@ Pseg.ss <- function(dat,lab,yates=TRUE,sim = FALSE, Nsim = 2000,...)
 #' @description
 #' Two functions: \code{Zdir.nnct.ss.ct} and \code{Zdir.nnct.ss}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of independence in the \eqn{2 \times 2} NNCT which implies \eqn{Z_P=0}
 #' or equivalently \eqn{N_{11}/n_1=N_{21}/n_2}.
-#' \eqn{Z_P=(N_{11}/n_1-N_{21}/n_2)\sqrt(n_1 \eqn{n_2} n/(C_1 C_2))} 
+#' \eqn{Z_P=(N_{11}/n_1-N_{21}/n_2)\sqrt{n_1 n_2 n/(C_1 C_2)}} 
 #' where \eqn{N_{ij}} is the cell count in entry \eqn{i,j}, \eqn{n_i} is the sum of row \eqn{i} (i.e. size of class \eqn{i}),
 #' \eqn{c_j} is the sum of column \eqn{j} in the \eqn{2 \times 2} NNCT;
 #' \eqn{N_{11}/n_1} and \eqn{N_{21}/n_2} are also referred to as the phat estimates in row-wise binomial framework
@@ -11685,19 +11942,19 @@ Pseg.ss <- function(dat,lab,yates=TRUE,sim = FALSE, Nsim = 2000,...)
 #' @param ct The NNCT, used in \code{Zdir.nnct.ss.ct} only 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zdir.nnct.ss} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zdir.nnct.ss} only
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zdir.nnct.ss} only
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the confidence limits, default is \code{0.95}, 
 #' for the difference in phat values in the NNCT
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Zdir.nnct.ss} only
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for the directional (i.e. one-sided) test of segregation based on
 #' the NNCT}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the difference in phat values in the NNCT
-#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{estimate}{Estimate of the parameter, i.e., the observed difference in phat values in the NNCT.}
 #' \item{null.value}{Hypothesized null value for the difference in phat values in the NNCT
 #' which is 0 for this function.}
@@ -11706,7 +11963,7 @@ Pseg.ss <- function(dat,lab,yates=TRUE,sim = FALSE, Nsim = 2000,...)
 #' \item{ct.name}{Name of the contingency table, \code{ct}, returned by \code{Zdir.nnct.ss.ct} only}
 #' \item{data.name}{Name of the data set, \code{dat}, returned by \code{Zdir.nnct.ss} only}
 #'  
-#' @seealso \code{\link{Zdir.nnct.ct}}, \code{\link{Zdir.nnct}}, \code{\link{Pseg.ct}} and \code{\link{Pseg}}
+#' @seealso \code{\link{Zdir.nnct.ct}}, \code{\link{Zdir.nnct}}, \code{\link{Pseg.ss.ct}} and \code{\link{Pseg.ss}}
 #' 
 #' @references
 #' \insertAllCited{}
@@ -11716,11 +11973,13 @@ NULL
 #'
 #' @rdname funsZdir.nnct.ss
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
@@ -11731,15 +11990,16 @@ NULL
 #' Zdir.nnct.ss(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Zdir.nnct.ss(Y,fcls)
 #' Zdir.nnct.ss.ct(ct)
 #'
 #' #############
-#' ct<-matrix(1:9,ncol=3)
-#' Zdir.nnct.ss.ct(ct) #gives an error message
+#' ct<-matrix(1:4,ncol=2)
+#' Zdir.nnct.ss.ct(ct) #gives an error message if ct<-matrix(1:9,ncol=3)
 #'
 #' @export
 Zdir.nnct.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),conf.level = 0.95)
@@ -11770,7 +12030,7 @@ Zdir.nnct.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
   null.val<-0
   names(null.val) <-"(expected) difference between phat estimates in row-wise binomial framework for 2 x 2 NNCT"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -11784,9 +12044,11 @@ Zdir.nnct.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-c("contingency table = ",deparse(substitute(ct)))
@@ -11815,7 +12077,7 @@ Zdir.nnct.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
   ipd<-ipd.mat(dat,...)
   ct<-nnct(ipd,lab)
   
-  rval<-  Zdir.nnct.ss.ct(ct,alternative=alternative,conf.level =conf.level) 
+  rval<-  Zdir.nnct.ss.ct(ct,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -11833,7 +12095,7 @@ Zdir.nnct.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @description
 #' Two functions: \code{Zdir.nnct.ct} and \code{Zdir.nnct}.
 #' 
-#' Both functions are objects of class "\code{htest}" but with different arguments (see the parameter list below).
+#' Both functions are objects of class \code{"htest"} but with different arguments (see the parameter list below).
 #' Each one performs hypothesis tests of equality of the expected value of the the difference between the
 #' phat estimates in a \eqn{2 \times 2} NNCT to the one under RL or CSR (which is \eqn{-1/(n-1)}) where
 #' phat estimates are \eqn{N_{11}/n_1} and \eqn{N_{21}/n_2}.
@@ -11844,9 +12106,9 @@ Zdir.nnct.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' 
 #' The one-sided (or directional) test has two types, specified with the type argument, with default
 #' \code{type="II"}. The second type is 
-#' \eqn{Z_{II}=(T_n-E T_n)/\sqrt(Var(T_n))} where \eqn{T_n=N_{11}/n_1 - N_{21}/n_2}
+#' \eqn{Z_{II}=(T_n-E T_n)/\sqrt{Var(T_n)}} where \eqn{T_n=N_{11}/n_1 - N_{21}/n_2}
 #' (which is the difference between
-#' phat values) and the first type is \eqn{Z_I=U_n T_n} where \eqn{U_n=\sqrt(n_1 n_2/(C_1 C_2))}.
+#' phat values) and the first type is \eqn{Z_I=U_n T_n} where \eqn{U_n=\sqrt{n_1 n_2/(C_1 C_2)}}.
 #' Each test is based on the normal approximation of the \eqn{Z_I} and \eqn{Z_{II}} based on the \eqn{2 \times 2} NNCT and
 #' are due to \insertCite{ceyhan:jnps-NNCT-2010}{nnspat}.
 #' 
@@ -11862,21 +12124,21 @@ Zdir.nnct.ss <- function(dat,lab,alternative=c("two.sided", "less", "greater"),c
 #' @param covN The \eqn{k^2 \times k^2} covariance matrix of row-wise vectorized entries of NNCT
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point,
 #' used in \code{Zdir.nnct} only
-#' @param lab Vector of class labels (numerical or categorical), used in \code{Zdir.nnct} only
-#' @param type The type of the directional (i.e. one-sided) test with default="\code{II}".
-#' Takes on values "\code{I}" and "\code{II}" for types I and II directional tests (see the description above).
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param lab The \code{vector} of class labels (numerical or categorical), used in \code{Zdir.nnct} only
+#' @param type The type of the directional (i.e. one-sided) test with default=\code{"II"}.
+#' Takes on values \code{"I"} and \code{"II"} for types I and II directional tests (see the description above).
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the difference in phat estimates in the NNCT
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' used in \code{Zdir.nnct} only
 #'  
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for the directional (i.e. one-sided) test of segregation based on
 #' the NNCT}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the difference in phat values in an NNCT
-#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{estimate}{Estimate of the parameter, i.e., the observed difference in phat values in an NNCT.}
 #' \item{null.value}{Hypothesized null value for the difference in phat values in an NNCT
 #' which is \eqn{-1/(n-1)} for this function.}
@@ -11896,15 +12158,17 @@ NULL
 #'
 #' @rdname funsZdir.nnct
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #'
 #' W<-Wmat(ipd)
-#' Qv<-Qvec(W)$Q
+#' Qv<-Qvec(W)$q
 #' Rv<-Rval(W)
 #' varN<-var.nnct(ct,Qv,Rv)
 #' covN<-cov.nnct(ct,varN,Qv,Rv)
@@ -11918,15 +12182,16 @@ NULL
 #' Zdir.nnct(Y,cls,method="max")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ct<-nnct(ipd,fcls)
 #'
 #' Zdir.nnct(Y,fcls)
 #' Zdir.nnct.ct(ct,covN)
 #'
 #' #############
-#' ct<-matrix(1:9,ncol=3)
-#' Zdir.nnct.ct(ct,covN)
+#' ct<-matrix(1:4,ncol=2) 
+#' Zdir.nnct.ct(ct,covN) #gives an error message if ct is defined as ct<-matrix(1:9,ncol=3)
 #'
 #' @export
 Zdir.nnct.ct <- function(ct,covN,type="II",alternative=c("two.sided", "less", "greater"),conf.level = 0.95)
@@ -11964,7 +12229,7 @@ Zdir.nnct.ct <- function(ct,covN,type="II",alternative=c("two.sided", "less", "g
   null.val<- -1/(n-1) #ETn value
   names(null.val) <-"(expected) difference between phat estimates under RL for 2 x 2 NNCT"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            ifelse(type=="I",cint <-estimate+c(-Inf, qnorm(conf.level))*stderr/Un,
@@ -11980,9 +12245,11 @@ Zdir.nnct.ct <- function(ct,covN,type="II",alternative=c("two.sided", "less", "g
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            ifelse(type=="I",cint <-estimate+c(-cint, cint)*stderr/Un,cint <-estimate+c(-cint, cint)*stderr)
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(ct))
@@ -12012,12 +12279,12 @@ Zdir.nnct <- function(dat,lab,type="II",alternative=c("two.sided", "less", "grea
   ct<-nnct(ipd,lab)
   
   W<-Wmat(ipd)
-  Qv<-Qvec(W)$Q
+  Qv<-Qvec(W)$q
   Rv<-Rval(W)
   varN<-var.nnct(ct,Qv,Rv) 
   covN<-cov.nnct(ct,varN,Qv,Rv)
   
-  rval<-  Zdir.nnct.ct(ct,covN,type=type,alternative=alternative,conf.level =conf.level) 
+  rval<-  Zdir.nnct.ct(ct,covN,type=type,alternative=alternative,conf.level=conf.level) 
   
   dname <-deparse(substitute(dat))
   
@@ -12038,7 +12305,7 @@ Zdir.nnct <- function(dat,lab,type="II",alternative=c("two.sided", "less", "grea
 #' The generated points are intended to be from a different class, say class 2 (or \eqn{X_2} points) than the reference
 #' (i.e. \eqn{X_1} points, say class 1 points, denoted as \code{X1} as an argument of the function). 
 #' To generate \eqn{n_2} (denoted as \code{n2} as an argument of the function) \eqn{X_2} points, \eqn{n_2} of \eqn{X_1} points are randomly selected (possibly with replacement) and
-#' for a selected \code{X1} point, say \eqn{x_{1ref}}, a \eqn{uniform(0,1)} number, \eqn{U}, is generated.
+#' for a selected \code{X1} point, say \eqn{x_{1ref}}, a \eqn{Uniform(0,1)} number, \eqn{U}, is generated.
 #' If \eqn{U \le p}, a new point from the class 2, say \eqn{x_{2new}}, is generated within a
 #' circle with radius equal to the distance to the closest \eqn{X_1} point (uniform in the polar coordinates),
 #' else the new point is generated uniformly
@@ -12065,8 +12332,8 @@ Zdir.nnct <- function(dat,lab,type="II",alternative=c("two.sided", "less", "grea
 #' @param p A real number between 0 and 1 representing the attraction probability of class 2 points associated
 #' with a randomly selected class 1 point (see the description below).  
 #'
-#' @return A list with the elements
-#' \item{pat.type}{="\code{ref.gen}" for the bivariate pattern of association of class 2 (i.e. \eqn{X_2}) points with the reference
+#' @return A \code{list} with the elements 
+#' \item{pat.type}{equals \code{"ref.gen"} for the bivariate pattern of association of class 2 (i.e. \eqn{X_2}) points with the reference
 #' points (i.e. \eqn{X_1}), indicates reference points are required to be entered as an argument in the function}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{Radial (i.e. circular) between class attraction parameter controlling the level of association}
@@ -12078,15 +12345,17 @@ Zdir.nnct <- function(dat,lab,type="II",alternative=c("two.sided", "less", "grea
 #' \item{lab}{The class labels of the generated points, it is \code{NULL} for this function, since only class 2
 #' points are generated in this pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of generated class 2 points and
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of generated class 2 points and
 #' the number of reference (i.e. \eqn{X_1}) points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and
 #' the reference points}
 #'
 #' @seealso \code{\link{rassocC}}, \code{\link{rassocG}}, \code{\link{rassocU}}, and \code{\link{rassoc}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20; n2<-1000;  #try also n1<-10; n2<-1000;
@@ -12143,7 +12412,7 @@ rassocI <- function(X1,n2,p)
   main.txt<-paste("Type I Association of Two Classes \n with Attraction Parameter p = ",rparam,sep="")
   
   res<-list(
-    pat.type="\code{ref.gen}", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
+    pat.type="ref.gen", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
     type=typ,
     parameters=param,
     gen.points=X2, #generated points associated with Y points
@@ -12198,7 +12467,7 @@ rassocI <- function(X1,n2,p)
 #' centered at \eqn{x_{1ref}} with radius equal to \eqn{r_0}.
 #' In type G association, \eqn{x_{2new}} is generated from the bivariate normal distribution centered at \eqn{x_{1ref}} with covariance
 #' \eqn{\sigma I_2} where \eqn{I_2} is \eqn{2 \times 2} identity matrix. 
-#' In type I association, first a \eqn{uniform(0,1)} number, \eqn{U}, is generated.
+#' In type I association, first a \eqn{Uniform(0,1)} number, \eqn{U}, is generated.
 #' If \eqn{U \le p}, \eqn{x_{2new}} is generated (uniform in the polar coordinates) within a
 #' circle with radius equal to the distance to the closest \eqn{X_1} point,
 #' else it is generated uniformly within the smallest bounding box containing \eqn{X_1} points.
@@ -12211,8 +12480,8 @@ rassocI <- function(X1,n2,p)
 #' @param r0 A positive real number representing the radius of association of class 2 points associated with a
 #' randomly selected class 1 point (see the description below). 
 #' 
-#' @return A list with the elements
-#' \item{pat.type}{="\code{ref.gen}" for the bivariate pattern of association of class 2 points with the reference points
+#' @return A \code{list} with the elements
+#' \item{pat.type}{=\code{"ref.gen"} for the bivariate pattern of association of class 2 points with the reference points
 #' (i.e. \eqn{X_1}), indicates reference points are required to be entered as an argument in the function}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{Radius of association controlling the level of association}
@@ -12222,14 +12491,16 @@ rassocI <- function(X1,n2,p)
 #' are associated.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of generated class 2 points and
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of generated class 2 points and
 #' the number of reference (i.e. \eqn{X_1}) points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rassocI}}, \code{\link{rassocG}}, \code{\link{rassocU}}, and \code{\link{rassoc}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20; n2<-1000;  #try also n1<-10; n2<-1000;
@@ -12284,7 +12555,7 @@ rassocC <- function(X1,n2,r0)
   txt<-"Type C Association with the Reference Points"
   main.txt<-paste("Type C Association of Two Classes \n with radius = ",round(r0,2),sep="")
   res<-list(
-    pat.type="\code{ref.gen}", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
+    pat.type="ref.gen", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
     type=typ,
     parameters=param,
     gen.points=X2, #generated points associated with Y points
@@ -12318,12 +12589,12 @@ rassocC <- function(X1,n2,r0)
 #' a new point from the class 2, say \eqn{x_{2new}}, is generated uniformly within a
 #' circle with radius equal to \eqn{r_0}.
 #' That is, \eqn{x_{2new} = x_{1ref}+r_u c(\cos(t_u),\sin(t_u))}
-#' where\eqn{r_u=\sqrt(U)*r_0} with \eqn{U \sim U(0,1)} and \eqn{t_u \sim U(0, 2\pi)}.
+#' where\eqn{r_u=sqrt(U)*r_0} with \eqn{U \sim U(0,1)} and \eqn{t_u \sim U(0, 2\pi)}.
 #' Note that, the level of association increases as \eqn{r_0} decreases, and the association vanishes when \eqn{r_0} is 
 #' sufficiently large.
 #' 
 #' For type U association, it is recommended to take \eqn{r_0 \le 0.10} times length of the shorter
-#' edge of a rectangular study region, or take \eqn{r_0} = 1/(k \sqrt{\hat \rho}) with the appropriate choice of \eqn{k} 
+#' edge of a rectangular study region, or take \eqn{r_0 = 1/(k \sqrt{\hat \rho})} with the appropriate choice of \eqn{k} 
 #' to get an association pattern more robust to differences in relative abundances
 #' (i.e. the choice of \eqn{k} implies \eqn{r_0 \le 0.10} times length of the shorter edge to have alternative patterns more 
 #' robust to differences in sample sizes).
@@ -12337,7 +12608,7 @@ rassocC <- function(X1,n2,r0)
 #' centered at \eqn{x_{1ref}} with radius equal to \eqn{r_0}.
 #' In type G association, \eqn{x_{2new}} is generated from the bivariate normal distribution centered at \eqn{x_{1ref}} with covariance
 #' \eqn{\sigma I_2} where \eqn{I_2} is \eqn{2 \times 2} identity matrix.
-#' In type I association, first a \eqn{uniform(0,1)} number, \eqn{U}, is generated.
+#' In type I association, first a \eqn{Uniform(0,1)} number, \eqn{U}, is generated.
 #' If \eqn{U \le p}, \eqn{x_{2new}} is generated (uniform in the polar coordinates) within a
 #' circle with radius equal to the distance to the closest \eqn{X_1} point,
 #' else it is generated uniformly within the smallest bounding box containing \eqn{X_1} points.  
@@ -12350,8 +12621,8 @@ rassocC <- function(X1,n2,r0)
 #' @param r0 A positive real number representing the radius of association of class 2 points associated with a
 #' randomly selected class 1 point (see the description below).
 #' 
-#' @return A list with the elements
-#' \item{pat.type}{="\code{ref.gen}" for the bivariate pattern of association of class 2 points with the reference points
+#' @return A \code{list} with the elements
+#' \item{pat.type}{=\code{"ref.gen"} for the bivariate pattern of association of class 2 points with the reference points
 #' (i.e. \eqn{X_1}), indicates reference points are required to be entered as an argument in the function}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{Radius of association controlling the level of association}
@@ -12361,14 +12632,16 @@ rassocC <- function(X1,n2,r0)
 #' are associated.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of generated class 2 points and
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of generated class 2 points and
 #' the number of reference (i.e. \eqn{X_1}) points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rassocI}}, \code{\link{rassocG}}, \code{\link{rassocC}}, and \code{\link{rassoc}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20; n2<-1000;  #try also n1<-10; n2<-1000;
@@ -12424,7 +12697,7 @@ rassocU <- function(X1,n2,r0)
   txt<-"Type U Association with the Reference Points"
   main.txt<-paste("Type U Association of Two Classes \n with radius = ",round(r0,2),sep="")
   res<-list(
-    pat.type="\code{ref.gen}", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
+    pat.type="ref.gen", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
     type=typ,
     parameters=param,
     gen.points=X2, #generated points associated with Y points
@@ -12477,7 +12750,7 @@ rassocU <- function(X1,n2,r0)
 #' the new point from the class 2, \eqn{x_{2new}}, is generated (uniform in the polar coordinates) within a circle
 #' centered at \eqn{x_{1ref}} with radius equal to \eqn{r_0},
 #' in type U association pattern \eqn{x_{2new}} is generated similarly except it is uniform in the circle.
-#' In type I association, first a \eqn{uniform(0,1)} number, \eqn{U}, is generated.
+#' In type I association, first a \eqn{Uniform(0,1)} number, \eqn{U}, is generated.
 #' If \eqn{U \le p}, \eqn{x_{2new}} is generated (uniform in the polar coordinates) within a
 #' circle with radius equal to the distance to the closest \eqn{X_1} point,
 #' else it is generated uniformly within the smallest bounding box containing \eqn{X_1} points.
@@ -12488,10 +12761,10 @@ rassocU <- function(X1,n2,r0)
 #' The generated points are associated in a type G sense with these points.
 #' @param n2 A positive integer representing the number of class 2 points to be generated.
 #' @param sigma A positive real number representing the variance of the Gaussian marginals, where
-#' the bivariate normal distribution has covariance BVN((0,0),sigma*I_2) with \eqn{I_2} being the \eqn{2 \times 2} identity matrix.
+#' the bivariate normal distribution has covariance \code{BVN((0,0),sigma*I_2)} with \eqn{I_2} being the \eqn{2 \times 2} identity matrix.
 #' 
-#' @return A list with the elements
-#' \item{pat.type}{="\code{ref.gen}" for the bivariate pattern of association of class 2 points with the reference points
+#' @return A \code{list} with the elements
+#' \item{pat.type}{=\code{"ref.gen"} for the bivariate pattern of association of class 2 points with the reference points
 #' (i.e. \eqn{X_1}), indicates reference points are required to be entered as an argument in the function}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{The variance of the Gaussian marginals controlling the level of association, where
@@ -12502,14 +12775,16 @@ rassocU <- function(X1,n2,r0)
 #' are associated.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of generated class 2 points and
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of generated class 2 points and
 #' the number of reference (i.e. \eqn{X_1}) points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rassocI}}, \code{\link{rassocG}}, \code{\link{rassocC}}, and \code{\link{rassoc}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20; n2<-1000;  #try also n1<-10; n2<-1000;
@@ -12564,7 +12839,7 @@ rassocG <- function(X1,n2,sigma)
   txt<-"Type G Association with the Reference Points"
   main.txt<-paste("Type G Association of Two Classes \n with Standard Deviation = ",round(sigma,2),sep="")
   res<-list(
-    pat.type="\code{ref.gen}", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
+    pat.type="ref.gen", #ref.gen for bivariate pattern of association of X2 wrt reference points X1
     type=typ,
     parameters=param,
     gen.points=X2, #generated points associated with Y points
@@ -12591,14 +12866,17 @@ rassocG <- function(X1,n2,sigma)
 #' 
 #' Generates \code{n_2} 2D points associated with the given set of points (i.e. reference points) \eqn{X_1} in the
 #' \code{type=type} fashion with the parameter=asc.par which specifies the level of association.
-#' The generated points are intended to be from a different class, say class 2 (or \eqn{X_2} points) than the reference
-#' (i.e. \eqn{X_1} points, say class 1 points, denoted as \code{X1} as an argument of the function), say class 1 points). 
+#' The generated points are intended to be from a different class, say class 2 (or \eqn{X_2} points) 
+#' than the reference (i.e. \eqn{X_1} points, say class 1 points, denoted as \code{X1} as an argument 
+#' of the function), say class 1 points). 
 #' 
-#' To generate \eqn{n_2} (denoted as \code{n2} as an argument of the function)\eqn{X_2} points, \eqn{n_2} of \eqn{X_1} points are randomly selected (possibly with replacement) and
+#' To generate \eqn{n_2} (denoted as \code{n2} as an argument of the function)\eqn{X_2} points, 
+#' \eqn{n_2} of \eqn{X_1} points are randomly selected (possibly with replacement) and
 #' for a selected \code{X1} point, say \eqn{x_{1ref}},
-#' a new point from the class 2, say \eqn{x_{2new}}, is generated from a distribution specified by the type argument.
+#' a new point from the class 2, say \eqn{x_{2new}}, is generated from a distribution specified
+#' by the type argument.
 #' 
-#' In type I association, i.e., if \code{type="I"}, first a \eqn{uniform(0,1)} number, \eqn{U}, is generated.
+#' In type I association, i.e., if \code{type="I"}, first a \eqn{Uniform(0,1)} number, \eqn{U}, is generated.
 #' If \eqn{U \le p}, \eqn{x_{2new}} is generated (uniform in the polar coordinates) within a
 #' circle with radius equal to the distance to the closest \eqn{X_1} point,
 #' else it is generated uniformly within the smallest bounding box containing \eqn{X_1} points.
@@ -12622,11 +12900,11 @@ rassocG <- function(X1,n2,sigma)
 #' randomly selected class 1 point;
 #' for \code{type="G"}, it is the variance of the Gaussian marginals, where
 #' the bivariate normal distribution has covariance \eqn{\sigma I_2} with \eqn{I_2} being the \eqn{2 \times 2} identity matrix.
-#' @param type The type of the association pattern. Takes on values "\code{I}", "\code{C}", "\code{U}" and "\code{G}" for types I, C, U and G
-#' association patterns (see the description above).
+#' @param type The type of the association pattern. Takes on values \code{"I"}, \code{"C"}, \code{"U"} and \code{"G"} 
+#' for types I, C, U and G association patterns (see the description above).
 #' 
-#' @return A list with the elements
-#' \item{pat.type}{="\code{ref.gen}" for the bivariate pattern of association of class 2 points with the reference points
+#' @return A \code{list} with the elements
+#' \item{pat.type}{=\code{"ref.gen"} for the bivariate pattern of association of class 2 points with the reference points
 #' (i.e. \eqn{X_1}), indicates reference points are required to be entered as an argument in the function}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{The \code{asc.par} value specifying the level of association}
@@ -12634,14 +12912,16 @@ rassocG <- function(X1,n2,sigma)
 #' are associated.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of generated class 2 points and
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of generated class 2 points and
 #' the number of reference (i.e. \eqn{X_1}) points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rassocI}}, \code{\link{rassocC}}, \code{\link{rassocU}}, and \code{\link{rassocG}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20; n2<-1000;  #try also n1<-10; n2<-1000;
@@ -12673,14 +12953,15 @@ rassocG <- function(X1,n2,sigma)
 rassoc <- function(X1,n2,asc.par,type)
 {
   
-  switch(type,
+ res<- switch(type,
          I = { res <- rassocI(X1,n2,asc.par) },
          C = { res <- rassocC(X1,n2,asc.par) },
          U = { res <- rassocU(X1,n2,asc.par) },
-         G = { res <- rassocG(X1,n2,asc.par)  },
-         stop("Enter numbers 1-4 or I, C, \eqn{U}, G in quotes for type")
+         G = { res <- rassocG(X1,n2,asc.par)  }
   )
-  
+ 
+ if (is.null(res)) stop("Enter numbers 1-4 or I, C, U, G in quotes for type")
+ 
   res
 } #end for the function
 #'
@@ -12694,10 +12975,11 @@ rassoc <- function(X1,n2,asc.par,type)
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns \eqn{n_1=}\code{round(n*prop,0)} of them as cases,
 #' and the rest as controls with first selecting a point, \eqn{Z_i}, as a case and assigning the
-#' label case to the remaining points with infection probabilities \code{prob=c(prop+((1-prop)*rho)/(1:k))} where \code{rho} is a
+#' label case to the remaining points with infection probabilities 
+#' \code{prob=c(prop+((1-prop)*rho)/(1:k))} where \code{rho} is a
 #' parameter adjusting the NN dependence of infection probabilities.
 #' The number of cases will be \eqn{n_1} on the average if the argument \code{poisson=TRUE}
-#' (i.e., \code{n1=rpois(1,round(n*prop,0))}), otherwise \code{n1=round(n*prop,0)}.
+#' (i.e., \eqn{n_1=}\code{rpois(1,round(n*prop,0))}), otherwise \eqn{n_1=}\code{round(n*prop,0)}.
 #' We stop when we first exceed \eqn{n_1} cases. \code{rho} must be between \code{-prop/(1-prop)} and 1 for the infection
 #' probabilities to be valid.
 #' The \code{init.from.cases} is a logical argument (with default=\code{TRUE}) to determine the initial cases are from the
@@ -12736,7 +13018,7 @@ rassoc <- function(X1,n2,asc.par,type)
 #'  
 #' See \insertCite{ceyhan:SiM-seg-ind2014;textual}{nnspat} for more detail where type I non-RL pattern is the 
 #' case 1 of non-RL pattern considered in Section 6 with \eqn{n_1} is
-#' fixed as a parameter rather than being generated from a Poisson distribution and \code{init.from.cases=FALSE}.
+#' fixed as a parameter rather than being generated from a Poisson distribution and \code{init=FALSEALSE}.
 #' 
 #' Although the non-RL pattern is described for the case-control setting, it can be adapted for any two-class
 #' setting when it is appropriate to treat one of the classes as cases or one of the classes behave like cases
@@ -12752,17 +13034,18 @@ rassoc <- function(X1,n2,asc.par,type)
 #' initial case are candidates to be infected to become cases.
 #' @param rho A parameter for labeling the \code{k}NNs of each initial case as cases such that \code{k}NNs of each initial case
 #' is infected with decreasing probabilities \code{prob=c(prop+((1-prop)*rho)/(1:k))} where
-#' \code{rho} has to be between \code{-prop/(1-prop)} and 1 for \code{prob} to be a vector of probabilities. 
+#' \code{rho} has to be between \code{-prop/(1-prop)} and 1 for \code{prob} to be a \code{vector} of probabilities. 
 #' @param poisson A logical argument (default is \code{FALSE}) to determine whether the number of cases \eqn{n_1},
 #' will be random or fixed. If \code{poisson=TRUE} then the \eqn{n_1} is from a Poisson distribution, 
-#' \eqn{n_1=}\code{rpois(1,round(n*prop,0))} otherwise it is fixed, \eqn{n_1=}\code{round(n*prop,0)}.
+#' \eqn{n_1=}\code{rpois(1,round(n*prop,0))} 
+#' otherwise it is fixed, \eqn{n_1=}\code{round(n*prop,0)}.
 #' @param init.from.cases A logical argument (default is \code{TRUE}) to determine whether the initial cases at each
 #' round will be take from cases or controls. At first round, the initial cases are taken from controls.
 #' And in the subsequent rounds, the initial cases are taken from cases if \code{init.from.cases=TRUE},
 #' and from controls otherwise.
 #' 
-#' @return A list with the elements 
-#' \item{pat.type}{\code{\code{="cc"}} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
+#' @return A \code{list} with the elements 
+#' \item{pat.type}{\code{="cc"} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{\code{prop}, \code{rho}, and \code{k} values for this non-RL pattern, see the description for these
 #' parameters.}
@@ -12775,13 +13058,15 @@ rassoc <- function(X1,n2,asc.par,type)
 #' for the non-RL procedure.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of cases and controls.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of cases and controls.}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rnonRLII}}, \code{\link{rnonRLIII}}, \code{\link{rnonRLIV}}, and \code{\link{rnonRL}}
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n<-40;  #try also n<-20; n<-100;
@@ -12792,7 +13077,8 @@ rassoc <- function(X1,n2,asc.par,type)
 #' rho<- .3
 #' knn<-3 #try 2 or 5
 #'
-#' Xdat<-rnonRLI(dat,prop,knn,rho,poisson=F,init=F) #labeled data try also poisson=T or init.from.cases=F
+#' Xdat<-rnonRLI(dat,prop,knn,rho,poisson=FALSE,init=FALSE) 
+#' #labeled data try also poisson=TRUE or init=FALSE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -12810,7 +13096,7 @@ rassoc <- function(X1,n2,asc.par,type)
 #' rho<- .3
 #' knn<-5 #try 2 or 3
 #'
-#' Xdat<-rnonRLI(dat,prop,knn,rho,poisson=F) #labeled data try also poisson=T
+#' Xdat<-rnonRLI(dat,prop,knn,rho,poisson=FALSE) #labeled data try also poisson=TRUE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -12944,12 +13230,12 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
 #' The initial and ultimate number of cases will be \eqn{k_0} and \eqn{n_1} on the average if the argument \code{poisson=TRUE}
 #' (i.e., \eqn{k_0=}\code{rpois(1,round(n*init.prop,0)}) and \eqn{n_1=}\code{rpois(1,round(n*ult.prop,0))} ), otherwise
 #' they will be exactly equal to \eqn{n_1=}\code{round(n*ult.prop,0)} and \eqn{k_0=}\code{round(n*init.prop,0)}.
-#' More specifically, let \eqn{z_1, \ldots,z_{k_0}} be the initial cases. Then one of the cases is selected as a
+#' More specifically, let \eqn{z_1,\ldots,z_{k_0}} be the initial cases. Then one of the cases is selected as a
 #' contagious case, say \eqn{z_j} and then its \code{k}NNs (among the non-cases) are found.
 #' Then label these \code{k}NN non-case points as cases with infection probabilities \code{prob} equal to the value
 #' of the \code{rho*(1/(1:k))^pow} values at these points, where \code{rho} is a scaling parameter for
 #' the infection probabilities and \code{pow} is a parameter in the power adjusting the \code{k}NN dependence.
-#' We stop when we first exceed \eqn{n_1} cases. \code{rho} has to be in \eqn{(0,1)} for \code{prob} to be a vector of probabilities,
+#' We stop when we first exceed \eqn{n_1} cases. \code{rho} has to be in \eqn{(0,1)} for \code{prob} to be a \code{vector} of probabilities,
 #' and for a given \code{rho}, \code{pow} must be \eqn{>  \ln(rho)/\ln(k)}.
 #' If \code{rand.init=TRUE}, first \eqn{k_0} entries are chosen as the initial cases in the data set,
 #' \code{dat}, otherwise, \eqn{k_0} initial cases are selected randomly among the data points.
@@ -13007,8 +13293,8 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
 #' \eqn{k_0=}\code{rpois(1,round(n*init.prop,0)}) and \eqn{n_1=}\code{rpois(1,round(n*ult.prop,0))}
 #' otherwise they are fixed, \eqn{k_0=}\code{round(n*init.prop,0)} and \eqn{n_1=}\code{round(n*ult.prop,0)}.
 #' 
-#' @return A list with the elements
-#' \item{pat.type}{\code{\code{="cc"}} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
+#' @return A \code{list} with the elements
+#' \item{pat.type}{\code{="cc"} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{Number of NNs, \code{k}, a scaling parameter for the infection probabilities of \code{k}NNs, rho,
 #' a parameter in the power adjusting the \code{k}NN dependence of the infection probabilities, initial proportion
@@ -13023,13 +13309,15 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
 #' for the non-RL procedure.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of cases and controls.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of cases and controls.}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rnonRLI}}, \code{\link{rnonRLIII}}, \code{\link{rnonRLIV}}, and \code{\link{rnonRL}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n<-40;  #try also n<-20; n<-100;
@@ -13042,7 +13330,7 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
 #' ip<-.3 #initial proportion
 #' up<-.5 #ultimate proportion
 #'
-#' Xdat<-rnonRLII(dat,knn,rho,pow,ip,up,poisson=F) #labeled data, try poisson=TRUE
+#' Xdat<-rnonRLII(dat,knn,rho,pow,ip,up,poisson=FALSE) #labeled data, try poisson=TRUE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13062,7 +13350,7 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
 #' ip<-.3 #initial proportion
 #' up<-.5 #ultimate proportion
 #'
-#' Xdat<-rnonRLII(dat,knn,rho,pow,ip,up,poisson=F) #labeled data, try poisson=TRUE
+#' Xdat<-rnonRLII(dat,knn,rho,pow,ip,up,poisson=FALSE) #labeled data, try poisson=TRUE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13132,7 +13420,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
            indc<-sample(ind0,1) #initial contagious case
            ind.cc<-indc #indices of contagious cases
            
-           org.ind.list<-ind.list[-ind0] #original index list 
+           org.ind.list<-ind.list[-ind0] #original index \code{list} 
            cont.cases<-dat[indc,]
            lab<-rep(1,n)
          },
@@ -13145,7 +13433,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
            indc<-sample(ind0,1) #initial contagious case
            ind.cc<-indc #indices of contagious cases
            
-           org.ind.list<-ind.list[-ind0] #original index list 
+           org.ind.list<-ind.list[-ind0] #original index \code{list} 
            cont.cases<-dat[indc,]
            
            ipd<-ipd.mat(dat)
@@ -13226,12 +13514,12 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns \eqn{n_1=}\code{round(n*prop,0)} of them as cases,
 #' and the rest as controls with first selecting a point, \eqn{Z_i}, as a case and assigning the
-#' label case to the remaining points with infection probabilities \code{prob=rho*(1-d_{ij}/d_{\max})^{pow}} where \eqn{d_{ij}} is the
+#' label case to the remaining points with infection probabilities \eqn{prob=rho (1-d_{ij}/d_{\max})^{pow}} where \eqn{d_{ij}} is the
 #' distance from \eqn{Z_j} to \eqn{Z_i} for \eqn{j \ne i}, \eqn{d_{\max}} is the maximum of  \eqn{d_{ij}}  values, \code{rho} is a scaling parameter for
 #' the infection probabilities and \code{pow} is a parameter in the power adjusting the distance dependence.
 #' The number of cases will be \eqn{n_1} on the average if the argument \code{poisson=TRUE}
 #' (i.e., \eqn{n_1=}\code{rpois(1,round(n*prop,0))} ), otherwise \eqn{n_1=}\code{round(n*prop,0)}.
-#' We stop when we first exceed \eqn{n_1} cases. \code{rho} has to be positive for \code{prob} to be a vector of probabilities,
+#' We stop when we first exceed \eqn{n_1} cases. \code{rho} has to be positive for \code{prob} to be a \code{vector} of probabilities,
 #' and for a given \code{rho}, \code{pow} must be \eqn{> - \ln(rho)/\ln(1-d_{ij}/d_{\max})},
 #' also, when \code{pow} is given, \code{rho} must be \eqn{< (1-d_{ij}/d_{\max})^{-pow}}.
 #' If \code{rand.init=TRUE}, initial case is selected randomly among the data points,
@@ -13249,7 +13537,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' \code{FALSE}, the first entry in the data set, \code{dat}, is selected as the case.
 #' 
 #' step 2: Then it assigns the label case to the remaining points
-#' with infection probabilities \code{prob=rho*(1-d_{ij}/d_{\max})^{pow}}, see the description for the details
+#' with infection probabilities \eqn{prob=rho (1-d_{ij}/d_{\max})^{pow}}, see the description for the details
 #' of the parameters in the \code{prob}.
 #' 
 #' step 3: The procedure ends when number of cases \eqn{n_c} exceeds \eqn{n_1}, and \eqn{n_c-n_1} of the cases (other than the
@@ -13288,7 +13576,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' will be random or fixed. If \code{poisson=TRUE} then the \eqn{n_1} is from a Poisson distribution, 
 #' \eqn{n_1=}\code{rpois(1,round(n*prop,0))} otherwise it is fixed, \eqn{n_1=}\code{round(n*prop,0)}.
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{pat.type}{\code{="cc"} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{rho and pow, where \code{rho} is the scalign parameter and \code{pow} is the parameter in the power
@@ -13303,13 +13591,15 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' for the non-RL procedure.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of cases and controls.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of cases and controls.}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rnonRLI}}, \code{\link{rnonRLII}}, \code{\link{rnonRLIV}}, and \code{\link{rnonRL}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n<-40;  #try also n<-20; n<-100;
@@ -13320,7 +13610,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' rho<-.8
 #' pow<-2
 #'
-#' Xdat<-rnonRLIII(dat,prop,rho,pow,poisson=F) #labeled data, try also poisson=TRUE
+#' Xdat<-rnonRLIII(dat,prop,rho,pow,poisson=FALSE) #labeled data, try also poisson=TRUE
 #'
 #' Xdat
 #'
@@ -13338,7 +13628,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' rho<-.8
 #' pow<-2
 #'
-#' Xdat<-rnonRLIII(dat,prop,rho,pow,poisson=F) #labeled data, try also poisson=TRUE
+#' Xdat<-rnonRLIII(dat,prop,rho,pow,poisson=FALSE) #labeled data, try also poisson=TRUE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13461,7 +13751,7 @@ rnonRLIII <- function(dat,prop,rho,pow,rand.init=TRUE,poisson=FALSE)
 #' 
 #' @param X A set of 2D points of size \eqn{n} (i.e an \eqn{n \times 2} matrix or array) at which the density of the bivariate normal distribution
 #' is to be computed.
-#' @param mu A \eqn{1 \times 2} vector of real numbers representing the mean of the bivariate normal distribution,
+#' @param mu A \eqn{1 \times 2} \code{vector} of real numbers representing the mean of the bivariate normal distribution,
 #' default=\eqn{(0,0)}. 
 #' @param s1,s2 The standard deviations of the first and second components of the bivariate normal distribution,
 #' with default is \code{1} for both
@@ -13474,6 +13764,8 @@ rnonRLIII <- function(dat,prop,rho,pow,rand.init=TRUE,poisson=FALSE)
 #' and \eqn{s_2} and correlation between them being \code{rho}.
 #'
 #' @seealso \link[MASS]{mvrnorm}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' mu<-c(0,0)
@@ -13512,7 +13804,7 @@ bvnorm.pdf <- function(X,mu=c(0,0),s1=1,s2=1,rho=0)
 #' The initial and ultimate number of cases will be \eqn{k_0} and \eqn{n_1} on the average if the argument \code{poisson=TRUE}
 #' (i.e., \eqn{k_0=}\code{rpois(1,round(n*init.prop,0)}) and \eqn{n_1=}\code{rpois(1,round(n*ult.prop,0))} ), otherwise
 #' they will be exactly equal to \eqn{n_1=}\code{round(n*ult.prop,0)} and \eqn{k_0=}\code{round(n*init.prop,0)}.
-#' More specifically, let \eqn{z_1, \ldots,z_{k_0}} be the initial cases and for \eqn{j=1,2,\ldots,k_0}
+#' More specifically, let \eqn{z_1,\ldots,z_{k_0}} be the initial cases and for \eqn{j=1,2,\ldots,k_0}
 #' let \eqn{\phi_{G,j}(z_i)} be the value of the pdf of the \eqn{BVN(z_j,s_1,s_2,rho)}, which is the bivariate normal 
 #' distribution mean=z_j and standard deviations of the first and second components being \eqn{s_1}
 #' and \eqn{s_2} (denoted as \code{s1} and \code{s2} as arguments of the function) and 
@@ -13581,11 +13873,12 @@ bvnorm.pdf <- function(X,mu=c(0,0),s1=1,s2=1,rho=0)
 #' \eqn{k_0=}\code{rpois(1,round(n*init.prop,0))} and \eqn{n_1=}\code{rpois(1,round(n*ult.prop,0))}
 #' otherwise they are fixed, \eqn{k_0=}\code{round(n*init.prop,0)} and \eqn{n_1=}\code{round(n*ult.prop,0)}.
 #'  
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{pat.type}{\code{="cc"} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{initial and ultimate proportion of cases after the non-RL procedure is applied to the data,
-#' s1, s2 and \code{rho} which are standard deviations and the correlation for the components of the bivariate normal distribution.
+#' \code{s1}, \code{s2} and \code{rho} which are standard deviations and the correlation for the components of
+#' the bivariate normal distribution.}
 #' \item{dat.points}{The set of points non-RL procedure is applied to obtain cases and controls randomly in the 
 #' type IV fashion}
 #' \item{lab}{The labels of the points as 1 for cases and 0 for controls after the type IV nonRL procedure is
@@ -13595,13 +13888,15 @@ bvnorm.pdf <- function(X,mu=c(0,0),s1=1,s2=1,rho=0)
 #' for the non-RL procedure.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of cases and controls.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of cases and controls.}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rnonRLI}}, \code{\link{rnonRLII}}, \code{\link{rnonRLIII}}, and \code{\link{rnonRL}}
 #' 
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n<-40;  #try also n<-20; n<-100;
@@ -13613,7 +13908,7 @@ bvnorm.pdf <- function(X,mu=c(0,0),s1=1,s2=1,rho=0)
 #' s1<-s2<-.4
 #' rho<- .1
 #'
-#' Xdat<-rnonRLIV(dat,int,ult,s1,s2,rho,poisson=F) #labeled data, try also with poisson=T
+#' Xdat<-rnonRLIV(dat,int,ult,s1,s2,rho,poisson=FALSE) #labeled data, try also with poisson=TRUE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13631,7 +13926,7 @@ bvnorm.pdf <- function(X,mu=c(0,0),s1=1,s2=1,rho=0)
 #' s1<-s2<-.4
 #' rho<-0.1
 #'
-#' Xdat<-rnonRLIV(dat,int,ult,s1,s2,rho,poisson=F) #labeled data, try also with poisson=T
+#' Xdat<-rnonRLIV(dat,int,ult,s1,s2,rho,poisson=FALSE) #labeled data, try also with poisson=TRUE
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13805,7 +14100,7 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' 
 #' Type III nonRL pattern assigns \eqn{n_1=}\code{round(n*prop,0)} of them as cases,
 #' and the rest as controls with first selecting a point, \eqn{Z_i}, as a case and assigning the
-#' label case to the remaining points with infection probabilities \code{prob=rho*(1-d_{ij}/d_{\max})^{pow}} where \eqn{d_{ij}} is the
+#' label case to the remaining points with infection probabilities \eqn{prob=rho (1-d_{ij}/d_{\max})^{pow}} where \eqn{d_{ij}} is the
 #' distance from \eqn{Z_j} to \eqn{Z_i} for \eqn{j \ne i}, \eqn{d_{\max}} is the maximum of  \eqn{d_{ij}}  values, \code{rho} is a scaling parameter for
 #' the infection probabilities and \code{pow} is a parameter in the power adjusting the distance dependence.
 #' 
@@ -13845,7 +14140,7 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' for type II, \code{c(prop,rho,pow)} for type III, and \code{c(init.prop,ult.prop,s1,s2,rho)} for type IV non-RL patterns.
 #' The parameters must be entered in this order in \code{par.vec} as a vector.
 #' See the respective functions for more detail on the parameters.
-#' @param type The type of the non-RL pattern. Takes on values "\code{I}"-"\code{IV}" for types I-IV non-RL
+#' @param type The type of the non-RL pattern. Takes on values \code{"I"}-\code{"IV"} for types I-IV non-RL
 #' patterns (see the description above).
 #' @param rand.init A logical argument (default is \code{TRUE}) to determine the choice of the initial case(s)
 #' in the data set, \code{dat} for types II-IV non-RL pattern. If \code{rand.init=TRUE} then the initial case(s) is (are)
@@ -13853,14 +14148,14 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' and the first \code{init.prop*n} entries in the data set, \code{dat}, are labeled as the cases types II and IV.
 #' @param poisson A logical argument (default is \code{FALSE}) to determine whether the number of cases is random or fixed.
 #' In types II and IV initial and ultimate number of cases, \eqn{k_0} and \eqn{n_1}, will be random if \code{poisson=TRUE} and fixed
-#' otherwise. In types I and III the number of cases, \eqn{n_1}, will be random if poisson=TURE and fixed otherwise.
+#' otherwise. In types I and III the number of cases, \eqn{n_1}, will be random if poisson=TRUEURE and fixed otherwise.
 #' See the description.
 #' @param init.from.cases A logical argument (default is \code{TRUE}) to determine whether the initial cases at each
 #' round will be take from cases or controls in type I non-RL pattern. 
 #' The initial cases are taken from cases if \code{init.from.cases=TRUE}, and from controls otherwise.
 #' See the function \code{\link{rnonRLI}}.
 #'   
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{pat.type}{\code{="cc"} for the case-control patterns for RL or non-RL of the given data points, \code{dat}}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{\code{par.vec}, the parameters required for each type of non-RL pattern. See the description
@@ -13874,14 +14169,16 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' for all of the non-RL procedures.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of cases and controls.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and the reference points}
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of cases and controls.}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and the reference points}
 #'
 #' @seealso \code{\link{rnonRLI}}, \code{\link{rnonRLII}}, \code{\link{rnonRLIII}}, and \code{\link{rnonRLIV}}
 #'
 #' @references
 #' \insertAllCited{}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' #data generation
 #' n<-40;  #try also n<-20; n<-100;
@@ -13892,7 +14189,8 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' prop<-.5; knn<-3; rho<- .3
 #' prv<-c(prop,knn,rho)
 #'
-#' Xdat<-rnonRL(dat,type="I",prv) #labeled data # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
+#' Xdat<-rnonRL(dat,type="I",prv) #labeled data 
+#' # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13906,7 +14204,8 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' rho<-.8; pow<-2; knn<-5; ip<-.3; up<-.5
 #' prv<-c(knn,rho,pow,ip,up)
 #'
-#' Xdat<-rnonRL(dat,type="II",prv) #labeled data # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
+#' Xdat<-rnonRL(dat,type="II",prv) #labeled data 
+#' # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13920,7 +14219,8 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' prop<- .5; rho<-.8; pow<-2
 #' prv<-c(prop,rho,pow)
 #'
-#' Xdat<-rnonRL(dat,type="III",prv) #labeled data # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
+#' Xdat<-rnonRL(dat,type="III",prv) #labeled data 
+#' # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13934,7 +14234,8 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' ult<-.5; int<- .1; s1<-s2<-.4; rho<- .1
 #' prv<-c(int,ult,s1,s2,rho)
 #'
-#' Xdat<-rnonRL(dat,type="IV",prv) #labeled data # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
+#' Xdat<-rnonRL(dat,type="IV",prv) #labeled data 
+#' # or try Xdat<-rnonRL(dat,type="I",prv) for type I non-RL
 #' Xdat
 #'
 #' table(Xdat$lab)
@@ -13946,13 +14247,14 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' @export 
 rnonRL <- function(dat,par.vec,type,rand.init=TRUE,poisson=FALSE,init.from.cases=TRUE)
 {
-  switch(type,
+  res <- switch(type,
          I = { res <- rnonRLI(dat,par.vec[1],par.vec[2],par.vec[3],poisson=poisson,init.from.cases = init.from.cases) },
          II = { res <- rnonRLII(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson) },
          III = { res <- rnonRLIII(dat,par.vec[1],par.vec[2],par.vec[3],rand.init=rand.init,poisson=poisson) },
-         IV = { res <- rnonRLIV(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson)  },
-         stop("Enter numbers 1-4 or I-IV in quotes for type")
+         IV = { res <- rnonRLIV(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson)  }
   )
+  
+  if (is.null(res)) stop("Enter numbers 1-4 or I-IV in quotes for type")
   
   res
 } #end for the function
@@ -13992,7 +14294,7 @@ rnonRL <- function(dat,par.vec,type,rand.init=TRUE,poisson=FALSE,init.from.cases
 #' The initial points are
 #' marked with crosses in the plot of the points.
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{pat.type}{\code{"2c"} for the 2-class pattern of segregation of the two classes}
 #' \item{type}{The type of the point pattern}
 #' \item{parameters}{Radial (i.e. circular) within class radii of segregation, \code{r1} and \code{r2},
@@ -14005,11 +14307,13 @@ rnonRL <- function(dat,par.vec,type,rand.init=TRUE,poisson=FALSE,init.from.cases
 #' \item{ref.points}{The input set of reference points, it is \code{NULL} for this function.}
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
-#' \item{num.points}{The vector of two numbers, which are the number of generated class 1 and class 2 points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated and
+#' \item{num.points}{The \code{vector} of two numbers, which are the number of generated class 1 and class 2 points.}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated and
 #' the initial points}
 #'
 #' @seealso \code{\link{rassoc}}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20;  #try also n1<-10; n1<-100;
@@ -14145,10 +14449,10 @@ rseg <- function(n1,n2,r1,r2,X1.init=NULL,X2.init=NULL)
 #' @param cent A 2D point representing the center of the circle, with default=\code{c(0,0)}
 #' @param rad A positive real number representing the radius of the circle.  
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{pat.type}{\code{"1c"} for the 1-class pattern of the uniform data in the circle}
 #' \item{type}{The type of the point pattern}
-#' \item{parameters}{center of the circle, \code{cent}, and the radius of the circle, \code{rad}
+#' \item{parameters}{center of the circle, \code{cent}, and the radius of the circle, \code{rad}}
 #' \item{lab}{The class labels of the generated points, \code{NULL} for this function, since points belong to the same 
 #' class}
 #' \item{init.cases}{The initial points, \code{NULL} for this function}
@@ -14157,12 +14461,14 @@ rseg <- function(n1,n2,r1,r2,X1.init=NULL,X2.init=NULL)
 #' \item{desc.pat}{Description of the point pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
 #' \item{num.points}{The number of generated points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated points}
 #'
 #' @seealso \code{\link[stats]{runif}}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20;  #try also 10, 100, or 1000;
+#' n<-20  #or try sample(1:20,1);  #try also 10, 100, or 1000;
 #' r<-.1; #try also r<-.3 or .5
 #' cent<-c(1,2)
 #'
@@ -14246,7 +14552,7 @@ res
 #' 
 #' If \code{distribution="uniform"}, the points are uniformly generated in their square
 #' supports where one square is the unit square (i.e., with vertices \eqn{(0,0), (1,0), (1,1),(0,1)}), and 
-#' the others are unit squares translated \eqn{j \sqrt(2) d}  units along the first diagonal for \eqn{j=1,2,\ldots,k-1}
+#' the others are unit squares translated \eqn{j \sqrt{2} d}  units along the first diagonal for \eqn{j=1,2,\ldots,k-1}
 #' (i.e. with vertices \eqn{(j d,j d), (1+j d,j d), (1+j d,1+j d),(j d,1+j d)}). 
 #' 
 #' If \code{distribution="bvnormal"}, the points are generated from the bivariate normal distribution with means equal to the
@@ -14267,7 +14573,7 @@ res
 #' @param distribution The argument determining the distribution of each cluster. Takes on values \code{"uniform"} and
 #' \code{"bvnormal"} whose centers are \eqn{d} units apart along the first diagonal direction.
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{type}{The type of the clustering pattern}
 #' \item{parameters}{The number of clusters, \code{k}, the diagonal shift d representing the level of clustering
 #' (for both distribution types) and standard deviation, \code{sd}, for the bivariate normal distribution only}
@@ -14275,12 +14581,14 @@ res
 #' \item{desc.pat}{Description of the clustering pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
 #' \item{num.points}{The number of generated points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated points}
 #'
 #' @seealso \code{\link{rhor.clust}} and \code{\link{rrot.clust}}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20;  #try also n<-50; n<-1000;
+#' n<-20  #or try sample(1:20,1);  #try also n<-50; n<-1000;
 #' d<-.5 #try also -75,.75, 1
 #' k<-3 #try also 5
 #'
@@ -14293,7 +14601,7 @@ res
 #' plot(Xdat)
 #'
 #' #data generation (bvnormal)
-#' n<-20;  #try also n<-50; n<-1000;
+#' n<-20  #or try sample(1:20,1);  #try also n<-50; n<-1000;
 #' d<-.5 #try also -.75,.75, 1
 #' k<-3 #try also 5
 #' Xdat<-rdiag.clust(n,k,d,distr="bvnormal") #try also Xdat<-rdiag.clust(n,k,d,sd=.09,distr="bvnormal")
@@ -14395,7 +14703,7 @@ rdiag.clust <- function(n,k,d,sd=1/6,distribution=c("uniform","bvnormal"))
 #' @param distribution The argument determining the distribution of each cluster. Takes on values \code{"uniform"} and
 #' \code{"bvnormal"} whose centers are \eqn{d} units apart along the horizontal direction.
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{type}{The type of the clustering pattern}
 #' \item{parameters}{The number of clusters, \code{k}, and the horizontal shift, \code{d}, representing the level of clustering
 #' (for both distribution types) and standard deviation, \code{sd}, for the bivariate normal distribution only.}
@@ -14403,10 +14711,12 @@ rdiag.clust <- function(n,k,d,sd=1/6,distribution=c("uniform","bvnormal"))
 #' \item{desc.pat}{Description of the clustering pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
 #' \item{num.points}{The number of generated points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated points}
 #'
 #' @seealso \code{\link{rdiag.clust}} and \code{\link{rrot.clust}}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-100;  #try also n<-50; or n<-1000;
 #' d<-.5 #try also -.5,.75, 1
@@ -14507,24 +14817,24 @@ rhor.clust <- function(n,k,d,sd=1/6,distribution=c("uniform","bvnormal"))
 #' 
 #' If \code{distribution="bvnormal"}, the points are generated from the bivariate normal distribution with means equal to the
 #' centers of the above squares (i.e. for each cluster with \code{mean=}\eqn{(d \cos(j 2 \pi/k),d \cos(j 2\pi/k))}
-#' for \eqn{j=1,2,\ldots,k} and the covariance matrix \eqn{sd I_2}, where \eqn{sd=d\sqrt(2 (1-cos(2 \pi/k)))/3}
+#' for \eqn{j=1,2,\ldots,k} and the covariance matrix \eqn{sd I_2}, where \eqn{sd=d\sqrt{2 (1-cos(2 \pi/k))}/3}
 #' and \eqn{I_2} is the \eqn{2 \times 2} identity matrix.
 #' 
 #' Notice that the clusters are more separated, i.e., generated data indicates more clear clusters as \eqn{d} increases
 #' in either direction with \eqn{d=0} indicating one cluster in the data. For a fixed \eqn{d}, when \code{distribution="bvnormal"},
 #' the clustering gets stronger if the variance of each component, \eqn{sd^2}, gets smaller, and clustering gets weaker
-#' as the variance of each component gets larger where default is \eqn{sd=d\sqrt(2 (1-cos(2 \pi/k)))/3}.
+#' as the variance of each component gets larger where default is \eqn{sd=d\sqrt{2 (1-cos(2 \pi/k))}/3}.
 #' 
 #' @param n A positive integer representing the number of points to be generated from all the clusters
 #' @param k A positive integer representing the number of clusters to be generated
 #' @param d Radial shift indicating the level of clustering in the data. Larger absolute values in either
 #' direction (i.e. positive or negative) would yield stronger clustering.
 #' @param sd The standard deviation of the components of the bivariate normal distribution with default 
-#' \eqn{sd=d\sqrt(2 (1-cos(2 \pi/k)))/3}, used only when \code{distribution="bvnormal"}.
+#' \eqn{sd=d\sqrt{2 (1-cos(2 \pi/k))}/3}, used only when \code{distribution="bvnormal"}.
 #' @param distribution The argument determining the distribution of each cluster. Takes on values \code{"uniform"} and
 #' \code{"bvnormal"} whose centers are \eqn{d} units apart along the horizontal direction.
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{type}{The type of the clustering pattern}
 #' \item{parameters}{The number of clusters, \code{k}, and the radial shift, \code{d}, representing the level of clustering
 #' (for both distribution types) and standard deviation, \code{sd}, for the bivariate normal distribution only.}
@@ -14532,10 +14842,12 @@ rhor.clust <- function(n,k,d,sd=1/6,distribution=c("uniform","bvnormal"))
 #' \item{desc.pat}{Description of the clustering pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
 #' \item{num.points}{The number of generated points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated points}
 #'
 #' @seealso \code{\link{rdiag.clust}} and \code{\link{rhor.clust}}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-100;  #try also n<-50; n<-1000;
 #' d<- 1.5 #try also -1, 1, 1.5, 2
@@ -14637,23 +14949,23 @@ rrot.clust <- function(n,k,d,sd=d*sqrt(2*(1-cos(2*pi/k)))/3,distribution=c("unif
 #' and for \eqn{k=n_{1h},+1,\ldots,n_1}, \eqn{X_k=X_{k-n_{1h}}+r (\cos(T_k), \sin(T_k))} where \eqn{r \sim Uniform(0,r_0)}
 #' and \eqn{T_k} are iid \eqn{\sim Uniform(0,2 \pi)}.
 #' Similarly, the points from class 2, say \eqn{Y_j} are generated as follows: 
-#' \eqn{Y_j} iid \sim Uniform(S_2) for \eqn{S_2=(c2r[1],c2r[2])^2} for \eqn{j=1,2,\ldots,n_{2h}} where \eqn{n_{2h}=\[floor n_2/2\rfloor)},
+#' \eqn{Y_j \stackrel{iid}{\sim} Uniform(S_2)} for \eqn{S_2=(c2r[1],c2r[2])^2} for \eqn{j=1,2,\ldots,n_{2h}} where \eqn{n_{2h}=\lfloor n_2/2\rfloor)},
 #' and for \eqn{l=n_{2h},+1,\ldots,n_2}, \eqn{Y_l=Y_{l-n_{2h}}+r (\cos(T_l), \sin(T_l))} where \eqn{r \sim Uniform(0,r_0)} and
-#' \eqn{T_l} are iid \eqn{\sim Uniform(0,2 \pi)}.
+#' \eqn{T_l \stackrel{iid}{\sim} Uniform(0,2 \pi)}.
 #' This version is the case IV in the article (\insertCite{ceyhan:NNCorrespond2018;textual}{nnspat}).
 #' 
 #' If \code{distribution="bvnormal"}, the points from class 1, say \eqn{X_i} are generated as follows: 
-#' X_i iid \sim BVN(CM(S_1),I_{2x}) where \eqn{CM(S_1)} is the center of mass of \eqn{S_1} and I_{2x} is a \eqn{2 \times 2} matrix with diagonals
+#' \eqn{X_i \stackrel{iid}{\sim} BVN(CM(S_1),I_{2x})} where \eqn{CM(S_1)} is the center of mass of \eqn{S_1} and I_{2x} is a \eqn{2 \times 2} matrix with diagonals
 #' equal to \eqn{s_1^2} with \eqn{s_1=(c1r[2]-c1r[1])/3} and off-diagonals are 0 for \eqn{i=1,2,\ldots,n_{1h}} where \eqn{n_{1h}=\lfloor{n_1/2\rfloor}},
 #' and for \eqn{k=n_{1h}+1,\ldots,n_1}, \eqn{X_k = Z_k+r (\cos(T_k), \sin(T_k))} where \eqn{Z_k \sim BVN(X_{k-n_{1h}}, I_2(r_0))}
 #' with \eqn{I_2(r_0)} being the \eqn{2 \times 2} matrix with diagonals \eqn{r_0/3} and 0 off-diagonals, \eqn{r \sim Uniform(0,r_0)} and
 #' \eqn{T_k} are iid \eqn{\sim Uniform(0,2 \pi)}.
 #' Similarly, the points from class 2, say \eqn{Y_j} are generated as follows: 
 #' \eqn{Y_j \stackrel{iid}{\sim} BVN(CM(S_2),I_{2y})} where \eqn{CM(S_1)} is the center of mass of \eqn{S_1} and I_{2y} is a \eqn{2 \times 2} matrix with diagonals
-#' equal to \eqn{s_2^2} with \eqn{s_2=(c2r[2]-c2r[1])/3} and off-diagonals are 0 for \eqn{j=1,2,\ldots,n_{2h}} where \eqn{n_{2h}=\[floor n_2/2\rfloor)},
+#' equal to \eqn{s_2^2} with \eqn{s_2=(c2r[2]-c2r[1])/3} and off-diagonals are 0 for \eqn{j=1,2,\ldots,n_{2h}} where \eqn{n_{2h}=\lfloor n_2/2\rfloor)},
 #' and for \eqn{l=n_{2h},+1,\ldots,n_2}, \eqn{Y_l = W_k+r (\cos(T_l), \sin(T_l))} where \eqn{W_l \sim BVN(Y_{l-n_{2h}}, I_2(r_0))}
 #' with \eqn{I_2(r_0)} being the \eqn{2 \times 2} matrix with diagonals \eqn{r_0/3} and 0 off-diagonals, \eqn{r \sim Uniform(0,r_0)} and
-#' \eqn{T_l} are iid \eqn{\sim Uniform(0,2 \pi)}.
+#' \eqn{T_l \stackrel{iid}{\sim} Uniform(0,2 \pi)}.
 #' 
 #' Notice that the classes will be segregated if the supports \eqn{S_1} and \eqn{S_2} are separated, with more separation
 #' implying stronger segregation. Furthermore, \eqn{r_0} (denoted as \code{r0} as an argument) determines the level of self-reflexivity or self correspondence,
@@ -14669,7 +14981,7 @@ rrot.clust <- function(n,k,d,sd=d*sqrt(2*(1-cos(2*pi/k)))/3,distribution=c("unif
 #' @param distribution The argument determining the distribution of each class. Takes on values \code{"uniform"} and
 #' \code{"bvnormal"} (see the description for the details).
 #' 
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{pat.type}{\code{"2c"} for the 2-class pattern of self-correspondence of the two classes}
 #' \item{type}{The type of the spatial pattern}
 #' \item{parameters}{The radius of attraction \eqn{r_0} which determines the level of self-correspondence.}
@@ -14682,10 +14994,12 @@ rrot.clust <- function(n,k,d,sd=d*sqrt(2*(1-cos(2*pi/k)))/3,distribution=c("unif
 #' \item{desc.pat}{Description of the species correspondence pattern}
 #' \item{mtitle}{The \code{"main"} title for the plot of the point pattern}
 #' \item{num.points}{The number of generated points.}
-#' \item{xlimit,ylimit}{The possible ranges of the x- and y-coordinates of the generated points}
+#' \item{xlimit,ylimit}{The possible ranges of the \eqn{x}- and \eqn{y}-coordinates of the generated points}
 #'
 #' @seealso \code{\link{Zself.ref}} and \code{\link{Xsq.spec.cor}}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n1<-50;  #try also n1<-50; n1<-1000;
 #' n2<-50;  #try also n2<-50; n2<-1000;
@@ -14781,7 +15095,7 @@ rself.ref <- function(n1,n2,c1r,c2r,r0,distribution=c("uniform","bvnormal"))
   pname <-"radius of attraction"
   param<-c(r0)
   names(param)<-c("r0")
-  typ<-paste("Self-Reflexivity Pattern with ",n1, " Class 1 Points and ", n2," Class 2 Points with Radius of Attraction \eqn{r_0} = ",
+  typ<-paste("Self-Reflexivity Pattern with ",n1, " Class 1 Points and ", n2," Class 2 Points with Radius of Attraction r0 = ",
              param,sep="")
   
   npts<-c(n1,n2)
@@ -14848,6 +15162,8 @@ rself.ref <- function(n1,n2,c1r,c2r,r0,distribution=c("uniform","bvnormal"))
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' ptab<-.03
 #' pval<-.06
@@ -14860,7 +15176,7 @@ tocher.cor <- function(ptable,pval)
   PV<-pval
   if (pexcl<.05 || pval >= .05)
   {
-    ifelse(runif(1)<= (.05-pexcl)/ptab,PV<-pexcl,PV<-pval)
+    ifelse(runif(1)<= (.05-pexcl)/ptable,PV<-pexcl,PV<-pval)
   }
   PV
 } #end for the function
@@ -14889,6 +15205,8 @@ tocher.cor <- function(ptable,pval)
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' ct<-matrix(sample(20:40,4),ncol=2)
@@ -14947,7 +15265,7 @@ prob.nnct <- function(ct)
 #' \eqn{f} is the probability mass function of the hypergeometric distribution.
 #' For testing the one-sided alternative \eqn{H_o:\,\theta=\theta_0} versus \eqn{H_a:\,\theta>\theta_0},
 #' we consider the following four methods in calculating the \eqn{p}-value:
-#' \begin{itemize}
+#' \itemize{
 #' \item [(i)] with \eqn{S=\{t:\,t \geq n_{11}\}}, we get the
 #' \emph{table-inclusive version} which is denoted as \eqn{p^>_{inc}},
 #' \item [(ii)] with \eqn{S=\{t:\,t> n_{11}\}}, we get the
@@ -14955,7 +15273,7 @@ prob.nnct <- function(ct)
 #' \item [(iii)] Using \eqn{p=p^>_{exc}+p_t/2}, we get the \emph{mid-\eqn{p} version}, denoted as \eqn{p^>_{mid}}.
 #' \item [(iv)] We can also use \emph{Tocher corrected version} which is denoted as \eqn{p^>_{Toc}}
 #' (see \code{\link{tocher.cor}} for details).
-#' \end{itemize}
+#' }
 #' 
 #' See (\insertCite{ceyhan:exact-NNCT;textual}{nnspat}) for more details.
 #' 
@@ -14963,8 +15281,8 @@ prob.nnct <- function(ct)
 #' for Fisher's exact test.
 #' @param pval Table inclusive \eqn{p}-value for Fisher's exact test on the NNCT.
 #' @param type The type of the \eqn{p}-value correction for the one-sided exact test on the NNCT, default=\code{"inc"}.
-#' Takes on values \code{"inc"}, \code{"exc"}, \code{"mid"}, \code{{"tocher"} (or equivalently \code{1-4}, respectively) for table inclusive,
-#' table-exclusive, mid-\eqn{p}-value, and tocher corrected \eqn{p}-value, respectively.
+#' Takes on values \code{"inc"}, \code{"exc"}, \code{"mid"}, \code{"tocher"} (or equivalently \code{1-4}, respectively) for table inclusive,
+#' table-exclusive, mid-\eqn{p}-value, and Tocher corrected \eqn{p}-value, respectively.
 #'
 #' @return A modified \eqn{p}-value based on the correction specified in \code{type}.
 #'
@@ -14972,6 +15290,8 @@ prob.nnct <- function(ct)
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' ct<-matrix(sample(20:40,4),ncol=2)
@@ -14984,17 +15304,19 @@ prob.nnct <- function(ct)
 #' @export 
 exact.pval1s <- function(ptable,pval,type="inc") #exact pvalue for one-sided tests
 {
-  switch(type,
+  Pv <- switch(type,
          inc = { pv <- pval ;
-         names(pv)<-"table-inclusive \eqn{p}-value (with more extreme tables in one direction than the current table)"},
+         names(pv)<-"table-inclusive p-value (with more extreme tables in one direction than the current table)"},
          exc = { pv <- pval-ptable;
-         names(pv)<-"table-exclusive \eqn{p}-value (with more extreme tables in one direction than the current table)"},
+         names(pv)<-"table-exclusive p-value (with more extreme tables in one direction than the current table)"},
          mid = { pv <- pval-ptable/2;
-         names(pv)<-"mid-\eqn{p}-value (with more extreme tables in one direction than the current table)"},
+         names(pv)<-"mid-p-value (with more extreme tables in one direction than the current table)"},
          tocher = { pv <- tocher.cor(ptable,pval);
-         names(pv)<-"Tocher randomized \eqn{p}-value (with more extreme tables in one direction than the current table)"},
-         stop("Enter numbers 1-4 or inc, exc, mid, tocher in quotes for type")
+         names(pv)<-"Tocher randomized p-value (with more extreme tables in one direction than the current table)"}
   )
+  
+  if (is.null(Pv)) stop("Enter numbers 1-4 or inc, exc, mid, tocher in quotes for type")
+  
   pv
 } #end for the function
 #'
@@ -15019,8 +15341,8 @@ exact.pval1s <- function(ptable,pval,type="inc") #exact pvalue for one-sided tes
 #' under RL or CSR independence and
 #' \eqn{f} is the probability mass function of the hypergeometric distribution.
 #' 
-#' \textbf{Type (I):} For double the one-sided \eqn{p}-value, we propose the following four variants:
-#'   \begin{itemize}
+#' **Type (I):** For double the one-sided \eqn{p}-value, we propose the following four variants:
+#'   \itemize{
 #' \item [(i)] twice the minimum of \eqn{p_{inc}} for the one-sided tests, which is
 #' table-inclusive version for this type of two-sided test, and denoted as \eqn{p^I_{inc}},
 #' \item [(ii)] twice the minimum of \eqn{p_{inc}} minus twice the table
@@ -15028,23 +15350,23 @@ exact.pval1s <- function(ptable,pval,type="inc") #exact pvalue for one-sided tes
 #' two-sided test, and denoted as \eqn{p^I_{exc}},
 #' \item [(iii)] table-exclusive version of this type of
 #' two-sided test plus \eqn{p_t}, which is mid-\eqn{p}-value for
-#' this test, and denoted as \eqn{p^I_{\midd}},
+#' this test, and denoted as \eqn{p^I_{midd}},
 #' \item [(iv)]Tocher corrected version (see \code{\link{tocher.cor}} for details).
-#' \end{itemize}
+#' }
 #' 
-#' \textbf{Type (II):} For summing the \eqn{p}-values of more extreme ---than that of the table--- cases
+#' **Type (II):** For summing the \eqn{p}-values of more extreme ---than that of the table--- cases
 #' in both directions, the following variants are obtained.
 #' The \eqn{p}-value is \eqn{p=\sum_S f(t|n_1,n_2,c_1;\theta=1)} with
-#' \begin{itemize}
+#' \itemize{
 #' \item [(i)] \eqn{S=\{t:\,f(t|n_1,n_2,c_1;\theta=1) \leq p_t\}}, which is
 #' called \emph{table-inclusive version}, \eqn{p^{II}_{inc}},
 #' \item [(ii)] the probability of the observed table is included twice, once for each side;
 #' that is \eqn{p=p^{II}_{inc}+p_t}, which is called \emph{twice-table-inclusive version}, \eqn{p^{II}_{tinc}},
-#' \item [(iii)] table-inclusive minus \eqn{p_t}, which is referred as \emph{table-exclusive version}, $p^{II}_{exc}$,
+#' \item [(iii)] table-inclusive minus \eqn{p_t}, which is referred as \emph{table-exclusive version}, \eqn{p^{II}_{exc}},
 #' \item [(iv)] table-exclusive plus one-half
 #' the \eqn{p_t}, which is called \emph{mid-\eqn{p} version}, \eqn{p^{II}_{mid}} and,
 #' \item [(v)]\emph{Tocher corrected version}, \eqn{p^{II}_{Toc}}, is obtained as before.
-#' \end{itemize}
+#' }
 #' 
 #' See (\insertCite{ceyhan:exact-NNCT;textual}{nnspat}) for more details.
 #' 
@@ -15052,8 +15374,8 @@ exact.pval1s <- function(ptable,pval,type="inc") #exact pvalue for one-sided tes
 #' distribution for Fisher's exact test.
 #' @param pval Table inclusive \eqn{p}-value for Fisher's exact test on the NNCT.
 #' @param type The type of the \eqn{p}-value correction for the two-sided exact test on the NNCT, default=\code{"inc"}.
-#' Takes on values \code{"inc"}, \code{"exc"}, \code{"mid"}, \code{{"tocher"} (or equivalently \code{1-4}, respectively) for table inclusive,
-#' table-exclusive, mid-\eqn{p}-value, and tocher corrected \eqn{p}-value, respectively.
+#' Takes on values \code{"inc"}, \code{"exc"}, \code{"mid"}, \code{"tocher"} (or equivalently \code{1-4}, respectively) for table inclusive,
+#' table-exclusive, mid-\eqn{p}-value, and Tocher corrected \eqn{p}-value, respectively.
 #' @param double A logical argument (default is \code{FALSE}) to determine whether type I or II correction should be 
 #' applied to the two-sided \eqn{p}-value. If \code{TRUE} type I correction (for doubling the minimum of the one-sided \eqn{p}-value) 
 #' is applied, otherwise, type II correction (using the probabilities for the more extreme tables) is applied.
@@ -15064,6 +15386,8 @@ exact.pval1s <- function(ptable,pval,type="inc") #exact pvalue for one-sided tes
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' ct<-matrix(sample(20:40,4),ncol=2)
@@ -15078,33 +15402,33 @@ exact.pval2s <- function(ptable,pval,type="inc",double=FALSE) #exact pvalue for 
 {
   if (double==FALSE)
   {
-    switch(type,
+    Pv <- switch(type,
            inc = { pv <- pval;
-           names(pv)<-"table-inclusive \eqn{p}-value (with more extreme tables in both directions than the current table)"},
+           names(pv)<-"table-inclusive p-value (with more extreme tables in both directions than the current table)"},
            twice.inc = { pv <- pval+ptable;
-           names(pv)<-"twcie-table-inclusive \eqn{p}-value (with more extreme tables in both directions than the current table)"},
+           names(pv)<-"twcie-table-inclusive p-value (with more extreme tables in both directions than the current table)"},
            exc = { pv <- pval-ptable;
-           names(pv)<-"table-exclusive \eqn{p}-value (with more extreme tables in both directions than the current table)"},
+           names(pv)<-"table-exclusive p-value (with more extreme tables in both directions than the current table)"},
            mid = { pv <- pval-ptable/2;
-           names(pv)<-"mid-\eqn{p}-value (with more extreme tables in both directions than the current table)"},
+           names(pv)<-"mid-p-value (with more extreme tables in both directions than the current table)"},
            tocher = { pv <- tocher.cor(ptable,pval);
-           names(pv)<-"Tocher randomized \eqn{p}-value (with more extreme tables in both directions than the current table)"},
-           stop("Enter numbers 1-5 or inc, twice.inc, exc, mid, tocher in quotes for type")
+           names(pv)<-"Tocher randomized p-value (with more extreme tables in both directions than the current table)"}
     )
   } else 
   {
-    switch(type,
+    Pv <- switch(type,
            inc = { pv <- 2*min(pval,1-pval);
-           names(pv)<-"table-inclusive \eqn{p}-value (with doubling the one-sided \eqn{p}-value)"},
+           names(pv)<-"table-inclusive p-value (with doubling the one-sided p-value)"},
            exc = { pv <- 2*min(pval,1-pval)-2*ptable;
-           names(pv)<-"table-exclusive \eqn{p}-value (with doubling the one-sided \eqn{p}-value)"},
+           names(pv)<-"table-exclusive p-value (with doubling the one-sided p-value)"},
            mid = { pv <- 2*min(pval,1-pval)-ptable;
-           names(pv)<-"mid-\eqn{p}-value (with doubling the one-sided \eqn{p}-value)"},
+           names(pv)<-"mid-p-value (with doubling the one-sided p-value)"},
            tocher = { pv <- tocher.cor(ptable,pval);
-           names(pv)<-"Tocher randomized \eqn{p}-value (with doubling the one-sided \eqn{p}-value)"},
-           stop("Enter numbers 1-4 or inc, twice.inc, exc, mid, tocher in quotes for type")
+           names(pv)<-"Tocher randomized p-value (with doubling the one-sided p-value)"}
     )
   }
+  if (is.null(Pv)) stop("Enter numbers 1-4 or inc, twice.inc, exc, mid, tocher in quotes for type")
+  
   pv
 } #end for the function
 #'
@@ -15114,7 +15438,7 @@ exact.pval2s <- function(ptable,pval,type="inc",double=FALSE) #exact pvalue for 
 #' @title Exact version of Pearson's chi-square test on NNCTs 
 #' 
 #' @description
-#' An object of class "\code{htest}" performing exact version of Pearson's chi-square test on nearest neighbor contingency
+#' An object of class \code{"htest"} performing exact version of Pearson's chi-square test on nearest neighbor contingency
 #' tables (NNCTs) for the RL or CSR independence for 2 classes.
 #' Pearson's \eqn{\chi^2} test is based on the test statistic 
 #' \eqn{\mathcal X^2=\sum_{j=1}^2\sum_{i=1}^2 (N_{ij}-\mu_{ij})^2/\mu_{ij}},
@@ -15136,18 +15460,18 @@ exact.pval2s <- function(ptable,pval,type="inc",double=FALSE) #exact pvalue for 
 #' See \insertCite{ceyhan:SWJ-spat-sym2014;textual}{nnspat} for more details.
 #' 
 #' @param ct A \eqn{2 \times 2} NNCT
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for the odds ratio
 #' @param pval.type The type of the \eqn{p}-value correction for the exact test on the NNCT, default=\code{"inc"}.
-#' Takes on values \code{"inc"}, \code{"exc"}, \code{"mid"}, \code{{"tocher"} (or equivalently \code{1-4}, respectively) for table inclusive,
-#' table-exclusive, mid-\eqn{p}-value, and tocher corrected \eqn{p}-value, respectively.
+#' Takes on values \code{"inc"}, \code{"exc"}, \code{"mid"}, \code{"tocher"} (or equivalently \code{1-4}, respectively) for table inclusive,
+#' table-exclusive, mid-\eqn{p}-value, and Tocher corrected \eqn{p}-value, respectively.
 #' @param double A logical argument (default is \code{FALSE}) to determine whether type I or II correction should be 
 #' applied to the two-sided \eqn{p}-value. Used only when \code{alternative="two.sided"}. 
 #' If \code{TRUE} type I correction (for doubling the minimum of the one-sided \eqn{p}-value) 
 #' is applied, otherwise, type II correction (using the probabilities for the more extreme tables) is applied.
 #'   
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The test statistic, it is \code{NULL} for this function}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the odds ratio in the \eqn{2 \times 2} NNCT
@@ -15164,11 +15488,13 @@ exact.pval2s <- function(ptable,pval,type="inc",double=FALSE) #exact pvalue for 
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
-#' cls<-sample(1:2,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
+#' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ct<-nnct(ipd,cls)
 #' ct
 #'
@@ -15182,9 +15508,7 @@ exact.pval2s <- function(ptable,pval,type="inc",double=FALSE) #exact pvalue for 
 #'
 #' #############
 #' ct<-matrix(sample(10:20,9),ncol=3)
-#'
-#' exact.nnct(ct) #gives error message
-#' fisher.test(ct)
+#' fisher.test(ct) #here exact.nnct(ct) gives error message, since number of classes > 2
 #' 
 #' @export
 exact.nnct <- function(ct,alternative="two.sided",conf.level = 0.95,pval.type="inc",double=FALSE)
@@ -15336,8 +15660,10 @@ exact.nnct <- function(ct,alternative="two.sided",conf.level = 0.95,pval.type="i
 #'
 #' @seealso \code{\link[stats]{dist}}, \code{\link{ipd.mat}}, and \code{\link{ipd.mat.euc}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' range(ipd)
@@ -15388,7 +15714,7 @@ dist.std.data <- function(x,column=TRUE,...)
 #' @param ds A distance matrix or a distance object
 #' @param k A positive integer representing the number of (min and max) distances to be presented, default is \eqn{k=1}
 #'
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{min.dis}{The \code{k} smallest distances in \code{ds}}
 #' \item{ind.min.dis}{The indices (i.e. row numbers) of the \code{k} pairs of object which has the
 #' \code{k} smallest distances in \code{ds}}
@@ -15398,8 +15724,10 @@ dist.std.data <- function(x,column=TRUE,...)
 #'
 #' @seealso \code{\link[stats]{dist}}, \code{\link{ipd.mat}}, and \code{\link{ipd.mat.euc}}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' ipd<-ipd.mat(Y)
 #' pick.min.max(ipd)
@@ -15411,6 +15739,7 @@ dist.std.data <- function(x,column=TRUE,...)
 #' @export
 pick.min.max <- function(ds, k=1)
 {
+  ds <- as.matrix(ds)
   n<-nrow(ds)
   if (k>=n)
   {stop('k must be less than the sample size, n')}
@@ -15496,10 +15825,12 @@ pick.min.max <- function(ds, k=1)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #'
 #' ceTk(Y,cls)
 #' ceTk(Y,cls,method="max")
@@ -15507,15 +15838,14 @@ pick.min.max <- function(ds, k=1)
 #' ceTk(Y,cls+1,case.lab = 2)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ceTk(Y,fcls,case.lab="a") #try also ceTk(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
-#'
-#' ceTk(Y,cls) #gives an error message
+#' cls<-sample(1:4,n,replace = TRUE)  # here ceTk(Y,cls) gives an error message
 #' 
 #' @export 
 ceTk <- function(dat,cc.lab,k=1,case.lab=NULL,...)
@@ -15586,6 +15916,8 @@ NULL
 #'
 #' @rdname funsExpTk
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n1<-20
 #' n0<-25
@@ -15594,9 +15926,9 @@ NULL
 #' EV.Tk(k,n1,n0)
 #'
 #' ###
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)
+#' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
 #' n0<-sum(cls==0)
 #' a<-aij.mat(Y,k)
@@ -15640,7 +15972,7 @@ EV.Tkaij <- function(k,n1,a)
 #' in each row, for the entry \eqn{(r_1,c_1)} \eqn{r_1} is the row entry and \eqn{c_1} is the column entry. Rows are from
 #' 1 to n, which stands for the data point or observation, and column entries are from 1 to \code{k}, where \code{k} is specifying
 #' the number of \code{k}NNs (of each observation) considered. This function saves in storage memory, but needs to be
-#' carefully unfolded in the functions to represent the actual \eqn{A} matrix.
+#' carefully unfolded in the functions to represent the actual the \eqn{A} matrix.
 #' 
 #' See also (\insertCite{tango:2007;textual}{nnspat}).
 #' 
@@ -15662,8 +15994,10 @@ NULL
 #'
 #' @rdname funsAijmat
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' k<-3 #try also 2,3
 #'
@@ -15758,7 +16092,7 @@ aij.nonzero <- function(dat,k,...)
 #' to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) for computing \eqn{N_s} and \eqn{N_t}, which are required in the computation of the
 #' asymptotic variance. \eqn{N_s} and \eqn{N_t} are defined on page 78 of (\insertCite{cuzick:1990;textual}{nnspat}) as follows.
 #' \eqn{N_s=\sum_i\sum_j a_{ij} a_{ji}} (i.e., number of ordered pairs for which \code{k}NN relation is symmetric)
@@ -15772,11 +16106,11 @@ aij.nonzero <- function(dat,k,...)
 #' @param n1 Number of cases
 #' @param k Integer specifying the number of NNs (of subject \eqn{i})
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of \eqn{N_s} and \eqn{N_t}.
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t}.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'   
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{asy.var}{The asymptotic variance of Cuzick and Edwards \eqn{T_k} test statistic for disease clustering}
 #' \item{Ns}{The \eqn{N_s} value standing for the number of ordered pairs for which \code{k}NN relation is symmetric,
 #' see the description.}
@@ -15788,15 +16122,17 @@ aij.nonzero <- function(dat,k,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #' k<-3 #try also 2,3
 #'
 #' asyvarTk(Y,n1,k)
-#' asyvarTk(Y,n1,k,nonzero.mat=F)
+#' asyvarTk(Y,n1,k,nonzero.mat=FALSE)
 #' asyvarTk(Y,n1,k,method="max")
 #' 
 #' @export 
@@ -15881,12 +16217,16 @@ asyvarTk <- function(dat,n1,k,nonzero.mat=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' k<-2 #try also 2,3
 #' a<-aij.mat(Y,k)
 #' Nt.def(a)
 #' 
+#' @export
 Nt.def <- function(a)
 {
   n<-nrow(a)
@@ -15931,10 +16271,7 @@ Nt.def <- function(a)
 #' @references
 #' \insertAllCited{}
 #'
-#' @examples
-#' pk(10,5,1)
-#' pk(10,5,2)
-#' pk(10,5,3)
+#' @author Elvan Ceyhan
 #' 
 pk <- function(n,n1,k)
 {
@@ -15960,7 +16297,7 @@ pk <- function(n,n1,k)
 #' to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) for computing \eqn{N_s} and \eqn{N_t}, which are required in the computation of the
 #' variance. \eqn{N_s} and \eqn{N_t} are defined on page 78 of (\insertCite{cuzick:1990;textual}{nnspat}) as follows.
 #' \eqn{N_s=\sum_i\sum_j a_{ij} a_{ji}} (i.e., number of ordered pairs for which \code{k}NN relation is symmetric)
@@ -15971,7 +16308,7 @@ pk <- function(n,n1,k)
 #' (and is equivalent to the function \code{VarTk}, see \insertCite{tango:2007;textual}{nnspat},
 #' where \eqn{a_{ij}(k) = 1} if \eqn{z_j} is among the \code{k}NNs of \eqn{z_i} and 0 otherwise.
 #' 
-#' The function \code{varTkaij} is equivalent to \code{varTk} (with $var extension).
+#' The function \code{varTkaij} is equivalent to \code{varTk} (with \code{$var} extension).
 #' 
 #' See (\insertCite{cuzick:1990,tango:2007;textual}{nnspat}).
 #' 
@@ -15979,12 +16316,12 @@ pk <- function(n,n1,k)
 #' @param n1 Number of cases
 #' @param k Integer specifying the number of NNs (of subject \eqn{i})
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of \eqn{N_s} and \eqn{N_t}.
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used. Used in \code{VarTk} only.
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t}.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used. Used in \code{VarTk} only.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. Used in \code{VarTk} only.
 #' @param a The \eqn{A=(a_{ij})} matrix, used in \code{VarTkaij} only.
 #' 
-#' @return The function \code{VarTk} returns a list with the elements
+#' @return The function \code{VarTk} returns a \code{list} with the elements
 #' \item{var.Tk}{The (finite sample) variance of Cuzick and Edwards \eqn{T_k} test statistic for disease clustering}
 #' \item{Ns}{The \eqn{N_s} value standing for the number of ordered pairs for which \code{k}NN relation is symmetric,
 #' see the description.}
@@ -16003,17 +16340,19 @@ NULL
 #'
 #' @rdname funsVarTk
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #' k<-2 #try also 2,3
 #'
 #' a<-aij.mat(Y,k)
 #'
 #' varTk(Y,n1,k)
-#' varTk(Y,n1,k,nonzero.mat=F)
+#' varTk(Y,n1,k,nonzero.mat=FALSE)
 #' varTk(Y,n1,k,method="max")
 #' 
 #' @export
@@ -16033,7 +16372,7 @@ varTk <- function(dat,n1,k,nonzero.mat=TRUE,...)
   
   a<-aij.mat(dat,k,...)
   if (nonzero.mat)
-  {
+    {
     ak<-aij.nonzero(dat,k,...)
     row.ak<-ak[,1]; col.ak<-ak[,-1]
     
@@ -16078,10 +16417,12 @@ varTk <- function(dat,n1,k,nonzero.mat=TRUE,...)
 #'
 #' @rdname funsVarTk
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #' k<-1 #try also 2,3, sample(1:5,1)
 #'
@@ -16125,7 +16466,7 @@ varTkaij <- function(n1,k,a)
 #' @title \eqn{Z}-test for Cuzick and Edwards \eqn{T_k} statistic 
 #' 
 #' @description
-#' An object of class "\code{htest}" performing a \eqn{z}-test for Cuzick and Edwards \eqn{T_k} test statistic based on the 
+#' An object of class \code{"htest"} performing a \eqn{z}-test for Cuzick and Edwards \eqn{T_k} test statistic based on the 
 #' number of cases within \code{k}NNs of the cases in the data.
 #' 
 #' For disease clustering, \insertCite{cuzick:1990;textual}{nnspat} suggested a \code{k}-NN test \eqn{T_k} based on number of cases
@@ -16141,7 +16482,7 @@ varTkaij <- function(n1,k,a)
 #' Thus, the \eqn{z}-test for \eqn{T_k} is same as the cell-specific \eqn{z}-test for cell \eqn{(1,1)} in the NNCT (see
 #' \code{\link{cell.spec}}).
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #' 
 #' The logical argument \code{asy.var} (default=\code{FALSE}) is for using the asymptotic variance or the exact (i.e. finite
@@ -16155,24 +16496,24 @@ varTkaij <- function(n1,k,a)
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
 #' @param cc.lab Case-control labels, 1 for case, 0 for control
 #' @param k Integer specifying the number of NNs (of subject \eqn{i}).
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
 #' for Cuzick and Edwards \eqn{T_k} statistic
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of \eqn{N_s} and \eqn{N_t} (argument is passed on to
-#' \code{asyvarTk}). If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t} (argument is passed on to
+#' \code{asyvarTk}). If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param asy.var A logical argument (default is \code{FALSE}) to determine whether the asymptotic variance or 
 #' the exact (i.e. finite sample) variance for the variance of \eqn{T_k} in its standardization. 
 #' If \code{TRUE}, the asymptotic variance is used for \eqn{Var[T_k]}, otherwise the exact variance is used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'  
-#' @return A list with the elements
+#' @return A \code{list} with the elements
 #' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards \eqn{T_k} test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
 #' \item{conf.int}{Confidence interval for the Cuzick and Edwards \eqn{T_k} value
-#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
+#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
 #' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards \eqn{T_k} value.}
 #' \item{null.value}{Hypothesized null value for the Cuzick and Edwards \eqn{T_k} value
 #' which is \eqn{k n_1 (n_1-1)/(n-1)} for this function.}
@@ -16185,18 +16526,20 @@ varTkaij <- function(n1,k,a)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' k<-1 #try also 2,3, sample(1:5,1)
 #'
 #' ZceTk(Y,cls,k)
-#' ZceTk(Y,cls,k,nonzero.mat=F)
+#' ZceTk(Y,cls,k,nonzero.mat=FALSE)
 #' ZceTk(Y,cls,k,method="max")
 #'
 #' ZceTk(Y,cls+1,k,case.lab = 2,alt="l")
-#' ZceTk(Y,cls,k,asy.var=T,alt="g")
+#' ZceTk(Y,cls,k,asy.var=TRUE,alt="g")
 #' 
 #' @export
 ZceTk <- function(dat,cc.lab,k,alternative=c("two.sided", "less", "greater"),conf.level = 0.95,
@@ -16236,7 +16579,7 @@ ZceTk <- function(dat,cc.lab,k,alternative=c("two.sided", "less", "greater"),con
   null.val<- ETk
   names(null.val) <-"(expected) value of Cuzick-Edwards Tk under the null hypothesis"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -16250,9 +16593,11 @@ ZceTk <- function(dat,cc.lab,k,alternative=c("two.sided", "less", "greater"),con
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(dat))
@@ -16274,51 +16619,54 @@ ZceTk <- function(dat,cc.lab,k,alternative=c("two.sided", "less", "greater"),con
 } #end for the function
 #'
 
-################################################  bura
+################################################
 ###FUNCTIONS for CUZICK and EDWARDS Tcomb TESTS###
 ################################################
 #see page 87 of C&E 1990 for Tcomb, which combines multiple Tk's in one test
 
-#' @title Ntkl Value
+#' @title \eqn{N_{tkl}} Value
 #' 
 #' @description
-#' This function computes the Ntkl value which is required in the computation of the exact and asymptotic variance
-#' of Cuzick and Edwards Tcomb test, which is a linear combination of some \eqn{T_k} tests. 
-#' Ntkl is defined on page 80 of (\insertCite{cuzick:1990;textual}{nnspat}) as follows.
-#' Let aij(k) be 1 if \eqn{j} is a \code{k} NN of i and zero otherwise and 
-#' Nt(k,l) = \sum \sum_{i \ne m}\sum aij(k) amj(l).
+#' This function computes the \eqn{N_{tkl}} value which is required in the computation of the exact and asymptotic variance
+#' of Cuzick and Edwards \eqn{T_{comb}} test, which is a linear combination of some \eqn{T_k} tests. 
+#' \eqn{N_{tkl}} is defined on page 80 of (\insertCite{cuzick:1990;textual}{nnspat}) as follows.
+#' Let \eqn{a_{ij}(k)} be 1 if \eqn{j} is a \code{k} NN of \eqn{i} and zero otherwise and 
+#' \eqn{N_t(k,l) = \sum \sum_{i \ne m}\sum a_{ij}(k) a_{mj}(l)}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #'   
 #' See (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
-#' @param k,l Integers specifying the number of NNs (of subjects i and m in aij(k) amj(l)).
+#' @param k,l Integers specifying the number of NNs (of subjects \eqn{i} and \eqn{m} in \eqn{a_{ij}(k) a_{mj}(l)}).
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of \eqn{N_s} and \eqn{N_t} (argument is passed on to
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t} (argument is passed on to
 #' \code{asycovTkTl} and \code{covTkTl}).
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'   
-#' @return Returns the Ntkl value. See the description.
+#' @return Returns the \eqn{N_{tkl}} value. See the description.
 #' 
 #' @seealso \code{\link{asycovTkTl}}, and \code{\link{covTkTl}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' k<-1 #try also 2,3 or sample(1:5,1)
 #' l<-1 #try also 2,3 or sample(1:5,1)
 #' c(k,l)
 #'
 #' Ntkl(Y,k,l)
-#' Ntkl(Y,k,l,nonzero.mat = F)
+#' Ntkl(Y,k,l,nonzero.mat = FALSE)
 #' Ntkl(Y,k,l,method="max")
 #' 
+#' @export
 Ntkl <- function(dat,k,l,nonzero.mat=TRUE,...)
 {
   n<-nrow(dat)
@@ -16334,7 +16682,7 @@ Ntkl <- function(dat,k,l,nonzero.mat=TRUE,...)
       for (m in mseq)
         Nt<-Nt+length(intersect(ak[i,-1],al[m,-1]))
     }
-  } else #i.e., nonzero.mat=F
+  } else #i.e., nonzero.mat=FALSE
   {
     ak<-aij.mat(dat,k,...)
     al<-aij.mat(dat,l,...)
@@ -16356,7 +16704,7 @@ Ntkl <- function(dat,k,l,nonzero.mat=TRUE,...)
 #' @description
 #' This function computes the asymptotic covariance between \eqn{T_k} and \eqn{T_l} values
 #' which is used in the computation of the asymptotic variance
-#' of Cuzick and Edwards Tcomb test, which is a linear combination of some \eqn{T_k} tests. 
+#' of Cuzick and Edwards \eqn{T_{comb}} test, which is a linear combination of some \eqn{T_k} tests. 
 #' The limit is as \eqn{n_1} goes to infinity.
 #' 
 #' The argument, \eqn{n_1}, is the number of cases (denoted as \code{n1} as an argument).
@@ -16364,17 +16712,17 @@ Ntkl <- function(dat,k,l,nonzero.mat=TRUE,...)
 #' to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #'   
 #' See page 80 of (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
 #' @param n1 Number of cases
-#' @param k,l Integers specifying the number of NNs (of subjects i and m in aij(k) amj(l)).
+#' @param k,l Integers specifying the number of NNs (of subjects \eqn{i} and \eqn{m} in \eqn{a_{ij}(k) a_{mj}(l)}).
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of \eqn{N_s} and \eqn{N_t}.
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t}.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'   
 #' @return Returns the asymptotic covariance between \eqn{T_k} and \eqn{T_l} values.
@@ -16384,10 +16732,12 @@ Ntkl <- function(dat,k,l,nonzero.mat=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #'
 #' k<-1 #try also 2,3 or sample(1:5,1)
@@ -16395,9 +16745,10 @@ Ntkl <- function(dat,k,l,nonzero.mat=TRUE,...)
 #' c(k,l)
 #'
 #' asycovTkTl(Y,n1,k,l)
-#' asycovTkTl(Y,n1,k,l,nonzero.mat = F)
+#' asycovTkTl(Y,n1,k,l,nonzero.mat = FALSE)
 #' asycovTkTl(Y,n1,k,l,method="max")
 #' 
+#' @export
 asycovTkTl <- function(dat,n1,k,l,nonzero.mat=TRUE,...)
 {
   n<-nrow(dat)
@@ -16448,9 +16799,9 @@ asycovTkTl <- function(dat,n1,k,l,nonzero.mat=TRUE,...)
 #' @description
 #' This function computes the exact (i.e., finite sample) covariance between \eqn{T_k} and \eqn{T_l} values
 #' which is used in the computation of the exact variance
-#' of Cuzick and Edwards Tcomb test, which is a linear combination of some \eqn{T_k} tests.
+#' of Cuzick and Edwards \eqn{T_{comb}} test, which is a linear combination of some \eqn{T_k} tests.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #'   
 #' See page 80 of (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
@@ -16464,10 +16815,12 @@ asycovTkTl <- function(dat,n1,k,l,nonzero.mat=TRUE,...)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #'
 #' k<-1 #try also 2,3 or sample(1:5,1)
@@ -16478,9 +16831,10 @@ asycovTkTl <- function(dat,n1,k,l,nonzero.mat=TRUE,...)
 #' covTkTl(Y,n1,k,l,method="max")
 #' asycovTkTl(Y,n1,k,l)
 #'
-#' covTkTl(Y,n1,k,l,nonzero.mat = F)
-#' asycovTkTl(Y,n1,k,l,nonzero.mat = F)
+#' covTkTl(Y,n1,k,l,nonzero.mat = FALSE)
+#' asycovTkTl(Y,n1,k,l,nonzero.mat = FALSE)
 #' 
+#' @export
 covTkTl <- function(dat,n1,k,l,nonzero.mat=TRUE,...)
 {
   n<-nrow(dat)
@@ -16529,59 +16883,61 @@ covTkTl <- function(dat,n1,k,l,nonzero.mat=TRUE,...)
 
 #################################################################
 
-#' @title Covariance matrix for \eqn{T_k} values in Tcomb
+#' @title Covariance matrix for \eqn{T_k} values in \code{Tcomb}
 #' 
 #' @description
-#' This function computes the covariance matrix for the \eqn{T_k} values used in the Tcomb test statistics,
+#' This function computes the covariance matrix for the \eqn{T_k} values used in the \eqn{T_{comb}} test statistics,
 #' which is a linear combination of some \eqn{T_k} tests. 
 #' 
 #' The argument, \eqn{n_1}, is the number of cases (denoted as \code{n1} as an argument).
 #' The number of cases is denoted as \eqn{n_1} to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' The argument klist is the vector of integers specifying the indices of the \eqn{T_k} values used
-#' in obtaining the Tcomb.
+#' The argument \code{klist} is the \code{vector} of integers specifying the indices of the \eqn{T_k} values used
+#' in obtaining the \eqn{T_{comb}}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #' 
-#' The logical argument asy.cov (default=\code{FALSE}) is for using the asymptotic covariance or the exact (i.e. finite
-#' sample) covariance for the vector of \eqn{T_k} values used in Tcomb.
-#' If asy.cov=TRUE, the asymptotic covariance is used, otherwise the exact covariance is used.
+#' The logical argument \code{asy.cov} (default=\code{FALSE}) is for using the asymptotic covariance or the exact (i.e. finite
+#' sample) covariance for the vector of \eqn{T_k} values used in \code{Tcomb}.
+#' If \code{asy.cov=TRUE}, the asymptotic covariance is used, otherwise the exact covariance is used.
 #'   
 #' See page 87 of (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
 #' @param n1 Number of cases
-#' @param klist List of integers specifying the indices of the \eqn{T_k} values used in obtaining the Tcomb.
+#' @param klist \code{list} of integers specifying the indices of the \eqn{T_k} values used in obtaining the \eqn{T_{comb}}.
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
 #' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t}.
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param asy.cov A logical argument (default is \code{FALSE}) to determine whether asymptotic or exact (i.e., finite
 #' sample) covariances between \eqn{T_k} and \eqn{T_l} values are to be used to obtain the entries of the covariance matrix.
 #' If \code{TRUE} the asymptotic covariance values are used, otherwise exact covariance values are used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'   
-#' @return Returns the covariance matrix for the \eqn{T_k} values used in Tcomb.
+#' @return Returns the covariance matrix for the \eqn{T_k} values used in \code{Tcomb}.
 #' 
 #' @seealso \code{\link{asycovTkTl}}, \code{\link{covTcomb}}, and \code{\link{Ntkl}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #'
 #' kl<-sample(1:5,3) #try also sample(1:5,2)
 #' kl
 #' covTcomb(Y,n1,kl)
 #' covTcomb(Y,n1,kl,method="max")
-#' covTcomb(Y,n1,kl,nonzero.mat = F)
+#' covTcomb(Y,n1,kl,nonzero.mat = FALSE)
 #'
-#' covTcomb(Y,n1,kl,asy=T)
+#' covTcomb(Y,n1,kl,asy=TRUE)
 #' 
 #' @export 
 covTcomb <- function(dat,n1,klist,nonzero.mat=TRUE,asy.cov=FALSE,...) 
@@ -16627,14 +16983,16 @@ covTcomb <- function(dat,n1,klist,nonzero.mat=TRUE,asy.cov=FALSE,...)
 #' @title Square root of a matrix
 #' 
 #' @description
-#' Computes the square root of the matrix A, where A does not have to be a square matrix, 
+#' Computes the square root of the matrix \eqn{A}, where \eqn{A} does not have to be a square matrix, 
 #' when the square root exists.
 #' See https://people.orie.cornell.edu/davidr/SDAFE2/Rscripts/SDAFE2.R
 #' 
-#' @param A \eqn{A} matrix, not necessarily square
+#' @param A A matrix, not necessarily square
 #'   
-#' @return Returns the square root of A, if exists, otherwise gives an error message.
+#' @return Returns the square root of \eqn{A}, if exists, otherwise gives an error message.
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' A<-matrix(sample(20:40,4),ncol=2)
 #' matrix.sqrt(A)
@@ -16665,49 +17023,51 @@ matrix.sqrt <- function(A)
 #' @title Cuzick & Edwards Tcomb Test Statistic
 #' 
 #' @description
-#' This function computes the value of Cuzick & Edwards Tcomb test statistic in disease clustering, where Tcomb
+#' This function computes the value of Cuzick & Edwards \eqn{T_{comb}} test statistic in disease clustering, where \eqn{T_{comb}}
 #' is a linear combination of some \eqn{T_k} tests.
 #' 
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly. 
 #' 
-#' The argument klist is the vector of integers specifying the indices of the \eqn{T_k} values used
-#' in obtaining the Tcomb.
+#' The argument \code{klist} is the \code{vector} of integers specifying the indices of the \eqn{T_k} values used
+#' in obtaining the \eqn{T_{comb}}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #' 
-#' The logical argument asy.cov (default=\code{FALSE}) is for using the asymptotic covariance or the exact (i.e. finite
-#' sample) covariance for the vector of \eqn{T_k} values used in Tcomb in the standardization of Tcomb.
-#' If asy.cov=TRUE, the asymptotic covariance is used, otherwise the exact covariance is used. 
+#' The logical argument \code{asy.cov} (default=\code{FALSE}) is for using the asymptotic covariance or the exact (i.e. finite
+#' sample) covariance for the vector of \eqn{T_k} values used in \code{Tcomb} in the standardization of \eqn{T_{comb}}.
+#' If \code{asy.cov=TRUE}, the asymptotic covariance is used, otherwise the exact covariance is used. 
 #'   
 #' See page 87 of (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
 #' @param cc.lab Case-control labels, 1 for case, 0 for control
-#' @param klist List of integers specifying the indices of the \eqn{T_k} values used in obtaining the Tcomb.
+#' @param klist \code{list} of integers specifying the indices of the \eqn{T_k} values used in obtaining the \eqn{T_{comb}}.
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of \eqn{N_s} and \eqn{N_t}.
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of \eqn{N_s} and \eqn{N_t}.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param asy.cov A logical argument (default is \code{FALSE}) to determine whether asymptotic or exact (i.e., finite
 #' sample) covariances between \eqn{T_k} and \eqn{T_l} values are to be used to obtain the entries of the covariance matrix.
 #' If \code{TRUE} the asymptotic covariance values are used, otherwise exact covariance values are used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'   
-#' @return Returns the value of the Tcomb test statistic
+#' @return Returns the value of the \eqn{T_{comb}} test statistic
 #' 
 #' @seealso \code{\link{ceTk}}, \code{\link{EV.Tcomb}}, and \code{\link{ZTcomb}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20 #try also n<-50, 100
+#' n<-20  #or try sample(1:20,1) #try also n<-50, 100
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #'
 #' kl<-sample(1:5,3) #try also sample(1:5,2)
@@ -16715,11 +17075,12 @@ matrix.sqrt <- function(A)
 #' Tcomb(Y,cls,kl)
 #' Tcomb(Y,cls,kl,method="max")
 #' Tcomb(Y,cls+1,kl,case.lab=2)
-#' Tcomb(Y,cls,kl,nonzero.mat = F)
-#' Tcomb(Y,cls,kl,asy.cov = T)
+#' Tcomb(Y,cls,kl,nonzero.mat = FALSE)
+#' Tcomb(Y,cls,kl,asy.cov = TRUE)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' Tcomb(Y,fcls,kl,case.lab="a")
 #' 
 #' @export 
@@ -16750,40 +17111,42 @@ Tcomb <- function(dat,cc.lab,klist,case.lab=NULL,nonzero.mat=TRUE,asy.cov=FALSE,
 
 #################################################################
 
-#' @title Expected Value for Cuzick & Edwards Tcomb Test Statistic
+#' @title Expected Value for Cuzick & Edwards \eqn{T_{comb}} Test Statistic
 #' 
 #' @description
-#' This function computes the expected value of Cuzick & Edwards Tcomb test statistic in disease clustering,
-#' where Tcomb is a linear combination of some \eqn{T_k} tests. 
+#' This function computes the expected value of Cuzick & Edwards \eqn{T_{comb}} test statistic in disease clustering,
+#' where \eqn{T_{comb}} is a linear combination of some \eqn{T_k} tests. 
 #' 
 #' The argument, \eqn{n_1}, is the number of cases (denoted as \code{n1} as an argument).
 #' The number of cases is denoted as \eqn{n_1} to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' The argument klist is the vector of integers specifying the indices of the \eqn{T_k} values used
-#' in obtaining the Tcomb.
+#' The argument \code{klist} is the \code{vector} of integers specifying the indices of the \eqn{T_k} values used
+#' in obtaining the \eqn{T_{comb}}.
 #' 
-#' The argument sig is the covariance matrix of the vector of \eqn{T_k} values used in Tcomb, and can be computed
+#' The argument \code{sig} is the covariance matrix of the vector of \eqn{T_k} values used in \code{Tcomb}, and can be computed
 #' via the the \code{\link{covTcomb}} function.
 #'   
 #' See page 87 of (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
 #' 
 #' @param n1 Number of cases
 #' @param n A positive integer representing the number of points in the data set
-#' @param klist List of integers specifying the indices of the \eqn{T_k} values used in obtaining the Tcomb.
-#' @param sig The covariance matrix of the vector of \eqn{T_k} values used in Tcomb
+#' @param klist \code{list} of integers specifying the indices of the \eqn{T_k} values used in obtaining the \eqn{T_{comb}}.
+#' @param sig The covariance matrix of the vector of \eqn{T_k} values used in \code{Tcomb}
 #'   
-#' @return Returns the expected value of the Tcomb test statistic
+#' @return Returns the expected value of the \eqn{T_{comb}} test statistic
 #' 
 #' @seealso \code{\link{Tcomb}}, and \code{\link{ZTcomb}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20 #try also n<-50, 100
+#' n<-20  #or try sample(1:20,1) #try also n<-50, 100
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' n1<-sum(cls==1)
 #'
 #' kl<-sample(1:5,3) #try also sample(1:5,2)
@@ -16807,62 +17170,62 @@ EV.Tcomb <- function(n1,n,klist,sig)
 
 #################################################################
 
-#' @title \eqn{Z}-test for Cuzick and Edwards Tcomb statistic 
+#' @title \eqn{Z}-test for Cuzick and Edwards \eqn{T_{comb}} statistic 
 #' 
 #' @description
-#' An object of class "\code{htest}" performing a \eqn{z}-test for Cuzick and Edwards Tcomb test statisticin disease clustering, where Tcomb
-#' is a linear combination of some \eqn{T_k} tests. 
+#' An object of class \code{"htest"} performing a \eqn{z}-test for Cuzick and Edwards \eqn{T_{comb}} test statisticin disease clustering,
+#' where \eqn{T_{comb}} is a linear combination of some \eqn{T_k} tests. 
 #' 
 #' For disease clustering, \insertCite{cuzick:1990;textual}{nnspat} developed a \eqn{k}-NN test \eqn{T_k} based on 
 #' number of cases among \eqn{k} NNs of the case points, and also proposed a test combining various \eqn{T_k} tests,
-#' denoted as Tcomb.
+#' denoted as \eqn{T_{comb}}.
 #' 
 #' See page 87 of (\insertCite{cuzick:1990;textual}{nnspat}) for more details.
 #' 
 #' Under RL of \eqn{n_1} cases and \eqn{n_0} controls to the given locations in the study region,
-#' Tcomb approximately has $N(E[Tcomb],Var[Tcombk])$ distribution for large \eqn{n_1}.
+#' \eqn{T_{comb}} approximately has \eqn{N(E[T_{comb}],Var[T_{comb}])} distribution for large \eqn{n_1}.
 #' 
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly. 
 #' 
-#' The argument klist is the vector of integers specifying the indices of the \eqn{T_k} values used
-#' in obtaining the Tcomb.
+#' The argument \code{klist} is the \code{vector} of integers specifying the indices of the \eqn{T_k} values used
+#' in obtaining the \eqn{T_{comb}}.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{TRUE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}) in the computations.
 #' 
-#' The logical argument asy.cov (default=\code{FALSE}) is for using the asymptotic covariance or the exact (i.e. finite
-#' sample) covariance for the vector of \eqn{T_k} values used in Tcomb in the standardization of Tcomb.
-#' If asy.cov=TRUE, the asymptotic covariance is used, otherwise the exact covariance is used.
+#' The logical argument \code{asy.cov} (default=\code{FALSE}) is for using the asymptotic covariance or the exact (i.e. finite
+#' sample) covariance for the vector of \eqn{T_k} values used in \code{Tcomb} in the standardization of \eqn{T_{comb}}.
+#' If \code{asy.cov=TRUE}, the asymptotic covariance is used, otherwise the exact covariance is used.
 #' 
 #' See also (\insertCite{ceyhan:SiM-seg-ind2014,cuzick:1990;textual}{nnspat})
 #' and the references therein.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
 #' @param cc.lab Case-control labels, 1 for case, 0 for control
-#' @param klist List of integers specifying the indices of the \eqn{T_k} values used in obtaining the Tcomb.
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
-#' for Cuzick and Edwards Tcomb statistic
+#' @param klist \code{list} of integers specifying the indices of the \eqn{T_k} values used in obtaining the \eqn{T_{comb}}.
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
+#' for Cuzick and Edwards \eqn{T_{comb}} statistic
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuation of covariance of \eqn{T_k} values forming the
-#' Tcomb statistic (argument is passed on to \code{covTcomb}). If \code{TRUE} the nonzero location matrix is used,
-#' otherwise \eqn{A} matrix itself is used.
+#' nonzero locations of the \eqn{A} matrix will be used in the computation of covariance of \eqn{T_k} values forming the
+#' \code{T_{comb}} statistic (argument is passed on to \code{covTcomb}). If \code{TRUE} the nonzero location matrix is used,
+#' otherwise the \eqn{A} matrix itself is used.
 #' @param asy.cov A logical argument (default is \code{FALSE}) to determine whether asymptotic or exact (i.e., finite
 #' sample) covariances between \eqn{T_k} and \eqn{T_l} values are to be used to obtain the entries of the covariance matrix.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'  
-#' @return A list with the elements
-#' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards Tcomb test}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards \eqn{T_{comb}} test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
-#' \item{conf.int}{Confidence interval for the Cuzick and Edwards Tcomb value
-#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
-#' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards Tcomb value.}
-#' \item{null.value}{Hypothesized null value for the Cuzick and Edwards Tcomb value
-#' which is E[Tcomb] for this function, which is the output of \code{EV.Tcomb} function.}
+#' \item{conf.int}{Confidence interval for the Cuzick and Edwards \eqn{T_{comb}} value
+#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
+#' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards \eqn{T_{comb}} value.}
+#' \item{null.value}{Hypothesized null value for the Cuzick and Edwards \eqn{T_{comb}} value
+#' which is \eqn{E[T_{comb}]} for this function, which is the output of \code{EV.Tcomb} function.}
 #' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"}, \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{data.name}{Name of the data set, \code{dat}}
@@ -16872,22 +17235,25 @@ EV.Tcomb <- function(n1,n,klist,sig)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #'
 #' kl<-sample(1:5,3) #try also sample(1:5,2)
 #' ZTcomb(Y,cls,kl)
 #' ZTcomb(Y,cls,kl,method="max")
 #'
-#' ZTcomb(Y,cls,kl,nonzero.mat=F)
+#' ZTcomb(Y,cls,kl,nonzero.mat=FALSE)
 #' ZTcomb(Y,cls+1,kl,case.lab = 2,alt="l")
 #' ZTcomb(Y,cls,kl,conf=.9,alt="g")
-#' ZTcomb(Y,cls,kl,asy=T,alt="g")
+#' ZTcomb(Y,cls,kl,asy=TRUE,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ZTcomb(Y,fcls,kl,case.lab="a")
 #' 
 #' @export
@@ -16940,7 +17306,7 @@ ZTcomb <- function(dat,cc.lab,klist,alternative=c("two.sided", "less", "greater"
   null.val<- ETcomb
   names(null.val) <-"(expected) value of Cuzick-Edwards combined Tk under the null hypothesis"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -16954,9 +17320,11 @@ ZTcomb <- function(dat,cc.lab,klist,alternative=c("two.sided", "less", "greater"
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(dat))
@@ -16982,14 +17350,14 @@ ZTcomb <- function(dat,cc.lab,klist,alternative=c("two.sided", "less", "greater"
 ###FUNCTIONS for CUZICK and EDWARDS Trun TESTS###
 ################################################
 
-#' @title Cuzick and Edwards Trun Test statistic
+#' @title Cuzick and Edwards \eqn{T_{run}} Test statistic
 #'
 #' @description
-#' This function computes Cuzick and Edwards Trun test statistic based on the sum of the number of successive 
+#' This function computes Cuzick and Edwards \eqn{T_{run}} test statistic based on the sum of the number of successive 
 #' cases from each cases until a control is encountered in the data for detecting rare large clusters.
 #' 
-#' Trun test statistic is defined as $T_{run}=\sum_{i=1}^n \delta_i d_i^r$ where \eqn{\delta_i=1} 
-#' if \eqn{z_i} is a case, and 0 if \eqn{z_i} is a control and $d_i^r$ is the number successive cases encountered beginning
+#' \eqn{T_{run}} test statistic is defined as \eqn{T_{run}=\sum_{i=1}^n \delta_i d_i^r} where \eqn{\delta_i=1} 
+#' if \eqn{z_i} is a case, and 0 if \eqn{z_i} is a control and \eqn{d_i^r} is the number successive cases encountered beginning
 #' at \eqn{z_i} until a control is encountered. 
 #'  
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL},
@@ -17004,33 +17372,35 @@ ZTcomb <- function(dat,cc.lab,klist,alternative=c("two.sided", "less", "greater"
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'
-#' @return A list with two elements
-#' \item{Trun}{Cuzick and Edwards Trun test statistic for disease clustering}
-#' \item{run.vec}{The vector of number of consecutive cases till the first control for each point in the data set}
+#' @return A \code{list} with two elements
+#' \item{Trun}{Cuzick and Edwards \eqn{T_{run}} test statistic for disease clustering}
+#' \item{run.vec}{The \code{vector} of number of consecutive cases till the first control for each point in the data set}
 #'
 #' @seealso \code{\link{ceTk}}, \code{\link{Tcomb}} and \code{\link{ceTkinv}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #'
 #' ceTrun(Y,cls)
 #' ceTrun(Y,cls,method="max")
 #' ceTrun(Y,cls+1,case.lab = 2)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ceTrun(Y,fcls,case.lab="a") #try also ceTrun(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
-#' ceTrun(Y,cls) #gives an error message
+#' cls<-sample(1:4,n,replace = TRUE)  #here ceTrun(Y,cls) #gives an error message
 #' 
 #' @export 
 ceTrun <- function(dat,cc.lab,case.lab=NULL,...)
@@ -17072,12 +17442,12 @@ ceTrun <- function(dat,cc.lab,case.lab=NULL,...)
 
 # funsExpTrun
 #'
-#' @title Expected Value for Cuzick and Edwards Trun Test statistic
+#' @title Expected Value for Cuzick and Edwards \eqn{T_{run}} Test statistic
 #'
 #' @description
 #' Two functions: \code{EV.Trun} and \code{EV.Trun.alt}.
 #' 
-#' Both functions compute the expected value of Cuzick and Edwards Trun test statistic based on the number of 
+#' Both functions compute the expected value of Cuzick and Edwards \eqn{T_{run}} test statistic based on the number of 
 #' consecutive cases from the cases in the data under RL or CSR independence.
 #' 
 #' The number of cases are denoted as \eqn{n_1} (denoted as \code{n1} as an argument)
@@ -17085,14 +17455,14 @@ ceTrun <- function(dat,cc.lab,case.lab=NULL,...)
 #' to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' The function \code{EV.Trun.alt} uses a loop and takes slightly longer than the function \code{EV.Trun}, hence
-#' \code{EV.Trun} is used in other functions. 
+#' The function \code{EV.Trun.alt} uses a loop and takes slightly longer than the function \code{EV.Trun},
+#' hence \code{EV.Trun} is used in other functions. 
 #' 
 #' See also (\insertCite{cuzick:1990;textual}{nnspat}).
 #' 
 #' @param n1,n0 The number of cases and controls used as arguments for both functions.
 #'  
-#' @return The expected value of Cuzick and Edwards Trun test statistic for disease clustering
+#' @return The expected value of Cuzick and Edwards \eqn{T_{run}} test statistic for disease clustering
 #'  
 #' @seealso \code{\link{ceTrun}} and \code{\link{EV.Tk}}
 #' 
@@ -17103,6 +17473,8 @@ ceTrun <- function(dat,cc.lab,case.lab=NULL,...)
 NULL
 #'
 #' @rdname funsExpTrun
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20
@@ -17135,12 +17507,12 @@ EV.Trun.alt <- function(n1,n0)
 
 # funsVarTrun
 #'
-#' @title Variance of Cuzick and Edwards Trun Test statistic
+#' @title Variance of Cuzick and Edwards \eqn{T_{run}} Test statistic
 #'
 #' @description
 #' Two functions: \code{varTrun} and \code{varTrun.sim}.
 #' 
-#' The function \code{varTrun} computes the (finite sample) variance of Cuzick and Edwards Trun test statistic 
+#' The function \code{varTrun} computes the (finite sample) variance of Cuzick and Edwards \eqn{T_{run}} test statistic 
 #' which is based on the number of consecutive cases from the cases in the data under RL or CSR independence.
 #' And the function \code{varTrun.sim} estimates this variance based on simulations under the RL hypothesis.
 #' 
@@ -17154,7 +17526,7 @@ EV.Trun.alt <- function(n1,n0)
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly. The argument \code{Nsim} represents the number of resamplings (without replacement) in the
-#' RL scheme, with default being 1000. cc.lab, \code{case.lab} and Nsim are arguments for \code{varTrun.sim} only.
+#' RL scheme, with default being \code{1000}. \code{cc.lab}, \code{case.lab} and \code{Nsim} are arguments for \code{varTrun.sim} only.
 #' 
 #' The function \code{varTrun} might take a very long time when data size is large (even larger than 50),
 #' hence the need for the \code{varTrun.sim} function. 
@@ -17163,20 +17535,20 @@ EV.Trun.alt <- function(n1,n0)
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point, 
 #' used in both functions.
-#' @param n1 Number of cases, used in varTrun only.
-#' @param cc.lab Case-control labels, 1 for case, 0 for control, used in varTrun.sim only.
+#' @param n1 Number of cases, used in \code{varTrun} only.
+#' @param cc.lab Case-control labels, 1 for case, 0 for control, used in \code{varTrun.sim} only.
 #' @param Nsim The number of simulations, i.e., the number of resamplings under the RL scheme to estimate the 
-#' variance of Trun, used in varTrun.sim only.
+#' variance of \eqn{T_{run}}, used in \code{varTrun.sim} only.
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
-#' such that cases are 1 and controls are 0), default is \code{NULL}, used in varTrun.sim only.
+#' such that cases are 1 and controls are 0), default is \code{NULL}, used in \code{varTrun.sim} only.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
-#' Used in varTrun only.
+#' Used in \code{varTrun} only.
 #' 
-#' @return The function \code{varTrun} returns the variance of Cuzick and Edwards Trun test statistic
+#' @return The function \code{varTrun} returns the variance of Cuzick and Edwards \eqn{T_{run}} test statistic
 #' under RL or CSR independence.
 #' And the function \code{varTrun.sim} estimates the same variance based on simulations under the RL hypothesis.
 #' 
-#' @seealso \code{\link{ceTrun}} and \code{\link{EV.ceTrun}}
+#' @seealso \code{\link{ceTrun}} and \code{\link{EV.Trun}}
 #' 
 #' @references
 #' \insertAllCited{}
@@ -17186,10 +17558,12 @@ NULL
 #'
 #' @rdname funsVarTrun
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20 #try also 40, 50, 60
+#' n<-20  #or try sample(1:20,1) #try also 40, 50, 60
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)
+#' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
 #' n0<-sum(cls==0)
 #' c(n1,n0)
@@ -17232,10 +17606,12 @@ varTrun <- function(dat,n1,...)
 #'
 #' @rdname funsVarTrun
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20 #try also 40, 50, 60
+#' n<-20  #or try sample(1:20,1) #try also 40, 50, 60
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)
+#' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
 #' varTrun(Y,n1) #the actual value (might take a long time if \eqn{n} is large)
 #'
@@ -17243,7 +17619,8 @@ varTrun <- function(dat,n1,...)
 #' varTrun.sim(Y,cls,Nsim=Nmc)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' varTrun.sim(Y,fcls,Nsim=Nmc,case.lab="a")
 #' 
 #' @export
@@ -17270,54 +17647,54 @@ varTrun.sim <- function(dat,cc.lab,Nsim=1000,case.lab=NULL)
 
 #################################################################
 
-#' @title \eqn{Z}-test for Cuzick and Edwards Trun statistic 
+#' @title \eqn{Z}-test for Cuzick and Edwards \eqn{T_{run}} statistic 
 #' 
 #' @description
-#' An object of class "\code{htest}" performing a \eqn{z}-test for Cuzick and Edwards Trun test statistic 
+#' An object of class \code{"htest"} performing a \eqn{z}-test for Cuzick and Edwards \eqn{T_{run}} test statistic 
 #' which is based on the number of consecutive cases from the cases in the data under RL or CSR independence.
 #' 
 #' Under RL of \eqn{n_1} cases and \eqn{n_0} controls to the given locations in the study region,
-#' $T_{run}$ approximately has $N(E[T_{run}],Var[T_{run}])$ distribution for large $n$.
+#' \eqn{T_{run}} approximately has \eqn{N(E[T_{run}],Var[T_{run}])} distribution for large \eqn{n}.
 #' 
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly. 
 #' 
 #' The logical argument var.sim (default=\code{FALSE}) is for using the simulation estimated variance or the exact 
-#' variance for the variance of $T_{run}$ in its standardization.
-#' If var.sim=TRUE, the simulation estimated variance is used for $Var[T_{run}]$ (see \code{varTrun.sim}), 
+#' variance for the variance of \eqn{T_{run}} in its standardization.
+#' If \code{var.sim=TRUE}, the simulation estimated variance is used for \eqn{Var[T_{run}]} (see \code{varTrun.sim}), 
 #' otherwise the exact variance (see \code{varTrun}) is used.
-#' Moreover, when var.sim=TRUE, the argument \code{Nvar.sim} represents the number of resamplings 
-#' (without replacement) in the RL scheme, with default being 1000.
+#' Moreover, when \code{var.sim=TRUE}, the argument \code{Nvar.sim} represents the number of resamplings 
+#' (without replacement) in the RL scheme, with default being \code{1000}.
 #' 
 #' The function \code{varTrun} might take a very long time when data size is large (even larger than 50);
-#' in this case, it is recommended to use var.sim=TRUE in this function.
+#' in this case, it is recommended to use \code{var.sim=TRUE} in this function.
 #'  
 #' See also (\insertCite{cuzick:1990;textual}{nnspat}) and the references therein.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point.
 #' @param cc.lab Case-control labels, 1 for case, 0 for control
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}".
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
-#' for Cuzick and Edwards Trun statistic
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"}.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
+#' for Cuzick and Edwards \eqn{T_{run}} statistic
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #' @param var.sim A logical argument (default is \code{FALSE}) to determine whether the simulation estimated variance or
-#' the exact variance be used for the variance of $T_{run}$ in its standardization.
-#' If var.sim=TRUE, the simulation estimated variance is used for $Var[T_{run}]$ (see \code{varTrun.sim}), 
+#' the exact variance be used for the variance of \eqn{T_{run}} in its standardization.
+#' If \code{var.sim=TRUE}, the simulation estimated variance is used for \eqn{Var[T_{run}]} (see \code{varTrun.sim}), 
 #' otherwise the exact variance (see \code{varTrun}) is used.
 #' @param Nvar.sim The number of simulations, i.e., the number of resamplings under the RL scheme to estimate the 
-#' variance of Trun, used only when var.sim=TRUE.
+#' variance of \eqn{T_{run}}, used only when \code{var.sim=TRUE}.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #'  
-#' @return A list with the elements
-#' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards Trun test}
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards \eqn{T_{run}} test}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative}
-#' \item{conf.int}{Confidence interval for the Cuzick and Edwards Trun value
-#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}} 
-#' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards Trun value.}
-#' \item{null.value}{Hypothesized null value for the Cuzick and Edwards Trun value
-#' which is n1*(n1-1)/(n0+1) for this function.}
+#' \item{conf.int}{Confidence interval for the Cuzick and Edwards \eqn{T_{run}} value
+#' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.} 
+#' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards \eqn{T_{run}} value.}
+#' \item{null.value}{Hypothesized null value for the Cuzick and Edwards \eqn{T_{run}} value
+#' which is \eqn{n_1 (n_1-1)/(n_0+1)} for this function.}
 #' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"}, \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{data.name}{Name of the data set, \code{dat}}
@@ -17327,19 +17704,22 @@ varTrun.sim <- function(dat,cc.lab,Nsim=1000,case.lab=NULL)
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20 #try also 40, 50, 60
+#' n<-20  #or try sample(1:20,1) #try also 40, 50, 60
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #'
 #' ZTrun(Y,cls)
 #' ZTrun(Y,cls,method="max")
-#' ZTrun(Y,cls,var.sim=T)
+#' ZTrun(Y,cls,var.sim=TRUE)
 #' ZTrun(Y,cls+1,case.lab = 2,alt="l")
 #' ZTrun(Y,cls,conf=.9,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ZTrun(Y,fcls,case.lab="a")
 #' 
 #' @export
@@ -17381,7 +17761,7 @@ ZTrun <- function(dat,cc.lab,alternative=c("two.sided", "less", "greater"),conf.
   null.val<- ETr
   names(null.val) <-"(expected) value of Cuzick-Edwards Trun under the null hypothesis"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -17395,9 +17775,11 @@ ZTrun <- function(dat,cc.lab,alternative=c("two.sided", "less", "greater"),conf.
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(dat))
@@ -17423,19 +17805,19 @@ ZTrun <- function(dat,cc.lab,alternative=c("two.sided", "less", "greater"),conf.
 ###FUNCTIONS for CUZICK and EDWARDS Tkinv TESTS###
 ################################################
 
-#' @title Cuzick and Edwards Tk-inv Test statistic
+#' @title Cuzick and Edwards \eqn{T_k^{inv}} Test statistic
 #'
 #' @description
-#' This function computes Cuzick and Edwards Tk-inv test statistic based on the sum of number of cases closer to 
-#' each case than the \eqn{k-th} nearest control to the case.
+#' This function computes Cuzick and Edwards \eqn{T_k^{inv}} test statistic based on the sum of number of cases closer to 
+#' each case than the \code{k}-th nearest control to the case.
 #' 
-#' Tk-inv test statistic is an extension of the run length test allowing a fixed number of controls in the run 
+#' \eqn{T_k^{inv}} test statistic is an extension of the run length test allowing a fixed number of controls in the run 
 #' sequence. 
 #' 
-#' Tk-inv test statistic is defined as $T_{run}=\sum_{i=1}^n \delta_i \nu_i^k where \eqn{\delta_i=1} 
-#' if \eqn{z_i} is a case, and 0 if \eqn{z_i} is a control and $\nu_i^k$ is the number of cases closer
+#' \eqn{T_k^{inv}} test statistic is defined as \eqn{T_k^{inv}=\sum_{i=1}^n \delta_i \nu_i^k} where \eqn{\delta_i=1} 
+#' if \eqn{z_i} is a case, and 0 if \eqn{z_i} is a control and \eqn{\nu_i^k} is the number of cases closer
 #' to the index case than the \code{k} nearest control, i.e., number of cases encountered beginning
-#' at \eqn{z_i} until k-th control is encountered. 
+#' at \eqn{z_i} until \code{k}-th control is encountered. 
 #'  
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL},
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's and 1's
@@ -17448,19 +17830,21 @@ ZTrun <- function(dat,cc.lab,alternative=c("two.sided", "less", "greater"),conf.
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' 
-#' @return A list with two elements
-#' \item{Tk-inv}{Cuzick and Edwards Tk-inv test statistic for disease clustering}
-#' \item{run.vec}{The vector of number of cases till the k-th control for each point in the data set}
+#' @return A \code{list} with two elements
+#' \item{Tkinv}{Cuzick and Edwards \eqn{T_k^{inv}} test statistic for disease clustering}
+#' \item{run.vec}{The \code{vector} of number of cases till the \code{k}-th control for each point in the data set}
 #'
 #' @seealso \code{\link{ceTrun}}, \code{\link{ceTk}}, and \code{\link{Tcomb}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' cls
 #' k<-2 #also try 3,4
 #'
@@ -17472,15 +17856,14 @@ ZTrun <- function(dat,cc.lab,alternative=c("two.sided", "less", "greater"),conf.
 #' ceTkinv(Y,k=1,cls)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ceTkinv(Y,k,fcls,case.lab="a") #try also ceTrun(Y,fcls)
 #'
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(1:4,n,replace = T)  #or try cls<-rep(1:2,c(10,10))
-#'
-#' ceTkinv(Y,k,cls) #gives error
+#' cls<-sample(1:4,n,replace = TRUE)  #here ceTkinv(Y,k,cls) #gives error
 #' 
 #' @export 
 ceTkinv <- function(dat,k,cc.lab,case.lab=NULL,...)
@@ -17512,7 +17895,7 @@ ceTkinv <- function(dat,k,cc.lab,case.lab=NULL,...)
       crit<-sum(cc.lab[order(ipd[i,])[2:(j+1)]]==0)
       j<-j+1
     }
-    Tkinv<-Tkinv+(j-k-1) #j-k-1 to exclude the original case point and the \eqn{k-th} ctrl reached
+    Tkinv<-Tkinv+(j-k-1) #j-k-1 to exclude the original case point and the \eqn{k^{th}} ctrl reached
     rv[i]<-j-k-1
   }
   list(Tkinv=Tkinv,
@@ -17523,30 +17906,32 @@ ceTkinv <- function(dat,k,cc.lab,case.lab=NULL,...)
 
 #################################################################
 
-#' @title Expected Value of Cuzick and Edwards Tk-inv Test statistic
+#' @title Expected Value of Cuzick and Edwards \eqn{T_k^{inv}} Test statistic
 #'
 #' @description
-#' This function computes the expected value of Cuzick and Edwards Tk-inv test statistic which is based on the 
-#' sum of number of cases closer to each case than the \eqn{k-th} nearest control to the case.
+#' This function computes the expected value of Cuzick and Edwards \eqn{T_k^{inv}} test statistic which is based on the 
+#' sum of number of cases closer to each case than the \code{k}-th nearest control to the case.
 #' 
 #' The number of cases are denoted as \eqn{n_1} (denoted as \code{n1} as an argument)
 #' and number of controls as \eqn{n_0} for both functions (denoted as \code{n0} as an argument),
 #' to match the case-control class labeling,
 #' which is just the reverse of the labeling in \insertCite{cuzick:1990;textual}{nnspat}.
 #' 
-#' See the function \code{\link{ceTkinv}} for the details of the Tk-inv test.
+#' See the function \code{\link{ceTkinv}} for the details of the \eqn{T_k^{inv}} test.
 #' 
 #' See (\insertCite{cuzick:1990;textual}{nnspat}) and references therein.
 #' 
 #' @param n1,n0 The number of cases and controls
 #' @param k Integer specifying the number of the closest controls to subject \eqn{i}.
 #' 
-#' @return The expected value of Cuzick and Edwards Tk-inv test statistic for disease clustering
+#' @return The expected value of Cuzick and Edwards \eqn{T_k^{inv}} test statistic for disease clustering
 #'
 #' @seealso \code{\link{ceTkinv}}, \code{\link{ceTrun}}, and \code{\link{EV.Trun}}
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @author Elvan Ceyhan
 #'
 #' @examples
 #' n1<-20
@@ -17567,44 +17952,47 @@ EV.Tkinv <- function(n1,n0,k)
 
 #################################################################
 
-#' @title Simulated Variance of Cuzick and Edwards Tk-inv Test statistic
+#' @title Simulated Variance of Cuzick and Edwards \eqn{T_k^{inv}} Test statistic
 #'
 #' @description
-#' This function estimates the variance of Cuzick and Edwards Tk-inv test statistic by Monte Carlo simulations
+#' This function estimates the variance of Cuzick and Edwards \eqn{T_k^{inv}} test statistic by Monte Carlo simulations
 #' under the RL hypothesis.
 #' 
-#' The exact variance of Tk-inv is currently not available and (\insertCite{cuzick:1990;textual}{nnspat}) say
-#' that "The permutational variance of Tk-inv becomes unwieldy for k > 1 and is more easily simulated", hence
-#' we estimate the variance of Tk-inv by RL of cases and controls to the given point data.
+#' The exact variance of \eqn{T_k^{inv}} is currently not available and (\insertCite{cuzick:1990;textual}{nnspat}) say
+#' that "The permutational variance of \eqn{T_k^{inv}} becomes unwieldy for \eqn{k > 1} and is more easily simulated", hence
+#' we estimate the variance of \eqn{T_k^{inv}} by RL of cases and controls to the given point data.
 #' 
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly. The argument \code{Nsim} represents the number of resamplings (without replacement) in the
-#' RL scheme, with default being 1000. 
+#' RL scheme, with default being \code{1000}. 
 #' 
 #' See (\insertCite{cuzick:1990;textual}{nnspat}).
 #' 
-#' See the function \code{\link{ceTkinv}} for the details of the Tk-inv test.
+#' See the function \code{\link{ceTkinv}} for the details of the \eqn{T_k^{inv}} test.
 #' 
 #' @param dat The data set in one or higher dimensions, each row corresponds to a data point, 
 #' @param k Integer specifying the number of the closest controls to subject \eqn{i}.
 #' @param cc.lab Case-control labels, 1 for case, 0 for control
 #' @param Nsim The number of simulations, i.e., the number of resamplings under the RL scheme to estimate the 
-#' variance of Tk-inv
+#' variance of \eqn{T_k^{inv}}
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #'  
-#' @return The simulation estimated variance of Cuzick and Edwards Tk-inv test statistic for disease clustering
+#' @return The simulation estimated variance of Cuzick and Edwards \eqn{T_k^{inv}} test statistic for disease clustering
 #'
 #' @seealso \code{\link{ceTkinv}} and \code{\link{EV.Tkinv}}
 #'
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' set.seed(123)
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)
+#' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
 #' k<-2
 #'
@@ -17617,7 +18005,8 @@ EV.Tkinv <- function(n1,n0,k)
 #' varTkinv.sim(Y,k=1,cls,Nsim=Nmc)
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' varTkinv.sim(Y,k,fcls,Nsim=Nmc,case.lab="a")
 #' 
 #' @export 
@@ -17646,37 +18035,37 @@ varTkinv.sim <- function(dat,k,cc.lab,Nsim=1000,case.lab=NULL)
 
 # funsZTkinv
 #'
-#' @title Z-Test for Cuzick and Edwards Tkinv statistic
+#' @title Z-Test for Cuzick and Edwards \eqn{T_k^{inv}} statistic
 #'
 #' @description
-#' Two functions: \code{ZTkinv} and \code{ZTkinv.sim}, each of which is an object of class "\code{htest}" performing a
-#' \eqn{z}-test for Cuzick and Edwards Tkinv test statistic. See \code{\link{ceTkinv}} for a description of 
-#' Tkinv test statistic.
+#' Two functions: \code{ZTkinv} and \code{ZTkinv.sim}, each of which is an object of class \code{"htest"} performing a
+#' \eqn{z}-test for Cuzick and Edwards \eqn{T_k^{inv}} test statistic. See \code{\link{ceTkinv}} for a description of 
+#' \eqn{T_k^{inv}} test statistic.
 #' 
-#' The function \code{ZTkinv} performs a \eqn{Z}-test for Tkinv using asymptotic normality with a simulation estimated
+#' The function \code{ZTkinv} performs a \eqn{Z}-test for \eqn{T_k^{inv}} using asymptotic normality with a simulation estimated
 #' variance under RL of cases and controls to the given points.
-#' And the function \code{ZTkinv.sim} performs test for Tkinv based on MC simulations under the RL hypothesis.
+#' And the function \code{ZTkinv.sim} performs test for\eqn{T_k^{inv}} based on MC simulations under the RL hypothesis.
 #'  
-#' Asymptotic normality for the Tkinv is not established yet, but this seems likely according to 
+#' Asymptotic normality for the \eqn{T_k^{inv}} is not established yet, but this seems likely according to 
 #' \insertCite{cuzick:1990;textual}{nnspat}. 
 #' If asymptotic normality holds, it seems a larger sample size would be needed before this becomes
 #' an effective approximation.
-#' Hence the simulation-based test ZTkinv.sim is recommended for use to be safe. 
-#' When ZTkinv is used, this is also highlighted with the warning "asymptotic normality of Tkinv is not yet established, 
+#' Hence the simulation-based test \code{ZTkinv.sim} is recommended for use to be safe. 
+#' When \code{ZTkinv} is used, this is also highlighted with the warning "asymptotic normality of \eqn{T_k^{inv}} is not yet established, 
 #' so simulation-based test is recommended".
 #' 
 #' All arguments are common for both functions, except for \dots, Nvar.sim which are used in \code{ZTkinv} only,
-#' and Nsim, which is used in ZTkinv.sim only.
+#' and \code{Nsim}, which is used in \code{ZTkinv.sim} only.
 #' 
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly.
 #' The argument \code{Nvar.sim} represents the number of resamplings (without replacement) in the
-#' RL scheme, with default being 1000 for estimating the variance of Tkinv statistic in ZTkinv.
+#' RL scheme, with default being \code{1000} for estimating the variance of \eqn{T_k^{inv}} statistic in \code{ZTkinv}.
 #' The argument \code{Nsim} represents the number of resamplings (without replacement) in the
-#' RL scheme, with default being 1000 for estimating the Tkinv valuse in ZTkinv.sim.
+#' RL scheme, with default being \code{1000} for estimating the \eqn{T_k^{inv}} values in \code{ZTkinv.sim}.
 #' 
-#' Both functions might take a very long time when data size is large or Nsim is large.
+#' Both functions might take a very long time when data size is large or \code{Nsim} is large.
 #' 
 #' See also (\insertCite{cuzick:1990;textual}{nnspat}) and the references therein.
 #'  
@@ -17684,35 +18073,35 @@ varTkinv.sim <- function(dat,k,cc.lab,Nsim=1000,case.lab=NULL)
 #' used in both functions.
 #' @param k Integer specifying the number of the closest controls to subject \eqn{i}, used in both functions.
 #' @param cc.lab Case-control labels, 1 for case, 0 for control, used in both functions.
-#' @param alternative Type of the alternative hypothesis in the test, one of "\code{two.sided}", "\code{less}" or "\code{greater}",
+#' @param alternative Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"} or \code{"greater"},
 #' used in both functions.
-#' @param conf.level Level of the upper and lower confidence limits, default is 0.95, 
-#' for Cuzick and Edwards Tkinv statistic. Used in both functions.
+#' @param conf.level Level of the upper and lower confidence limits, default is \code{0.95}, 
+#' for Cuzick and Edwards \eqn{T_k^{inv}} statistic. Used in both functions.
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}, used in both functions.
 #' @param Nvar.sim The number of simulations, i.e., the number of resamplings under the RL scheme to estimate the 
-#' variance of Tkinv, used in ZTkinv only.
+#' variance of Tkinv, used in \code{ZTkinv} only.
 #' @param Nsim The number of simulations, i.e., the number of resamplings under the RL scheme to estimate the 
-#' Tkinv values, used in ZTkinv.sim only.
-#' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. Used in ZTkinv only.
+#' \eqn{T_k^{inv}} values, used in \code{ZTkinv.sim} only.
+#' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function. Used in \code{ZTkinv} only.
 #' 
-#' @return A list with the elements
-#' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards Tkinv test}
-#' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative. In ZTkinv
-#' this is computed using the standard normal distribution, while in ZTkinv.sim, it is based on which percentile
-#' the observed Tkinv value is among the generated Tkinv values.}
-#' \item{conf.int}{Confidence interval for the Cuzick and Edwards Tkinv value
+#' @return A \code{list} with the elements
+#' \item{statistic}{The \eqn{Z} test statistic for the Cuzick and Edwards \eqn{T_k^{inv}} test}
+#' \item{p.value}{The \eqn{p}-value for the hypothesis test for the corresponding alternative. In \code{ZTkinv}
+#' this is computed using the standard normal distribution, while in \code{ZTkinv.sim}, it is based on which percentile
+#' the observed \eqn{T_k^{inv}} value is among the generated \eqn{T_k^{inv}} values.}
+#' \item{conf.int}{Confidence interval for the Cuzick and Edwards \eqn{T_k^{inv}} value
 #' at the given confidence level \code{conf.level} and depends on the type of \code{alternative}.}
-#' z-critical values are used in the construction of the confidence interval in ZTkinv, 
-#' while the percentile values are used in the generated sample of Tkinv values in ZTkinv.sim} 
-#' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards Tkinv value.}
-#' \item{null.value}{Hypothesized null value for the Cuzick and Edwards Tkinv value
-#' which is k*n1*(n1-1)/(n0+1) under RL, where the number of cases are denoted as \eqn{n_1} and number of controls as n0.}
+#' \eqn{z}-critical values are used in the construction of the confidence interval in \code{ZTkinv}, 
+#' while the percentile values are used in the generated sample of \eqn{T_k^{inv}} values in \code{ZTkinv.sim} 
+#' \item{estimate}{Estimate of the parameter, i.e., the Cuzick and Edwards \eqn{T_k^{inv}} value.}
+#' \item{null.value}{Hypothesized null value for the Cuzick and Edwards \eqn{T_k^{inv}} value
+#' which is \eqn{k n_1 (n_1-1)/(n_0+1)} under RL, where the number of cases are denoted as \eqn{n_1} and number of controls as \eqn{n_0}.}
 #' \item{alternative}{Type of the alternative hypothesis in the test, one of \code{"two.sided"}, \code{"less"}, \code{"greater"}}
 #' \item{method}{Description of the hypothesis test}
 #' \item{data.name}{Name of the data set, \code{dat}}
 #' 
-#' @seealso \code{\link{ceTkinv}} and \code{\link{EV.ceTkinv}}
+#' @seealso \code{\link{ceTkinv}} and \code{\link{EV.Tkinv}}
 #' 
 #' @references
 #' \insertAllCited{}
@@ -17722,10 +18111,13 @@ NULL
 #'
 #' @rdname funsZTkinv
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20 #try also 50, 100
+#' set.seed(123)
+#' n<-10 #try also 20, 50, 100
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' k<-2
 #'
 #' ZTkinv(Y,k,cls)
@@ -17733,7 +18125,8 @@ NULL
 #' ZTkinv(Y,k,cls,conf=.9,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ZTkinv(Y,k,fcls,case.lab="a")
 #' 
 #' @export
@@ -17770,7 +18163,7 @@ ZTkinv <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"),co
   null.val<- ETki
   names(null.val) <-"(expected) value of Cuzick-Edwards Tkinv under the null hypothesis"
   
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval <-pnorm(ts)
            cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
@@ -17784,9 +18177,11 @@ ZTkinv <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"),co
            alpha <-1 - conf.level
            cint <-qnorm(1 - alpha/2)
            cint <-estimate+c(-cint, cint)*stderr
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(dat))
@@ -17811,9 +18206,9 @@ ZTkinv <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"),co
 #' @rdname funsZTkinv
 #'
 #' @examples
-#' n<-20 #try also 50, 100
+#' n<-10 #try also 20, 50, 100
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)  #or try cls<-rep(0:1,c(10,10))
+#' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' k<-2 # try also 3,5
 #'
 #' ZTkinv.sim(Y,k,cls)
@@ -17821,7 +18216,8 @@ ZTkinv <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"),co
 #' ZTkinv.sim(Y,k,cls,conf=.9,alt="g")
 #'
 #' #cls as a factor
-#' fcls<-rep(c("a","b"),c(10,10))
+#' na<-floor(n/2); nb<-n-na
+#' fcls<-rep(c("a","b"),c(na,nb))
 #' ZTkinv.sim(Y,k,fcls,case.lab="a")
 #'
 #' #with k=1
@@ -17875,7 +18271,7 @@ ZTkinv.sim <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"
   alpha <-1 - conf.level
   quants<-quantile(ce.vec,probs=c(alpha/2,alpha,1-alpha,1-alpha/2))
   pval.ls <-(sum(ce.vec<=Tk0)+1)/(Nsim+1); pval.rs <-(sum(ce.vec>=Tk0)+1)/(Nsim+1)
-  switch(alternative,
+  alt<- switch(alternative,
          less = { 
            pval<-pval.ls
            cint <-c(-Inf, quants[3])
@@ -17888,9 +18284,11 @@ ZTkinv.sim <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"
            pval <-2 * min(pval.ls,pval.rs)
            alpha <-1 - conf.level
            cint <-c(quants[1],quants[4])
-         },
-         stop("Alternative must be one of less, greater, or two.sided")
+         }
   )
+  
+  if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
+  
   attr(cint, "conf.level") <-conf.level 
   
   dname <-deparse(substitute(dat))
@@ -17918,39 +18316,39 @@ ZTkinv.sim <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"
 
 # funsW345values
 #'
-#' @title Wk values for Tango's T test statistic
+#' @title \eqn{W_k} values for Tango's \eqn{T} test statistic
 #'
 #' @description
-#' Three functions: \code{W3val}, \code{W4val} and \code{W5val}, each of which is needed to compute $E T^3$
-#' (i.e., for the skewness of T)
-#' where $T=T(\theta)$ which is defined in Equation (2) of \insertCite{tango:2007;textual}{nnspat} as follows:
-#' Let $(z_1,\ldots, z_n )$, $n = n_0 + n_1$, denote the locations of the points in the combined sample 
+#' Three functions: \code{W3val}, \code{W4val} and \code{W5val}, each of which is needed to compute \eqn{E[T^3]}
+#' (i.e., for the skewness of \eqn{T})
+#' where \eqn{T=T(\theta)} which is defined in Equation (2) of \insertCite{tango:2007;textual}{nnspat} as follows:
+#' Let \eqn{(z_1,\ldots,z_n )}, \eqn{n = n_0 + n_1}, denote the locations of the points in the combined sample 
 #' when the indices have been randomly permuted so that the \eqn{z_i} contain no information about group membership.
-#' $$T(\theta)=\sum_{i=1}^{n}\sum_{j=1}^{n}\delta_i \delta_j a_{ij}(\theta)=
-#' \boldsymbol \delta^t \boldmath A(\theta)) \boldsymbol \delta\$$ where \eqn{\delta_i=1} if \eqn{z_i} is a case,
-#' and 0 if \eqn{z_i} is a control,  $\boldmath A(\theta) = (a_{ij} (\theta))$ could be any matrix of a measure of
-#' the closeness between two points \eqn{i} and \eqn{j} with $a_{ii} = 0$ for all $i = 1,\ldots, n$, and $\boldsymbol \theta = 
-#' (\theta_1,\ldots, \theta_p)^t$ denotes the unknown parameter vector related to cluster size and 
-#' $\boldsymbol \delta = (\delta_1, \ldots, \delta_n)^t$. 
+#' \deqn{T(\theta)=\sum_{i=1}^{n}\sum_{j=1}^{n}\delta_i \delta_j a_{ij}(\theta)=
+#' \boldsymbol \delta^t \boldmath A(\theta)) \boldsymbol \delta} where \eqn{\delta_i=1} if \eqn{z_i} is a case,
+#' and 0 if \eqn{z_i} is a control,  \eqn{\boldmath A(\theta) = (a_{ij} (\theta))} could be any matrix of a measure of
+#' the closeness between two points \eqn{i} and \eqn{j} with \eqn{a_{ii} = 0} for all \eqn{i = 1,\ldots,n}, and \eqn{\boldsymbol \theta = 
+#' (\theta_1,\ldots,\theta_p)^t} denotes the unknown parameter vector related to cluster size and 
+#' \eqn{\boldsymbol \delta = (\delta_1,\ldots,\delta_n)^t}. 
 #' Here the number of cases are denoted as \eqn{n_1} and number of controls as \eqn{n_0}  to match the case-control class
 #' labeling, which is just the reverse of the labeling in \insertCite{tango:2007;textual}{nnspat}.
 #' 
-#' If $\theta=k$ in the nearest neighbors model with $a_{ij}(k) = 1$ if $z_j$ is among the \eqn{k}NNs of \eqn{z_i} and 0 
-#' otherwise, then the test statistic $T(\theta) = T_k$ is the Cuzick and Edwards \eqn{k}NN test statistic, T_k
+#' If \eqn{\theta=k} in the nearest neighbors model with \eqn{a_{ij}(k) = 1} if \eqn{z_j} is among the \eqn{k}NNs of \eqn{z_i} and 0 
+#' otherwise, then the test statistic \eqn{T(\theta) = T_k} is the Cuzick and Edwards \eqn{k}NN test statistic, \eqn{T_k}
 #' \insertCite{cuzick:1990;textual}{nnspat}, see also \code{\link{ceTk}}.
 #' 
-#' W_k values are used for Tango's correction to Cuzick and Edwards \eqn{k}NN test statistic, \eqn{T_k} and
-#' W_k here corresponds to W_{k-1} in \insertCite{tango:2007;textual}{nnspat}
-#' (defined for consistency with p_k's and alpha_r having r distinct elements).
+#' \eqn{W_k} values are used for Tango's correction to Cuzick and Edwards \eqn{k}NN test statistic, \eqn{T_k} and
+#' \eqn{W_k} here corresponds to \eqn{W_{k-1}} in \insertCite{tango:2007;textual}{nnspat}
+#' (defined for consistency with \eqn{p_k}'s and \eqn{alpha_r} having \eqn{r} distinct elements).
 #' 
-#' The argument of the function is the \eqn{A_{ij}} matrix, a, which is the output of the function \code{\link{aij.mat}}.
-#' However, inside the function we symmetrize the matrix a as b <- (a+a^t)/2, to facilitate the formulation.
+#' The argument of the function is the \eqn{A_{ij}} matrix, \code{a}, which is the output of the function \code{\link{aij.mat}}.
+#' However, inside the function we symmetrize the matrix \code{a} as \code{b <- (a+a^t)/2}, to facilitate the formulation.
 #' 
 #' @param a \eqn{A_{ij}} matrix which is the output of the function \code{\link{aij.mat}}.
 #' 
-#' @return Each function Wkval returns the Wk value for k=3,4,5.
+#' @return Each function \code{Wkval} returns the \eqn{W_k} value for \eqn{k=3,4,5}.
 #' 
-#' @seealso \code{\link{ceTk}}, \code{\link{EV.ceTk}}, \code{\link{varTk}}, \code{\link{Xsq.ceTk}}
+#' @seealso \code{\link{ceTk}}, \code{\link{EV.Tk}}, \code{\link{varTk}}, \code{\link{Xsq.ceTk}}
 #' 
 #' @references
 #' \insertAllCited{}
@@ -17960,8 +18358,10 @@ NULL
 #'
 #' @rdname funsW345values
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' k<-sample(1:5,1) # try also 3, 5, sample(1:5,1)
 #' k
@@ -17974,7 +18374,8 @@ NULL
 #' W3val(a)
 #' W4val(a)
 #' W5val(a)
-#' 
+#'
+#' @export 
 W3val <- function(a)
 { b<-1/2*(a+t(a))
 n<-nrow(b)
@@ -17994,6 +18395,7 @@ W3
 #'
 #' @rdname funsW345values
 #'
+#' @export
 W4val <- function(a)
 {
   b<-1/2*(a+t(a))
@@ -18015,7 +18417,8 @@ W4val <- function(a)
 } #end for the function
 #'
 #' @rdname funsW345values
-#' 
+#'
+#' @export 
 W5val <- function(a)
 { b<-1/2*(a+t(a))
 n<-nrow(b)
@@ -18042,16 +18445,16 @@ W5<-W5-S1*b[i,j]^2-4*b[i,j]^3+10*b[i,j]^2*bi-b[i,j]*bi^2-
 #'
 #' @description
 #' This function estimates the skewness of Cuzick and Edwards \eqn{T_k} test statistic under the RL hypothesis.
-#' Skewness of a random variable T is defined as $E(T-\mu)^3/(E(T-\mu)^2)^{1.5}$ where $\mu=E T$.
+#' Skewness of a random variable \eqn{T} is defined as \eqn{E(T-\mu)^3/(E(T-\mu)^2)^{1.5}} where \eqn{\mu=E T}.
 #' 
-#' Skewness is used for Tango's correction to Cuzick and Edwards \code{k}NN test statistic, T_k.
+#' Skewness is used for Tango's correction to Cuzick and Edwards \code{k}NN test statistic, \eqn{T_k}.
 #' Tango's correction is a chi-square approximation, and its degrees of freedom is estimated using the skewness
 #' estimate (see page 121 of \insertCite{tango:2007;textual}{nnspat}).
 #' 
 #' The argument, \eqn{n_1}, is the number of cases (denoted as \code{n1} as an argument) 
 #' and \code{k} is the number of NNs considered in \eqn{T_k} test statistic.
-#' The argument of the function is the \eqn{A_{ij}} matrix, a, which is the output of the function \code{\link{aij.mat}}.
-#' However, inside the function we symmetrize the matrix a as b <- (a+a^t)/2, to facilitate the formulation.
+#' The argument of the function is the \eqn{A_{ij}} matrix, \code{a}, which is the output of the function \code{\link{aij.mat}}.
+#' However, inside the function we symmetrize the matrix \code{a} as \code{b <- (a+a^t)/2}, to facilitate the formulation.
 #' 
 #' The number of cases are denoted as \eqn{n_1} and number of controls as \eqn{n_0} in this function
 #' to match the case-control class labeling,
@@ -18068,10 +18471,12 @@ W5<-W5-S1*b[i,j]^2-4*b[i,j]^3+10*b[i,j]^2*bi-b[i,j]*bi^2-
 #' @references
 #' \insertAllCited{}
 #'
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)
+#' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
 #'
 #' k<-sample(1:5,1) # try also 3, 5, sample(1:5,1)
@@ -18125,19 +18530,19 @@ skewness
 #' @title Chi-square Approximation to Cuzick and Edwards \eqn{T_k} Test statistic
 #'
 #' @description  
-#' An object of class "\code{Chisqtest}" performing  a chi-square approximation for Cuzick and Edwards \eqn{T_k} test statistic
+#' An object of class \code{"Chisqtest"} performing  a chi-square approximation for Cuzick and Edwards \eqn{T_k} test statistic
 #' based on the number of cases within \code{k}NNs of the cases in the data.
 #' 
 #' This approximation is suggested by \insertCite{tango:2007;textual}{nnspat} since \eqn{T_k} statistic had high 
 #' skewness rendering the normal approximation less efficient. The chi-square approximation is as follows:
-#' $\frac{T_k- ET_k}{\sqrt{Var T_k}} \approx \frac{\chi^2_\nu-\nu}{\sqrt{2 \nu}}$ where $\chi^2_\nu$ is a chi-square
-#' random variable with $\nu$ df, and $\nu=8/skewnees(T_k)$ (see \code{\link{SkewTk}} for the skewness).
+#' \eqn{\frac{T_k- ET_k}{\sqrt{Var T_k}} \approx \frac{\chi^2_\nu-\nu}{\sqrt{2 \nu}}} where \eqn{\chi^2_\nu} is a chi-square
+#' random variable with \eqn{\nu} df, and \eqn{\nu=8/skewnees(T_k)} (see \code{\link{SkewTk}} for the skewness).
 #' 
 #' The argument \code{cc.lab} is case-control label, 1 for case, 0 for control, if the argument \code{case.lab} is \code{NULL}, 
 #' then \code{cc.lab} should be provided in this fashion, if \code{case.lab} is provided, the labels are converted to 0's 
 #' and 1's accordingly.
 #' 
-#' The logical argument \code{nonzero.mat} (default=\code{FALSE}) is for using \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
+#' The logical argument \code{nonzero.mat} (default=\code{FALSE}) is for using the \eqn{A} matrix if \code{FALSE} or just the matrix of nonzero
 #' locations in the \eqn{A} matrix (if \code{TRUE}).
 #' 
 #' The logical argument \code{asy.var} (default=\code{FALSE}) is for using the asymptotic variance or the exact (i.e. finite
@@ -18153,22 +18558,22 @@ skewness
 #' @param case.lab The label used for cases in the \code{cc.lab} (if \code{cc.lab} is not provided then the labels are converted
 #' such that cases are 1 and controls are 0), default is \code{NULL}.
 #' @param nonzero.mat A logical argument (default is \code{TRUE}) to determine whether the \eqn{A} matrix or the matrix of
-#' nonzero locations of the \eqn{A} matrix will be used in the compuations.
-#' If \code{TRUE} the nonzero location matrix is used, otherwise \eqn{A} matrix itself is used.
+#' nonzero locations of the \eqn{A} matrix will be used in the computations.
+#' If \code{TRUE} the nonzero location matrix is used, otherwise the \eqn{A} matrix itself is used.
 #' @param asy.var A logical argument (default is \code{FALSE}) to determine whether the asymptotic variance or 
 #' the exact (i.e. finite sample) variance for the variance of \eqn{T_k} in its standardization. 
 #' If \code{TRUE}, the asymptotic variance is used for \eqn{Var[T_k]}, otherwise the exact variance is used.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' 
-#' @return A list with the elements
-#' \item{statistic}{The chi-squared test statistic for Tango's chi-square approximation to Cuzick & Edwards' T_k
-#' test for disease clustering.
+#' @return A \code{list} with the elements
+#' \item{statistic}{The chi-squared test statistic for Tango's chi-square approximation to Cuzick & Edwards' \eqn{T_k}
+#' test for disease clustering.}
 #' \item{p.value}{The \eqn{p}-value for the hypothesis test}
-#' \item{df}{Degrees of freedom for the chi-squared test, which is 8/skewness where skewness is the output of
+#' \item{df}{Degrees of freedom for the chi-squared test, which is \eqn{8/}skewness where skewness is the output of
 #' \code{\link{SkewTk}} function.}
 #' \item{estimate}{Estimates, i.e., the observed \eqn{T_k} value.}
 #' \item{est.name,est.name2}{Names of the estimates, they are almost identical for this function.}
-#' \item{null.value}{Hypothesized null value for Cuzick & Edwards' T_k, which is $ET_k$.}
+#' \item{null.value}{Hypothesized null value for Cuzick & Edwards' \eqn{T_k}, which is \eqn{ET_k}.}
 #' \item{method}{Description of the hypothesis test}
 #' \item{data.name}{Name of the data set, \code{dat}}
 #'  
@@ -18177,23 +18582,26 @@ skewness
 #' @references
 #' \insertAllCited{}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
+#' set.seed(123)
 #' n<-20
 #' Y<-matrix(runif(3*n),ncol=3)
-#' cls<-sample(0:1,n,replace = T)
+#' cls<-sample(0:1,n,replace = TRUE)
 #'
 #' k<-sample(1:5,1) # try also 1, 3, 5,
 #' k
 #'
 #' Xsq.ceTk(Y,cls,k)
-#' Xsq.ceTk(Y,cls,k,nonzero.mat=F)
+#' Xsq.ceTk(Y,cls,k,nonzero.mat=FALSE)
 #' Xsq.ceTk(Y,cls+1,k,case.lab = 2)
 #' Xsq.ceTk(Y,cls,k,method="max")
 #'
-#' Xsq.ceTk(Y,cls,k,asyvar=T)
+#' Xsq.ceTk(Y,cls,k,asy.var=TRUE)
 #'
 #' @export
-Xsq.ceTk <- function(dat,cc.lab,k,case.lab=NULL,nonzero.mat=TRUE,asyvar=FALSE,...)
+Xsq.ceTk <- function(dat,cc.lab,k,case.lab=NULL,nonzero.mat=TRUE,asy.var=FALSE,...)
 {
   n<-nrow(dat)
   ifelse(is.null(case.lab),
@@ -18202,7 +18610,7 @@ Xsq.ceTk <- function(dat,cc.lab,k,case.lab=NULL,nonzero.mat=TRUE,asyvar=FALSE,..
   
   Tk<-ceTk(dat,cc.lab,k,case.lab,...)
   ETk<-EV.Tk(k,n1,n0)
-  ifelse(asyvar==TRUE,var.Tk<-asyvarTk(dat,n1,k,nonzero.mat,...)$asy.var,
+  ifelse(asy.var==TRUE,var.Tk<-asyvarTk(dat,n1,k,nonzero.mat,...)$asy.var,
          var.Tk<-varTk(dat,n1,k,nonzero.mat,...)$var)
   stderr <-sqrt(var.Tk)
   zTk<-(Tk-ETk)/stderr #TS.CE
@@ -18250,34 +18658,34 @@ Xsq.ceTk <- function(dat,cc.lab,k,case.lab=NULL,nonzero.mat=TRUE,asyvar=FALSE,..
 #' @title Closeness or Proximity Matrix for Tango's Spatial Clustering Tests
 #'
 #' @description 
-#' This function computes the $A=a_{ij}(\theta)$ matrix useful in calculations for Tango's test $T(\theta)$ 
+#' This function computes the \eqn{A=a_{ij}(\theta)} matrix useful in calculations for Tango's test \eqn{T(\theta)} 
 #' for spatial (disease) clustering (see Eqn (2) of \insertCite{tango:2007;textual}{nnspat}.
-#' Here, $A=a_{ij}(\theta)$ is any matrix of a measure of the closeness between two points \eqn{i} and \eqn{j} with aii = 0 for all
-#' i = 1, . . . , n, and $\theta = (\theta_1, \ldots, \theta_p)^t$ denotes the unknown parameter vector related 
-#' to cluster size and $\delta = (\delta_1, \ldots, \delta_n)^t$, where \eqn{\delta_i=1} if \eqn{z_i} is a case and 0 
+#' Here, \eqn{A=a_{ij}(\theta)} is any matrix of a measure of the closeness between two points \eqn{i} and \eqn{j} with \eqn{aii = 0} for all
+#' \eqn{i = 1, \ldots,n}, and \eqn{\theta = (\theta_1,\ldots,\theta_p)^t} denotes the unknown parameter vector related 
+#' to cluster size and \eqn{\delta = (\delta_1,\ldots,\delta_n)^t}, where \eqn{\delta_i=1} if \eqn{z_i} is a case and 0 
 #' otherwise.
 #' The test is then
-#' $$T(\theta)=\sum_{i=1}^n\sum_{j=1}^n\delta_i \delta_j a_{ij}(\theta)=\delta^t A(\theta) \delta$$
-#' where $A=a_{ij}(\theta)$.
+#' \deqn{T(\theta)=\sum_{i=1}^n\sum_{j=1}^n\delta_i \delta_j a_{ij}(\theta)=\delta^t A(\theta) \delta}
+#' where \eqn{A=a_{ij}(\theta)}.
 #' 
-#' $T(\theta)$ becomes Cuzick and Edwards \eqn{T_k} tests statistic (\insertCite{cuzick:1990;textual}{nnspat}),
-#' if $a_{ij}=1$ if $z_j$ is among the \code{k}NNs of \eqn{z_i} and 0 otherwise.
-#' In this case $\theta=k$ and \code{aij.theta} becomes \code{aij.mat} (more specifically,
-#' aij.mat(dat,k) and aij.theta(dat,k,model="NN").
+#' \eqn{T(\theta)} becomes Cuzick and Edwards \eqn{T_k} tests statistic (\insertCite{cuzick:1990;textual}{nnspat}),
+#' if \eqn{a_{ij}=1} if \eqn{z_j} is among the \code{k}NNs of \eqn{z_i} and 0 otherwise.
+#' In this case \eqn{\theta=k} and \code{aij.theta} becomes \code{aij.mat} (more specifically,
+#' \code{aij.mat(dat,k)} and \code{aij.theta(dat,k,model="NN")}.
 #' 
 #' In Tango's exponential clinal model (\insertCite{tango:2000;textual}{nnspat}),
-#' $a_{ij}=\exp\left(-4 \left(\frac{d_{ij}}{\theta}\right)^2\right)$ if $\eqn{i \ne j}$  and 0 otherwise,
+#' \eqn{a_{ij}=\exp\left(-4 \left(\frac{d_{ij}}{\theta}\right)^2\right)} if \eqn{i \ne j}  and 0 otherwise,
 #' where \eqn{\theta} is a predetermined scale of cluster such that any pair of cases far apart beyond the distance 
-#' \eqn{\theta} cannot be considered as a cluster and $d_{ij}$ denote the Euclidean distance between 
+#' \eqn{\theta} cannot be considered as a cluster and \eqn{d_{ij}} denote the Euclidean distance between 
 #' two points \eqn{i} and \eqn{j}. 
 #' 
 #' In the exponential model (\insertCite{tango:2007;textual}{nnspat}),
-#' $a_{ij}=\exp\left(-\frac{d_{ij}}{\theta}\right\right)$ if $\eqn{i \ne j}$  and 0 otherwise,
-#' where \eqn{\theta} and $d_{ij}$ are as above.
+#' \eqn{a_{ij}=\exp\left(-\frac{d_{ij}}{\theta}\right)} if \eqn{i \ne j}  and 0 otherwise,
+#' where \eqn{\theta} and \eqn{d_{ij}} are as above.
 #' 
 #' In the hot-spot model (\insertCite{tango:2007;textual}{nnspat}),
-#' $a_{ij}=1$ if $d_{ij} \le \theta$ and $\eqn{i \ne j}$  and 0 otherwise,
-#' where \eqn{\theta} and $d_{ij}$ are as above.
+#' \eqn{a_{ij}=1} if \eqn{d_{ij} \le \theta} and \eqn{i \ne j}  and 0 otherwise,
+#' where \eqn{\theta} and \eqn{d_{ij}} are as above.
 #' 
 #' The argument \code{model} has four options, \code{NN}, \code{exp.clinal}, \code{exponential}, and 
 #' \code{hot.spot}, with \code{exp.clinal} being the default.
@@ -18293,15 +18701,17 @@ Xsq.ceTk <- function(dat,cc.lab,k,case.lab=NULL,nonzero.mat=TRUE,asyvar=FALSE,..
 #' \code{NN}, \code{exp.clinal} (default), \code{exponential}, and \code{hot.spot}.
 #' @param \dots are for further arguments, such as \code{method} and \code{p}, passed to the \code{\link[stats]{dist}} function.
 #' 
-#' @return The $A=a_{ij}(\theta)$ matrix useful in calculations for Tango's test $T(\theta)$.
+#' @return The \eqn{A=a_{ij}(\theta)} matrix useful in calculations for Tango's test \eqn{T(\theta)}.
 #'  
 #' @seealso \code{\link{aij.mat}}, \code{\link{aij.nonzero}} and \code{\link{ceTk}}
 #' 
 #' @references
 #' \insertAllCited{}
 #' 
+#' @author Elvan Ceyhan
+#'
 #' @examples
-#' n<-20
+#' n<-20  #or try sample(1:20,1)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' k<-3#1 #try also 2,3
 #'
@@ -18328,7 +18738,7 @@ aij.theta <- function(dat,theta,model="exp.clinal",...)
   
   if (n<=1)
   { return(a)}
-  switch(model,
+ a<- switch(model,
          NN = { a<-aij.mat(dat,theta,...) },
          exp.clinal = {   a<-matrix(0,n,n)
          for (i in 1:(n-1))
@@ -18339,7 +18749,7 @@ aij.theta <- function(dat,theta,model="exp.clinal",...)
              a[j,i]<-a[i,j]
            }
          }
-         },
+         a },
          exponential = {   a<-matrix(0,n,n)
          for (i in 1:(n-1))
          {
@@ -18349,7 +18759,7 @@ aij.theta <- function(dat,theta,model="exp.clinal",...)
              a[j,i]<-a[i,j]
            }
          }
-         },
+         a },
          hot.spot = {   a<-matrix(0,n,n)
          for (i in 1:(n-1))
          {
@@ -18359,9 +18769,10 @@ aij.theta <- function(dat,theta,model="exp.clinal",...)
              a[j,i]<-a[i,j]
            }
          }
-         },
-         stop("Enter numbers 1-4 or NN, exp.clinal, exponential, hotspot in quotes for model")
+         a}
   )
+ 
+ if (is.null(a)) stop("Enter numbers 1-4 or NN, exp.clinal, exponential, hotspot in quotes for model")
   a
 } #end for the function
 #'

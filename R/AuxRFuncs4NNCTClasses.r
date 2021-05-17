@@ -1,13 +1,17 @@
-#AuxRFuncs4NNCTClasses.r
+# AuxRFuncs4NNCTClasses.r
 ###############################################
 #Auxiliary functions for class cellhtest
 ###############################################
 #'
 #' @title Print a summary of a \code{cellhtest} object
 #'
-#' @description Prints some information about the \code{object}.
+#' @description 
+#' Printing objects of class "\code{cellhtest}" by simple \code{\link[base]{print}} methods.
 #'
 #' @param x	 object of class "\code{summary.cellhtest}"
+#' @param digits number of significant digits to be used.
+#' @param prefix string, passed to \code{\link[base]{strwrap}} for displaying the method component 
+#' of the \code{classhtest} object.
 #' @param \dots Additional parameters for \code{print}.
 #'
 #' @return
@@ -92,9 +96,13 @@ print.cellhtest <- function(x, digits = getOption("digits"), prefix = "\t",...)
 #'
 #' @title Print a summary of a \code{classhtest} object
 #'
-#' @description Prints some information about the \code{object}.
+#' @description 
+#' Printing objects of class "\code{classhtest}" by simple \code{\link[base]{print}} methods.
 #'
 #' @param x	 object of class "\code{summary.classhtest}"
+#' @param digits number of significant digits to be used.
+#' @param prefix string, passed to \code{\link[base]{strwrap}} for displaying the method component 
+#' of the \code{classhtest} object.
 #' @param \dots Additional parameters for \code{print}.
 #'
 #' @return
@@ -149,9 +157,13 @@ print.classhtest <- function(x, digits = getOption("digits"), prefix = "\t",...)
 #'
 #' @title Print a summary of a \code{Chisqtest} object
 #'
-#' @description Prints some information about the \code{object}.
+#' @description 
+#' Printing objects of class "\code{Chisqtest}" by simple \code{\link[base]{print}} methods.
 #'
 #' @param x	 object of class "\code{summary.Chisqtest}"
+#' @param digits number of significant digits to be used.
+#' @param prefix string, passed to \code{\link[base]{strwrap}} for displaying the method component 
+#' of the \code{classhtest} object.
 #' @param \dots Additional parameters for \code{print}.
 #'
 #' @return
@@ -213,9 +225,13 @@ print.Chisqtest <- function(x, digits = getOption("digits"), prefix = "\t",...)
 #'
 #' @title Print a summary of a \code{refhtest} object
 #'
-#' @description Prints some information about the \code{object}.
+#' @description 
+#' Printing objects of class "\code{refhtest}" by simple \code{\link[base]{print}} methods.
 #'
 #' @param x	 object of class "\code{summary.refhtest}"
+#' @param digits number of significant digits to be used.
+#' @param prefix string, passed to \code{\link[base]{strwrap}} for displaying the method component 
+#' of the \code{classhtest} object.
 #' @param \dots Additional parameters for \code{print}.
 #'
 #' @return
