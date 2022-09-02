@@ -1,4 +1,4 @@
-#NNCTFunctions.r;
+#NNCTFunctions.R;
 #Contains the ancillary functions used in NNCT calculations, such as NNCT for two classes of points
 
 #################################################################
@@ -10,6 +10,8 @@
 #' @import stats
 #' @import MASS
 #' @import graphics
+#' @importFrom Rdpack reprompt
+#' @importFrom pcds Dist
 #'
 #' @title Interpoint Distance Matrix
 #'
@@ -241,17 +243,17 @@ ipd.mat.euc <- function(x,y=NULL)
 #' B<-c(1,0); C<-c(1/2,sqrt(3)/2);
 #' euc.dist(B,C);
 #' euc.dist(B,B);
-#' #'
+#' 
 #' x<-runif(10)
 #' y<-runif(10)
 #' euc.dist(x,y)
-#' #'
+#' 
 #' xm<-matrix(x,ncol=2)
 #' ym<-matrix(y,ncol=2)
 #' euc.dist(xm,ym)
-#' #'
+#' 
 #' euc.dist(xm,xm)
-#' #'
+#' 
 #' dat.fr<-data.frame(b=B,c=C)
 #' euc.dist(dat.fr,dat.fr)
 #' euc.dist(dat.fr,cbind(B,C))
@@ -1495,9 +1497,9 @@ NNsub <- function(ss,x,i,is.ipd=TRUE,...)
   n<-nrow(ipd)
   if (n<=1 || i>n)
   {
-  res<-list(base.ind=NA,
-         ss.ind=NA,
-         ss.dis=NA)
+    res<-list(base.ind=NA,
+              ss.ind=NA,
+              ss.dis=NA)
     return(res)
   }
   if (sum(ss==i)==1)
@@ -1897,7 +1899,7 @@ nnct.boot.dis <- function(x,lab,self=TRUE,ties=TRUE,is.ipd=TRUE,...)
   if (n<=1)
   {return(ct)}
   
- # pr<-rep(1,n)
+  # pr<-rep(1,n)
   
   nlab<-as.numeric(flab)  #converting class labels to numbers
   for(i in 1:n)
@@ -2701,7 +2703,7 @@ EV.tct <- function(ct,type="III")
                ET<- matrix(0,k,k) }
   )
   if (is.null(ET)) stop("Enter numbers 1-4 or I-IV in quotes for type")
-
+  
   clnames<-colnames(ct)
   rownames(ET)<-colnames(ET)<-clnames #row and column names from the nnct
   ET
@@ -2774,40 +2776,40 @@ tct <- function(ct,type="III")
   
   cells<- matrix(0,k,k);
   cells <- switch(type,
-         I = { 
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               cells[i,j]<- ct[i,j]-(rs[i]*cs[j])/n 
-             } 
-           cells},
-         II = { 
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               cells[i,j]<- ct[i,j]-(rs[i]*rs[j])/n 
-             } 
-           cells},
-         III = {   
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               if (i == j)
-                 cells[i,j]<- ct[i,j]-(rs[i]-1)*cs[j]/(n-1)  
-               else 
-                 cells[i,j]<- ct[i,j]-rs[i]*cs[j]/(n-1)
-             } 
-           cells},
-         IV = { 
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               if (i == j)
-                 cells[i,j]<- (rs[i]/n)* ((n-1)*ct[i,j]/(rs[i]-1)-cs[j])  
-               else 
-                 cells[i,j]<- (1/n)*((n-1)*ct[i,j]-rs[i]*cs[j])
-             } 
-           cells}
+                  I = { 
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        cells[i,j]<- ct[i,j]-(rs[i]*cs[j])/n 
+                      } 
+                    cells},
+                  II = { 
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        cells[i,j]<- ct[i,j]-(rs[i]*rs[j])/n 
+                      } 
+                    cells},
+                  III = {   
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        if (i == j)
+                          cells[i,j]<- ct[i,j]-(rs[i]-1)*cs[j]/(n-1)  
+                        else 
+                          cells[i,j]<- ct[i,j]-rs[i]*cs[j]/(n-1)
+                      } 
+                    cells},
+                  IV = { 
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        if (i == j)
+                          cells[i,j]<- (rs[i]/n)* ((n-1)*ct[i,j]/(rs[i]-1)-cs[j])  
+                        else 
+                          cells[i,j]<- (1/n)*((n-1)*ct[i,j]-rs[i]*cs[j])
+                      } 
+                    cells}
   )
   
   if (is.null(cells)) stop("Enter numbers 1-4 or I-IV in quotes for type")
@@ -2885,40 +2887,40 @@ cellsTij <- function(ct,type="III")
   
   cells<- matrix(0,k,k);
   cells <- switch(type,
-         I = { 
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               cells[i,j]<- ct[i,j]-(rs[i]*cs[j])/n 
-             } 
-           cells},
-         II = { 
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               cells[i,j]<- ct[i,j]-(rs[i]*rs[j])/n 
-             } 
-           cells},
-         III = {   
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               if (i == j)
-                 cells[i,j]<- ct[i,j]-(rs[i]-1)*cs[j]/(n-1)  
-               else 
-                 cells[i,j]<- ct[i,j]-rs[i]*cs[j]/(n-1)
-             } 
-           cells},
-         IV = { 
-           for (i in 1:k)
-             for (j in 1:k)
-             {
-               if (i == j)
-                 cells[i,j]<- (rs[i]/n)* ((n-1)*ct[i,j]/(rs[i]-1)-cs[j])  
-               else 
-                 cells[i,j]<- (1/n)*((n-1)*ct[i,j]-rs[i]*cs[j])
-             } 
-           cells}
+                  I = { 
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        cells[i,j]<- ct[i,j]-(rs[i]*cs[j])/n 
+                      } 
+                    cells},
+                  II = { 
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        cells[i,j]<- ct[i,j]-(rs[i]*rs[j])/n 
+                      } 
+                    cells},
+                  III = {   
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        if (i == j)
+                          cells[i,j]<- ct[i,j]-(rs[i]-1)*cs[j]/(n-1)  
+                        else 
+                          cells[i,j]<- ct[i,j]-rs[i]*cs[j]/(n-1)
+                      } 
+                    cells},
+                  IV = { 
+                    for (i in 1:k)
+                      for (j in 1:k)
+                      {
+                        if (i == j)
+                          cells[i,j]<- (rs[i]/n)* ((n-1)*ct[i,j]/(rs[i]-1)-cs[j])  
+                        else 
+                          cells[i,j]<- (1/n)*((n-1)*ct[i,j]-rs[i]*cs[j])
+                      } 
+                    cells}
   )
   
   if (is.null(cells)) stop("Enter numbers 1-4 or I-IV in quotes for type")
@@ -3474,23 +3476,23 @@ Zcell.nnct.ct <- function(ct,varN,alternative=c("two.sided", "less", "greater"),
   {stop('All of the test stat statistics are NaN, these cell-specific tests are not defined')}
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           lcl <-NULL
-           ucl <-estimate+qnorm(conf.level)*stderrN
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ucl <-NULL
-           lcl <-estimate-qnorm(conf.level)*stderrN
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           crit.val <-qnorm(1-alpha/2)
-           lcl <-estimate-crit.val*stderrN
-           ucl <-estimate+crit.val*stderrN
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 lcl <-NULL
+                 ucl <-estimate+qnorm(conf.level)*stderrN
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ucl <-NULL
+                 lcl <-estimate-qnorm(conf.level)*stderrN
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 crit.val <-qnorm(1-alpha/2)
+                 lcl <-estimate-crit.val*stderrN
+                 ucl <-estimate+crit.val*stderrN
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -4200,7 +4202,7 @@ var.tctIV <- function(ct,covN)
   var
 } #end for the function
 #'
- 
+
 #################################################################
 
 #' @title Variances of Entries in a TCT
@@ -4270,11 +4272,11 @@ var.tct <- function(ct,covN,type="III")
 {
   
   var <-  switch(type,
-         I = { var <- var.tctI(ct,covN) },
-         II = { k<-nrow(ct)
-         var <- matrix(diag(covN),nrow=k,byrow = TRUE) },
-         III = { var <- var.tctIII(ct,covN) },
-         IV = { var <- var.tctIII(ct,covN)  }
+                 I = { var <- var.tctI(ct,covN) },
+                 II = { k<-nrow(ct)
+                 var <- matrix(diag(covN),nrow=k,byrow = TRUE) },
+                 III = { var <- var.tctIII(ct,covN) },
+                 IV = { var <- var.tctIII(ct,covN)  }
   )
   
   if (is.null(var)) stop("Enter numbers 1-4 or I-IV in quotes for type")
@@ -4741,10 +4743,10 @@ cov.tct <- function(ct,covN,type="III")
 {
   
   cov <- switch(type,
-         I = { cov <- cov.tctI(ct,covN) },
-         II = { cov <- covN },
-         III = { cov <- cov.tctIII(ct,covN) },
-         IV = { cov <- cov.tctIII(ct,covN)  }
+                I = { cov <- cov.tctI(ct,covN) },
+                II = { cov <- covN },
+                III = { cov <- cov.tctIII(ct,covN) },
+                IV = { cov <- cov.tctIII(ct,covN)  }
   )
   
   if (is.null(cov)) stop("Enter numbers 1-4 or I-IV in quotes for type")  
@@ -4900,25 +4902,25 @@ Zcell.tct.ct <- function(ct,covN,type="III",alternative=c("two.sided", "less", "
   {stop('All of the test stat statistics are NaN, the test are not well defined')}
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           lcl <-NULL
-           ucl <-estimate+qnorm(conf.level)*stderrT
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ucl <-NULL
-           lcl <-estimate-qnorm(conf.level)*stderrT
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           crit.val <-qnorm(1-alpha/2)
-           lcl <-estimate-crit.val*stderrT
-           ucl <-estimate+crit.val*stderrT
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 lcl <-NULL
+                 ucl <-estimate+qnorm(conf.level)*stderrT
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ucl <-NULL
+                 lcl <-estimate-qnorm(conf.level)*stderrT
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 crit.val <-qnorm(1-alpha/2)
+                 lcl <-estimate-crit.val*stderrT
+                 ucl <-estimate+crit.val*stderrT
+               }
   )
- 
+  
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   cnf.lvl<-conf.level
@@ -6700,20 +6702,20 @@ Znnsym2cl.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
   names(nullij) <-"(expected) difference between # of mixed NNs"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -6893,20 +6895,20 @@ Znnsym2cl.dx.ct <- function(ct,Q,R,alternative=c("two.sided", "less", "greater")
   names(nullij) <-"(expected) difference between # of mixed NNs"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -7190,23 +7192,23 @@ Znnsym.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),conf.l
     }
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           lcl <-NULL
-           ucl <-estimate+qnorm(conf.level)*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ucl <-NULL
-           lcl <-estimate-qnorm(conf.level)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           crit.val <-qnorm(1-alpha/2)
-           lcl <-estimate-crit.val*stderr
-           ucl <-estimate+crit.val*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 lcl <-NULL
+                 ucl <-estimate+qnorm(conf.level)*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ucl <-NULL
+                 lcl <-estimate-qnorm(conf.level)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 crit.val <-qnorm(1-alpha/2)
+                 lcl <-estimate-crit.val*stderr
+                 ucl <-estimate+crit.val*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -7558,23 +7560,23 @@ Znnsym.dx.ct <- function(ct,varS,alternative=c("two.sided", "less", "greater"),c
   ts <- t(ts)
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           lcl <-NULL
-           ucl <-estimate+qnorm(conf.level)*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ucl <-NULL
-           lcl <-estimate-qnorm(conf.level)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           crit.val <-qnorm(1-alpha/2)
-           lcl <-estimate-crit.val*stderr
-           ucl <-estimate+crit.val*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 lcl <-NULL
+                 ucl <-estimate+qnorm(conf.level)*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ucl <-NULL
+                 lcl <-estimate-qnorm(conf.level)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 crit.val <-qnorm(1-alpha/2)
+                 lcl <-estimate-crit.val*stderr
+                 ucl <-estimate+crit.val*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -8193,22 +8195,22 @@ Xsq.nnsym <- function(dat,lab,type="dixon",...)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(1:2,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
-#' #'
+#' 
 #' sharedNNmc(ipd,cls)
 #' sharedNNmc(Y,cls,is.ipd = FALSE)
 #' sharedNNmc(Y,cls,is.ipd = FALSE,method="max")
-#' #'
+#' 
 #' #cls as a factor
 #' na<-floor(n/2); nb<-n-na
 #' fcls<-rep(c("a","b"),c(na,nb))
 #' sharedNNmc(ipd,fcls)
-#' #'
+#' 
 #' #############
 #' n<-40
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(1:4,n,replace = TRUE)  #or try cls<-rep(1:2,c(10,10))
 #' ipd<-ipd.mat(Y)
-#' #'
+#' 
 #' sharedNNmc(ipd,cls) 
 #'
 #' @export
@@ -8859,25 +8861,25 @@ Znnref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", "greate
   names.null <-"diagonal rct entries"
   
   cint<-matrix(0,ncol=2,nrow=2)
-
+  
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint[1,] <-estimate[1]+c(-Inf, qnorm(conf.level))*stderr[1]
-           cint[2,] <-estimate[2]+c(-Inf, qnorm(conf.level))*stderr[2]
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint[1,] <-estimate[1]+c(-qnorm(conf.level),Inf)*stderr[1]
-           cint[2,] <-estimate[2]+c(-qnorm(conf.level),Inf)*stderr[2]
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           Cint <-qnorm(1 - alpha/2)
-           cint[1,] <-estimate[1]+c(-Cint, Cint)*stderr[1]
-           cint[2,] <-estimate[2]+c(-Cint, Cint)*stderr[2]
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint[1,] <-estimate[1]+c(-Inf, qnorm(conf.level))*stderr[1]
+                 cint[2,] <-estimate[2]+c(-Inf, qnorm(conf.level))*stderr[2]
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint[1,] <-estimate[1]+c(-qnorm(conf.level),Inf)*stderr[1]
+                 cint[2,] <-estimate[2]+c(-qnorm(conf.level),Inf)*stderr[2]
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 Cint <-qnorm(1 - alpha/2)
+                 cint[1,] <-estimate[1]+c(-Cint, Cint)*stderr[1]
+                 cint[2,] <-estimate[2]+c(-Cint, Cint)*stderr[2]
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -9069,22 +9071,22 @@ Zself.ref.ct <- function(rfct,nvec,alternative=c("two.sided", "less", "greater")
   names(null.val)<- "(expected) number of self-reflexive NN pairs"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
-
+  
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   attr(cint, "conf.level") <-conf.level 
@@ -9262,7 +9264,7 @@ Zmixed.nonref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", 
   Paab<-P112(nvec)
   Pabc<-P123(nvec)
   VNmn<-(n-R)^2*(2*Paabb+4*Paabc+Pabcd-Pab^2)+(n-R)*Pab+(2*n-2*R+Qv-4*Tv)*(Paab+Pabc)+
-   (-3*n+3*R-Qv+4*Tv)*(2*Paabb+4*Paabc+Pabcd)
+    (-3*n+3*R-Qv+4*Tv)*(2*Paabb+4*Paabc+Pabcd)
   stderr<-sqrt(VNmn)
   ts<-(Nmn-ENmn)/stderr
   
@@ -9273,20 +9275,20 @@ Zmixed.nonref.ct <- function(rfct,nvec,Qv,Tv,alternative=c("two.sided", "less", 
   names(null.val)<- "(expected) number of mixed non-reflexive NN pairs"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -9465,7 +9467,7 @@ Xsq.nnref.ct <- function(rfct,nvec,Qv,Tv)
   Paab<-P112(nvec)
   Pabc<-P123(nvec)
   VNmn<-(n-R)^2*(2*Paabb+4*Paabc+Pabcd-Pab^2)+(n-R)*Pab+(2*n-2*R+Qv-4*Tv)*(Paab+Pabc)+
-   (-3*n+3*R-Qv+4*Tv)*(2*Paabb+4*Paabc+Pabcd)
+    (-3*n+3*R-Qv+4*Tv)*(2*Paabb+4*Paabc+Pabcd)
   
   Paaab<-P1112(nvec)
   CovNsrNmn<-R*(n-R)*(2*Paaab+Paabc-Paa*Pab)+2*T*(Paab-2*Paaab-Paabc)
@@ -9788,7 +9790,7 @@ varNii <- function(dat,lab,...)
   Qv<-Qvec(W)$q
   Rv<-Rval(W)
   var<-varNii.ct(ct,Qv,Rv) 
-var
+  var
 } #end for the function
 #'
 
@@ -9895,11 +9897,11 @@ covNii.ct <- function(ct,Vsq,Q,R)
     for (j in i:m)
       if (i==j)
         cov.diag[i,j] <- Vsq[i]
-      else 
-      {Paa<- p11(rs[i],n); Pbb<- p11(rs[j],n); Paabb<- p1122(rs[i],rs[j],n)
-      cov.diag[i,j] <- (n^2-3*n-Q+R)*Paabb-n^2*Paa*Pbb
-      cov.diag[j,i] <- cov.diag[i,j]
-      }
+    else 
+    {Paa<- p11(rs[i],n); Pbb<- p11(rs[j],n); Paabb<- p1122(rs[i],rs[j],n)
+    cov.diag[i,j] <- (n^2-3*n-Q+R)*Paabb-n^2*Paa*Pbb
+    cov.diag[j,i] <- cov.diag[i,j]
+    }
   }
   cov.diag
 } #end for the function 
@@ -9928,11 +9930,11 @@ covNii <- function(dat,lab,...)
     for (j in i:m)
       if (i==j)
         cov.diag[i,j] <- Vsq[i]
-      else 
-      {Paa<- p11(rs[i],n); Pbb<- p11(rs[j],n); Paabb<- p1122(rs[i],rs[j],n)
-      cov.diag[i,j] <- (n^2-3*n-Q+R)*Paabb-n^2*Paa*Pbb
-      cov.diag[j,i] <- cov.diag[i,j]
-      }
+    else 
+    {Paa<- p11(rs[i],n); Pbb<- p11(rs[j],n); Paabb<- p1122(rs[i],rs[j],n)
+    cov.diag[i,j] <- (n^2-3*n-Q+R)*Paabb-n^2*Paa*Pbb
+    cov.diag[j,i] <- cov.diag[i,j]
+    }
   }
   cov.diag
 } #end for the function 
@@ -10176,23 +10178,23 @@ Znnself.ct <- function(ct,VarNii,alternative=c("two.sided", "less", "greater"),c
   
   cint<-matrix(0,ncol=2,nrow=k)
   alt<- switch(alternative,
-         less = { 
-           for (i in 1:k)
-           {cint[i,] <-estimate[i]+c(-Inf, qnorm(conf.level))*stderr[i]}
-           pval <-pnorm(ts)
-        },
-         greater = { 
-           for (i in 1:k)
-           {cint[i,] <-estimate[i]+c(-qnorm(conf.level),Inf)*stderr[i]}
-           pval <-pnorm(ts, lower.tail = FALSE)
-         },
-         two.sided = { 
-           alpha <-1 - conf.level
-           Cint <-qnorm(1 - alpha/2)
-           for (i in 1:k)
-           {cint[i,] <-estimate[i]+c(-Cint, Cint)*stderr[i]}
-           pval <-2 * pnorm(-abs(ts))
-        }
+               less = { 
+                 for (i in 1:k)
+                 {cint[i,] <-estimate[i]+c(-Inf, qnorm(conf.level))*stderr[i]}
+                 pval <-pnorm(ts)
+               },
+               greater = { 
+                 for (i in 1:k)
+                 {cint[i,] <-estimate[i]+c(-qnorm(conf.level),Inf)*stderr[i]}
+                 pval <-pnorm(ts, lower.tail = FALSE)
+               },
+               two.sided = { 
+                 alpha <-1 - conf.level
+                 Cint <-qnorm(1 - alpha/2)
+                 for (i in 1:k)
+                 {cint[i,] <-estimate[i]+c(-Cint, Cint)*stderr[i]}
+                 pval <-2 * pnorm(-abs(ts))
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -10602,20 +10604,20 @@ Znnself.sum.ct <- function(ct,covSC,nnct=FALSE,alternative=c("two.sided", "less"
   names(null.val)<- "(expected) sum of self NN pairs"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -11263,23 +11265,23 @@ Zseg.coeff.ct <- function(ct,VarSC,alternative=c("two.sided", "less", "greater")
   ts<-tstat+t(tstat)-diag(diag(tstat),k,k)
   stderr<-stderr0+t(stderr0)-diag(diag(stderr0),k,k)
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           lcl <-NULL
-           ucl <-estimate+qnorm(conf.level)*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ucl <-NULL
-           lcl <-estimate-qnorm(conf.level)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           crit.val <-qnorm(1-alpha/2)
-           lcl <-estimate-crit.val*stderr
-           ucl <-estimate+crit.val*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 lcl <-NULL
+                 ucl <-estimate+qnorm(conf.level)*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ucl <-NULL
+                 lcl <-estimate-qnorm(conf.level)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 crit.val <-qnorm(1-alpha/2)
+                 lcl <-estimate-crit.val*stderr
+                 ucl <-estimate+crit.val*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -11664,23 +11666,23 @@ cell.spec.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
   names.null <-"NNCT entries"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           lcl <-NULL
-           ucl <-estimate+qnorm(conf.level)*stderrN
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ucl <-NULL
-           lcl <-estimate-qnorm(conf.level)*stderrN
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           crit.val <-qnorm(1-alpha/2)
-           lcl <-estimate-crit.val*stderrN
-           ucl <-estimate+crit.val*stderrN
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 lcl <-NULL
+                 ucl <-estimate+qnorm(conf.level)*stderrN
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ucl <-NULL
+                 lcl <-estimate-qnorm(conf.level)*stderrN
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 crit.val <-qnorm(1-alpha/2)
+                 lcl <-estimate-crit.val*stderrN
+                 ucl <-estimate+crit.val*stderrN
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -12032,22 +12034,22 @@ Zdir.nnct.ss.ct <- function(ct,alternative=c("two.sided", "less", "greater"),con
   names(null.val) <-"(expected) difference between phat estimates in row-wise binomial framework for 2 x 2 NNCT"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
-
+  
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   attr(cint, "conf.level") <-conf.level 
@@ -12231,22 +12233,22 @@ Zdir.nnct.ct <- function(ct,covN,type="II",alternative=c("two.sided", "less", "g
   names(null.val) <-"(expected) difference between phat estimates under RL for 2 x 2 NNCT"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           ifelse(type=="I",cint <-estimate+c(-Inf, qnorm(conf.level))*stderr/Un,
-                  cint <-estimate+c(-Inf, qnorm(conf.level))*stderr)
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           ifelse(type=="I",cint <-estimate+c(-qnorm(conf.level),Inf)*stderr/Un,
-                  cint <-estimate+c(-qnorm(conf.level),Inf)*stderr)
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           ifelse(type=="I",cint <-estimate+c(-cint, cint)*stderr/Un,cint <-estimate+c(-cint, cint)*stderr)
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 ifelse(type=="I",cint <-estimate+c(-Inf, qnorm(conf.level))*stderr/Un,
+                        cint <-estimate+c(-Inf, qnorm(conf.level))*stderr)
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 ifelse(type=="I",cint <-estimate+c(-qnorm(conf.level),Inf)*stderr/Un,
+                        cint <-estimate+c(-qnorm(conf.level),Inf)*stderr)
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 ifelse(type=="I",cint <-estimate+c(-cint, cint)*stderr/Un,cint <-estimate+c(-cint, cint)*stderr)
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -12299,7 +12301,7 @@ Zdir.nnct <- function(dat,lab,type="II",alternative=c("two.sided", "less", "grea
 #' @title Generation of Points Associated in the Type I Sense with a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n_2} 2D points associated with the given set of points (i.e. reference points) \eqn{X_1} in the
 #' type I fashion with circular (or radial) between class attraction parameter \code{p}, which is a probability value between 0 and 1.
@@ -12426,7 +12428,7 @@ rassocI <- function(X1,n2,p)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -12437,7 +12439,7 @@ rassocI <- function(X1,n2,p)
 #' @title Generation of Points Associated in the Type C Sense with a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n_2} 2D points associated with the given set of points (i.e. reference points) \eqn{X_1} in the
 #' type C fashion with a radius of association \eqn{r_0} (denoted as \code{r0} as
@@ -12568,7 +12570,7 @@ rassocC <- function(X1,n2,r0)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -12579,7 +12581,7 @@ rassocC <- function(X1,n2,r0)
 #' @title Generation of Points Associated in the Type U Sense with a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n_2} 2D points associated with the given set of points (i.e. reference points) \eqn{X_1} in the
 #' type U fashion with a radius of association \eqn{r_0} (denoted as \code{r0} as an argument of the function) which is a positive real number.
@@ -12710,7 +12712,7 @@ rassocU <- function(X1,n2,r0)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -12721,7 +12723,7 @@ rassocU <- function(X1,n2,r0)
 #' @title Generation of Points Associated in the Type G Sense with a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n_2} 2D points associated with the given set of points (i.e. reference points) \eqn{X_1} in the
 #' type G fashion with the parameter sigma which is a positive real number representing the variance of the
@@ -12852,7 +12854,7 @@ rassocG <- function(X1,n2,sigma)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -12863,7 +12865,7 @@ rassocG <- function(X1,n2,sigma)
 #' @title Generation of Points Associated with a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n_2} 2D points associated with the given set of points (i.e. reference points) \eqn{X_1} in the
 #' \code{type=type} fashion with the parameter=asc.par which specifies the level of association.
@@ -12954,15 +12956,15 @@ rassocG <- function(X1,n2,sigma)
 rassoc <- function(X1,n2,asc.par,type)
 {
   
- res<- switch(type,
-         I = { res <- rassocI(X1,n2,asc.par) },
-         C = { res <- rassocC(X1,n2,asc.par) },
-         U = { res <- rassocU(X1,n2,asc.par) },
-         G = { res <- rassocG(X1,n2,asc.par)  }
+  res<- switch(type,
+               I = { res <- rassocI(X1,n2,asc.par) },
+               C = { res <- rassocC(X1,n2,asc.par) },
+               U = { res <- rassocU(X1,n2,asc.par) },
+               G = { res <- rassocG(X1,n2,asc.par)  }
   )
- 
- if (is.null(res)) stop("Enter numbers 1-4 or I, C, U, G in quotes for type")
- 
+  
+  if (is.null(res)) stop("Enter numbers 1-4 or I, C, U, G in quotes for type")
+  
   res
 } #end for the function
 #'
@@ -12972,7 +12974,7 @@ rassoc <- function(X1,n2,asc.par,type)
 #' @title Type I Non-Random Labeling of a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns \eqn{n_1=}\code{round(n*prop,0)} of them as cases,
 #' and the rest as controls with first selecting a point, \eqn{Z_i}, as a case and assigning the
@@ -13210,7 +13212,7 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -13221,7 +13223,7 @@ rnonRLI <- function(dat,prop=.50,k,rho,poisson=FALSE,init.from.cases=TRUE)
 #' @title Type II Non-Random Labeling of a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns \eqn{n_1=}\code{round(n*ult.prop,0)} of them as cases,
 #' and the rest as controls with first selecting \eqn{k_0=}\code{round(n*init.prop,0)} as cases initially, then selecting
@@ -13500,7 +13502,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -13511,7 +13513,7 @@ rnonRLII <- function(dat,k,rho,pow,init.prop,ult.prop,rand.init=TRUE,poisson=FAL
 #' @title Type III Non-Random Labeling of a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns \eqn{n_1=}\code{round(n*prop,0)} of them as cases,
 #' and the rest as controls with first selecting a point, \eqn{Z_i}, as a case and assigning the
@@ -13733,7 +13735,7 @@ rnonRLIII <- function(dat,prop,rho,pow,rand.init=TRUE,poisson=FALSE)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -13796,7 +13798,7 @@ bvnorm.pdf <- function(X,mu=c(0,0),s1=1,s2=1,rho=0)
 #' @title Type IV Non-Random Labeling of a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns \eqn{n_1=}\code{round(n*ult.prop,0)} of them as cases,
 #' and the rest as controls with first selecting \eqn{k_0=}\code{round(n*init.prop,0)} as cases initially and assigning the
@@ -14073,7 +14075,7 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -14084,7 +14086,7 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 #' @title Non-Random Labeling of a Given Set of Points
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Given the set of \eqn{n} points, \code{dat}, in a region, this function assigns some of them as cases,
 #' and the rest as controls in a non-RL \code{type=type} fashion. 
@@ -14249,10 +14251,10 @@ rnonRLIV <- function(dat,init.prop,ult.prop,s1,s2,rho,rand.init=TRUE,poisson=FAL
 rnonRL <- function(dat,par.vec,type,rand.init=TRUE,poisson=FALSE,init.from.cases=TRUE)
 {
   res <- switch(type,
-         I = { res <- rnonRLI(dat,par.vec[1],par.vec[2],par.vec[3],poisson=poisson,init.from.cases = init.from.cases) },
-         II = { res <- rnonRLII(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson) },
-         III = { res <- rnonRLIII(dat,par.vec[1],par.vec[2],par.vec[3],rand.init=rand.init,poisson=poisson) },
-         IV = { res <- rnonRLIV(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson)  }
+                I = { res <- rnonRLI(dat,par.vec[1],par.vec[2],par.vec[3],poisson=poisson,init.from.cases = init.from.cases) },
+                II = { res <- rnonRLII(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson) },
+                III = { res <- rnonRLIII(dat,par.vec[1],par.vec[2],par.vec[3],rand.init=rand.init,poisson=poisson) },
+                IV = { res <- rnonRLIV(dat,par.vec[1],par.vec[2],par.vec[3],par.vec[4],par.vec[5],rand.init=rand.init,poisson=poisson)  }
   )
   
   if (is.null(res)) stop("Enter numbers 1-4 or I-IV in quotes for type")
@@ -14266,7 +14268,7 @@ rnonRL <- function(dat,par.vec,type,rand.init=TRUE,poisson=FALSE,init.from.cases
 #' @title Generation of Points under Segregation of Two Classes
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n_i} 2D points from class \eqn{j} with parameters  \eqn{r_j} for \eqn{j=1,2}.
 #' The generated points are from two different classes which are segregated from each other.
@@ -14428,7 +14430,7 @@ rseg <- function(n1,n2,r1,r2,X1.init=NULL,X2.init=NULL)
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -14439,7 +14441,7 @@ rseg <- function(n1,n2,r1,r2,X1.init=NULL,X2.init=NULL)
 #' @title Generation of Uniform Points in a Circle
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \code{n} 2D points uniformly in the circle with center=\code{cent} and radius=\code{rad} using the rejection 
 #' sampling approach (i.e., the function generates points in the smallest square containing the circle, keeping
@@ -14491,7 +14493,7 @@ while (i <= n)
   y<-runif(1,-rad,rad)
   rad2<-rad^2
   if
- (x^2+y^2<=rad2)
+  (x^2+y^2<=rad2)
   {
     x1<-cbind(x1,x)
     y1<-cbind(y1,y)
@@ -14535,7 +14537,7 @@ res<-list(
   ylimit=Ylim
 )
 
-class(res)<-"Patterns"
+class(res)<-"SpatPatterns"
 res$call <-match.call()
 res
 } #end for the function
@@ -14802,7 +14804,7 @@ rhor.clust <- function(n,k,d,sd=1/6,distribution=c("uniform","bvnormal"))
   res
 } #end of the function
 #'
- 
+
 #################################################################
 
 #' @title Generation of Points with Rotational Clusters
@@ -14938,7 +14940,7 @@ rrot.clust <- function(n,k,d,sd=d*sqrt(2*(1-cos(2*pi/k)))/3,distribution=c("unif
 #' @title Generation of Points from Self Correspondence Pattern
 #'
 #' @description
-#' An object of class \code{"Patterns"}.
+#' An object of class \code{"SpatPatterns"}.
 #' 
 #' Generates \eqn{n_1} 2D points from class 1 and  \eqn{n_2} (denoted as \code{n2} as an argument)
 #' 2D points from class 2 in such a way that
@@ -15122,7 +15124,7 @@ rself.ref <- function(n1,n2,c1r,c2r,r0,distribution=c("uniform","bvnormal"))
     ylimit=Ylim
   )
   
-  class(res)<-"Patterns"
+  class(res)<-"SpatPatterns"
   res$call <-match.call()
   res
 } #end of the function
@@ -15306,14 +15308,14 @@ prob.nnct <- function(ct)
 exact.pval1s <- function(ptable,pval,type="inc") #exact pvalue for one-sided tests
 {
   Pv <- switch(type,
-         inc = { pv <- pval ;
-         names(pv)<-"table-inclusive p-value (with more extreme tables in one direction than the current table)"},
-         exc = { pv <- pval-ptable;
-         names(pv)<-"table-exclusive p-value (with more extreme tables in one direction than the current table)"},
-         mid = { pv <- pval-ptable/2;
-         names(pv)<-"mid-p-value (with more extreme tables in one direction than the current table)"},
-         tocher = { pv <- tocher.cor(ptable,pval);
-         names(pv)<-"Tocher randomized p-value (with more extreme tables in one direction than the current table)"}
+               inc = { pv <- pval ;
+               names(pv)<-"table-inclusive p-value (with more extreme tables in one direction than the current table)"},
+               exc = { pv <- pval-ptable;
+               names(pv)<-"table-exclusive p-value (with more extreme tables in one direction than the current table)"},
+               mid = { pv <- pval-ptable/2;
+               names(pv)<-"mid-p-value (with more extreme tables in one direction than the current table)"},
+               tocher = { pv <- tocher.cor(ptable,pval);
+               names(pv)<-"Tocher randomized p-value (with more extreme tables in one direction than the current table)"}
   )
   
   if (is.null(Pv)) stop("Enter numbers 1-4 or inc, exc, mid, tocher in quotes for type")
@@ -15404,28 +15406,28 @@ exact.pval2s <- function(ptable,pval,type="inc",double=FALSE) #exact pvalue for 
   if (double==FALSE)
   {
     Pv <- switch(type,
-           inc = { pv <- pval;
-           names(pv)<-"table-inclusive p-value (with more extreme tables in both directions than the current table)"},
-           twice.inc = { pv <- pval+ptable;
-           names(pv)<-"twcie-table-inclusive p-value (with more extreme tables in both directions than the current table)"},
-           exc = { pv <- pval-ptable;
-           names(pv)<-"table-exclusive p-value (with more extreme tables in both directions than the current table)"},
-           mid = { pv <- pval-ptable/2;
-           names(pv)<-"mid-p-value (with more extreme tables in both directions than the current table)"},
-           tocher = { pv <- tocher.cor(ptable,pval);
-           names(pv)<-"Tocher randomized p-value (with more extreme tables in both directions than the current table)"}
+                 inc = { pv <- pval;
+                 names(pv)<-"table-inclusive p-value (with more extreme tables in both directions than the current table)"},
+                 twice.inc = { pv <- pval+ptable;
+                 names(pv)<-"twcie-table-inclusive p-value (with more extreme tables in both directions than the current table)"},
+                 exc = { pv <- pval-ptable;
+                 names(pv)<-"table-exclusive p-value (with more extreme tables in both directions than the current table)"},
+                 mid = { pv <- pval-ptable/2;
+                 names(pv)<-"mid-p-value (with more extreme tables in both directions than the current table)"},
+                 tocher = { pv <- tocher.cor(ptable,pval);
+                 names(pv)<-"Tocher randomized p-value (with more extreme tables in both directions than the current table)"}
     )
   } else 
   {
     Pv <- switch(type,
-           inc = { pv <- 2*min(pval,1-pval);
-           names(pv)<-"table-inclusive p-value (with doubling the one-sided p-value)"},
-           exc = { pv <- 2*min(pval,1-pval)-2*ptable;
-           names(pv)<-"table-exclusive p-value (with doubling the one-sided p-value)"},
-           mid = { pv <- 2*min(pval,1-pval)-ptable;
-           names(pv)<-"mid-p-value (with doubling the one-sided p-value)"},
-           tocher = { pv <- tocher.cor(ptable,pval);
-           names(pv)<-"Tocher randomized p-value (with doubling the one-sided p-value)"}
+                 inc = { pv <- 2*min(pval,1-pval);
+                 names(pv)<-"table-inclusive p-value (with doubling the one-sided p-value)"},
+                 exc = { pv <- 2*min(pval,1-pval)-2*ptable;
+                 names(pv)<-"table-exclusive p-value (with doubling the one-sided p-value)"},
+                 mid = { pv <- 2*min(pval,1-pval)-ptable;
+                 names(pv)<-"mid-p-value (with doubling the one-sided p-value)"},
+                 tocher = { pv <- tocher.cor(ptable,pval);
+                 names(pv)<-"Tocher randomized p-value (with doubling the one-sided p-value)"}
     )
   }
   if (is.null(Pv)) stop("Enter numbers 1-4 or inc, twice.inc, exc, mid, tocher in quotes for type")
@@ -16373,7 +16375,7 @@ varTk <- function(dat,n1,k,nonzero.mat=TRUE,...)
   
   a<-aij.mat(dat,k,...)
   if (nonzero.mat)
-    {
+  {
     ak<-aij.nonzero(dat,k,...)
     row.ak<-ak[,1]; col.ak<-ak[,-1]
     
@@ -16581,22 +16583,22 @@ ZceTk <- function(dat,cc.lab,k,alternative=c("two.sided", "less", "greater"),con
   names(null.val) <-"(expected) value of Cuzick-Edwards Tk under the null hypothesis"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
-
+  
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
   
   attr(cint, "conf.level") <-conf.level 
@@ -17308,20 +17310,20 @@ ZTcomb <- function(dat,cc.lab,klist,alternative=c("two.sided", "less", "greater"
   names(null.val) <-"(expected) value of Cuzick-Edwards combined Tk under the null hypothesis"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -17563,6 +17565,7 @@ NULL
 #'
 #' @examples
 #' n<-20  #or try sample(1:20,1) #try also 40, 50, 60
+#' set.seed(123)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
@@ -17610,11 +17613,12 @@ varTrun <- function(dat,n1,...)
 #' @author Elvan Ceyhan
 #'
 #' @examples
-#' n<-20  #or try sample(1:20,1) #try also 40, 50, 60
+#' n<-15  #or try sample(1:20,1) #try also 40, 50, 60
+#' set.seed(123)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(0:1,n,replace = TRUE)
 #' n1<-sum(cls==1)
-#' varTrun(Y,n1) #the actual value (might take a long time if \eqn{n} is large)
+#' varTrun(Y,n1) #the actual value (might take a long time if n is large)
 #'
 #' Nmc<-1000
 #' varTrun.sim(Y,cls,Nsim=Nmc)
@@ -17709,14 +17713,14 @@ varTrun.sim <- function(dat,cc.lab,Nsim=1000,case.lab=NULL)
 #'
 #' @examples
 #' n<-20  #or try sample(1:20,1) #try also 40, 50, 60
+#' set.seed(123)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #'
 #' ZTrun(Y,cls)
 #' ZTrun(Y,cls,method="max")
 #' ZTrun(Y,cls,var.sim=TRUE)
-#' ZTrun(Y,cls+1,case.lab = 2,alt="l")
-#' ZTrun(Y,cls,conf=.9,alt="g")
+#' ZTrun(Y,cls+1,case.lab = 2,alt="l") #try also ZTrun(Y,cls,conf=.9,alt="g")
 #'
 #' #cls as a factor
 #' na<-floor(n/2); nb<-n-na
@@ -17763,20 +17767,20 @@ ZTrun <- function(dat,cc.lab,alternative=c("two.sided", "less", "greater"),conf.
   names(null.val) <-"(expected) value of Cuzick-Edwards Trun under the null hypothesis"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -18031,7 +18035,7 @@ varTkinv.sim <- function(dat,k,cc.lab,Nsim=1000,case.lab=NULL)
   var(ce.vec)
 } #end for the function
 #'
- 
+
 #################################################################
 
 # funsZTkinv
@@ -18115,16 +18119,14 @@ NULL
 #' @author Elvan Ceyhan
 #'
 #' @examples
-#' set.seed(123)
 #' n<-10 #try also 20, 50, 100
+#' set.seed(123)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' k<-2
 #'
 #' ZTkinv(Y,k,cls)
 #' ZTkinv(Y,k,cls+1,case.lab = 2,alt="l")
-#' ZTkinv(Y,k,cls,conf=.9,alt="g")
-#'
 #' #cls as a factor
 #' na<-floor(n/2); nb<-n-na
 #' fcls<-rep(c("a","b"),c(na,nb))
@@ -18165,20 +18167,20 @@ ZTkinv <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"),co
   names(null.val) <-"(expected) value of Cuzick-Edwards Tkinv under the null hypothesis"
   
   alt<- switch(alternative,
-         less = { 
-           pval <-pnorm(ts)
-           cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
-         },
-         greater = { 
-           pval <-pnorm(ts, lower.tail = FALSE)
-           cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
-         },
-         two.sided = { 
-           pval <-2 * pnorm(-abs(ts))
-           alpha <-1 - conf.level
-           cint <-qnorm(1 - alpha/2)
-           cint <-estimate+c(-cint, cint)*stderr
-         }
+               less = { 
+                 pval <-pnorm(ts)
+                 cint <-estimate+c(-Inf, qnorm(conf.level))*stderr
+               },
+               greater = { 
+                 pval <-pnorm(ts, lower.tail = FALSE)
+                 cint <-estimate+c(-qnorm(conf.level),Inf)*stderr
+               },
+               two.sided = { 
+                 pval <-2 * pnorm(-abs(ts))
+                 alpha <-1 - conf.level
+                 cint <-qnorm(1 - alpha/2)
+                 cint <-estimate+c(-cint, cint)*stderr
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -18208,12 +18210,12 @@ ZTkinv <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"),co
 #'
 #' @examples
 #' n<-10 #try also 20, 50, 100
+#' set.seed(123)
 #' Y<-matrix(runif(3*n),ncol=3)
 #' cls<-sample(0:1,n,replace = TRUE)  #or try cls<-rep(0:1,c(10,10))
 #' k<-2 # try also 3,5
 #'
 #' ZTkinv.sim(Y,k,cls)
-#' ZTkinv.sim(Y,k,cls+1,case.lab = 2,alt="l")
 #' ZTkinv.sim(Y,k,cls,conf=.9,alt="g")
 #'
 #' #cls as a factor
@@ -18273,19 +18275,19 @@ ZTkinv.sim <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"
   quants<-quantile(ce.vec,probs=c(alpha/2,alpha,1-alpha,1-alpha/2))
   pval.ls <-(sum(ce.vec<=Tk0)+1)/(Nsim+1); pval.rs <-(sum(ce.vec>=Tk0)+1)/(Nsim+1)
   alt<- switch(alternative,
-         less = { 
-           pval<-pval.ls
-           cint <-c(-Inf, quants[3])
-         },
-         greater = { 
-           pval<-pval.rs
-           cint <-c(quants[2],Inf)
-         },
-         two.sided = { 
-           pval <-2 * min(pval.ls,pval.rs)
-           alpha <-1 - conf.level
-           cint <-c(quants[1],quants[4])
-         }
+               less = { 
+                 pval<-pval.ls
+                 cint <-c(-Inf, quants[3])
+               },
+               greater = { 
+                 pval<-pval.rs
+                 cint <-c(quants[2],Inf)
+               },
+               two.sided = { 
+                 pval <-2 * min(pval.ls,pval.rs)
+                 alpha <-1 - conf.level
+                 cint <-c(quants[1],quants[4])
+               }
   )
   
   if (is.null(alt)) stop("Alternative must be one of less, greater, or two.sided in quotes")
@@ -18326,8 +18328,8 @@ ZTkinv.sim <- function(dat,k,cc.lab,alternative=c("two.sided", "less", "greater"
 #' Let \eqn{(z_1,\ldots,z_n )}, \eqn{n = n_0 + n_1}, denote the locations of the points in the combined sample 
 #' when the indices have been randomly permuted so that the \eqn{z_i} contain no information about group membership.
 #' \deqn{T(\theta)=\sum_{i=1}^{n}\sum_{j=1}^{n}\delta_i \delta_j a_{ij}(\theta)=
-#' \boldsymbol \delta^t \boldmath A(\theta)) \boldsymbol \delta} where \eqn{\delta_i=1} if \eqn{z_i} is a case,
-#' and 0 if \eqn{z_i} is a control,  \eqn{\boldmath A(\theta) = (a_{ij} (\theta))} could be any matrix of a measure of
+#' \boldsymbol \delta^t \boldsymbol A(\theta)) \boldsymbol \delta} where \eqn{\delta_i=1} if \eqn{z_i} is a case,
+#' and 0 if \eqn{z_i} is a control,  \eqn{\boldsymbol A(\theta) = (a_{ij} (\theta))} could be any matrix of a measure of
 #' the closeness between two points \eqn{i} and \eqn{j} with \eqn{a_{ii} = 0} for all \eqn{i = 1,\ldots,n}, and \eqn{\boldsymbol \theta = 
 #' (\theta_1,\ldots,\theta_p)^t} denotes the unknown parameter vector related to cluster size and 
 #' \eqn{\boldsymbol \delta = (\delta_1,\ldots,\delta_n)^t}. 
@@ -18739,41 +18741,41 @@ aij.theta <- function(dat,theta,model="exp.clinal",...)
   
   if (n<=1)
   { return(a)}
- a<- switch(model,
-         NN = { a<-aij.mat(dat,theta,...) },
-         exp.clinal = {   a<-matrix(0,n,n)
-         for (i in 1:(n-1))
-         {
-           for (j in (i+1):n)
-           {
-             a[i,j]<-exp(-4*(ipd[i,j]/theta)^2)
-             a[j,i]<-a[i,j]
-           }
-         }
-         a },
-         exponential = {   a<-matrix(0,n,n)
-         for (i in 1:(n-1))
-         {
-           for (j in (i+1):n)
-           {
-             a[i,j]<-exp(-(ipd[i,j]/theta))
-             a[j,i]<-a[i,j]
-           }
-         }
-         a },
-         hot.spot = {   a<-matrix(0,n,n)
-         for (i in 1:(n-1))
-         {
-           for (j in (i+1):n)
-           {
-             a[i,j]<-sum(ipd[i,j] <= theta)
-             a[j,i]<-a[i,j]
-           }
-         }
-         a}
+  a<- switch(model,
+             NN = { a<-aij.mat(dat,theta,...) },
+             exp.clinal = {   a<-matrix(0,n,n)
+             for (i in 1:(n-1))
+             {
+               for (j in (i+1):n)
+               {
+                 a[i,j]<-exp(-4*(ipd[i,j]/theta)^2)
+                 a[j,i]<-a[i,j]
+               }
+             }
+             a },
+             exponential = {   a<-matrix(0,n,n)
+             for (i in 1:(n-1))
+             {
+               for (j in (i+1):n)
+               {
+                 a[i,j]<-exp(-(ipd[i,j]/theta))
+                 a[j,i]<-a[i,j]
+               }
+             }
+             a },
+             hot.spot = {   a<-matrix(0,n,n)
+             for (i in 1:(n-1))
+             {
+               for (j in (i+1):n)
+               {
+                 a[i,j]<-sum(ipd[i,j] <= theta)
+                 a[j,i]<-a[i,j]
+               }
+             }
+             a}
   )
- 
- if (is.null(a)) stop("Enter numbers 1-4 or NN, exp.clinal, exponential, hotspot in quotes for model")
+  
+  if (is.null(a)) stop("Enter numbers 1-4 or NN, exp.clinal, exponential, hotspot in quotes for model")
   a
 } #end for the function
 #'
